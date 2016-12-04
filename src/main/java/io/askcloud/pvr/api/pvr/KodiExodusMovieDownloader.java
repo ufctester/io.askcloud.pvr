@@ -27,7 +27,7 @@ import io.askcloud.pvr.kodi.jsonrpc.model.ListModel;
 public class KodiExodusMovieDownloader extends KodiExodusDownloader {
 
 	//i.e. 24 or Person of Interest
-	private static String MOVIE_NAME = null;
+	private String MOVIE_NAME = null;
 
 	private static String CLASS_NAME = KodiExodusMovieDownloader.class.getName();
 	private static Logger log = PlexPVRManager.log;
@@ -43,6 +43,10 @@ public class KodiExodusMovieDownloader extends KodiExodusDownloader {
 		final Thread currentThread = Thread.currentThread();
         final String oldName = currentThread.getName();
         currentThread.setName(threadName);		
+	}
+	
+	public String getMovieName() {
+		return MOVIE_NAME;
 	}
 	
 	@Override

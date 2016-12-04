@@ -3,6 +3,9 @@ package io.askcloud.pvr.imdb.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * JSON Wrapper class for the response from the API
  *
@@ -10,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author stuart.boston
  */
-@JsonIgnoreProperties("rewrite")
 public class ImdbCast extends AbstractJsonMapping {
 
     @JsonProperty("name")
@@ -25,6 +27,9 @@ public class ImdbCast extends AbstractJsonMapping {
     private String roleAs = "";
     @JsonProperty("label")
     private String label = "";
+
+    @JsonProperty("rewrite")
+    private List<List<ImdbCast>> rewrite = Collections.emptyList();
 
     public String getLabel() {
         return label;
@@ -72,5 +77,13 @@ public class ImdbCast extends AbstractJsonMapping {
 
     public void setAttr(String attr) {
         this.attr = attr;
+    }
+
+    public List<List<ImdbCast>> getRewrite() {
+        return rewrite;
+    }
+
+    public void setRewrite(List<List<ImdbCast>> rewrite) {
+        this.rewrite = rewrite;
     }
 }

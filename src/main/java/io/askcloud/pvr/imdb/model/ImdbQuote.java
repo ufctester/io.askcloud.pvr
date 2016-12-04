@@ -1,5 +1,4 @@
 package io.askcloud.pvr.imdb.model;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collections;
 import java.util.List;

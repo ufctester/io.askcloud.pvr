@@ -1,12 +1,12 @@
 package io.askcloud.pvr.imdb.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.askcloud.pvr.imdb.search.SearchObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.askcloud.pvr.imdb.search.SearchObject;
 
 public class ImdbPerson extends SearchObject {
 

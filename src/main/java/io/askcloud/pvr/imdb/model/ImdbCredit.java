@@ -1,10 +1,12 @@
 package io.askcloud.pvr.imdb.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ImdbCredit extends AbstractJsonMapping{
+public class ImdbCredit extends AbstractJsonMapping {
 
     @JsonProperty("label")
     private String label = "";
@@ -14,7 +16,22 @@ public class ImdbCredit extends AbstractJsonMapping{
     private List<ImdbCast> credits = Collections.emptyList();
 
     public List<ImdbCast> getCredits() {
-        return credits;
+        List<ImdbCast> newCredits = new ArrayList<>();
+
+        for (ImdbCast imdbCast : credits) {
+            for (List<ImdbCast> imdbCasts : imdbCast.getRewrite()) {
+                for (ImdbCast cast : imdbCasts) {
+                    cast.setJob(imdbCast.getLabel());
+                    newCredits.add(cast);
+                }
+            }
+        }
+
+        if (newCredits.size() == 0) {
+            newCredits.addAll(credits);
+        }
+
+        return newCredits;
     }
 
     public void setCredits(List<ImdbCast> credits) {

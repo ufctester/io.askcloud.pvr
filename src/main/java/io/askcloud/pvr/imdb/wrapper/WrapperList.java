@@ -1,13 +1,13 @@
 package io.askcloud.pvr.imdb.wrapper;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.askcloud.pvr.imdb.model.AbstractJsonMapping;
 import io.askcloud.pvr.imdb.model.ImdbList;
-
-import java.util.Collections;
-import java.util.List;
 
 @JsonIgnoreProperties({"@meta", "exp", "copyright", "@type", "db"})
 public class WrapperList extends AbstractJsonMapping {

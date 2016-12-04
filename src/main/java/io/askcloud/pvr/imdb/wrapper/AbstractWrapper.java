@@ -5,9 +5,10 @@ import java.util.logging.Logger;
 import io.askcloud.pvr.api.pvr.PlexPVRManager;
 import io.askcloud.pvr.imdb.model.AbstractJsonMapping;
 
+
 public abstract class AbstractWrapper<E extends AbstractJsonMapping> extends AbstractJsonMapping implements IWrapperResult<E> {
 
-	private static Logger log = PlexPVRManager.log;
+	private static final Logger log = PlexPVRManager.log;
     protected E result;
 
     @Override
@@ -19,7 +20,7 @@ public abstract class AbstractWrapper<E extends AbstractJsonMapping> extends Abs
                 result = resultClass.newInstance();
                 result.setStatusMessage(getStatusMessage());
             } catch (InstantiationException | IllegalAccessException ex) {
-            	log.severe("Failed to instantiate: " + resultClass.getSimpleName() + " exception: " + ex.toString());
+            	log.severe("Failed to instantiate class " + resultClass.getSimpleName()+ " exception: " + ex.getMessage());
                 result = null;
             }
         }

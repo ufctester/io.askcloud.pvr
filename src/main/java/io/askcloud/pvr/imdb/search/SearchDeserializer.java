@@ -1,5 +1,11 @@
 package io.askcloud.pvr.imdb.search;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,15 +15,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.askcloud.pvr.api.pvr.PlexPVRManager;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Logger;
 
 public class SearchDeserializer extends StdDeserializer<SearchObject> {
 
-	private static Logger log = PlexPVRManager.log;
+	private static final Logger log = PlexPVRManager.log;
     private final Map<String, Class<? extends SearchObject>> registry = new HashMap<>();
 
     public SearchDeserializer() {
@@ -38,7 +39,7 @@ public class SearchDeserializer extends StdDeserializer<SearchObject> {
         while (elementsIterator.hasNext()) {
             Map.Entry<String, JsonNode> element = elementsIterator.next();
             String name = element.getKey();
-            log.info("Name: " + name + " value: " + element.getValue().asText());
+            log.info("Name: " + name + " value: " + element.getValue().asText()); 
 
             if (registry.containsKey(name)) {
                 searchClass = registry.get(name);
@@ -48,7 +49,7 @@ public class SearchDeserializer extends StdDeserializer<SearchObject> {
         }
 
         if (searchClass == null) {
-        	log.info("END: No search class!");
+            log.info("END: No search class!");
             return new SearchObject();
         }
 

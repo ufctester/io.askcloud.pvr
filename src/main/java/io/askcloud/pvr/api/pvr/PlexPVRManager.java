@@ -46,7 +46,7 @@ public class PlexPVRManager {
 	public static int KODI_HTTP_PORT = 9080;
 	public static int KODI_SOCKET_PORT = 9090;
 
-	public static boolean CLEAN_KODI_DOWNLOAD = true;
+	public static boolean CLEAN_KODI_DOWNLOAD = false;
 	public static String KODI_DOWNLOAD_BASE_DIR = "C:\\gitbash\\opt\\kodi\\downloads";
 	public static String KODI_DOWNLOAD_TVSHOWS_DIR = KODI_DOWNLOAD_BASE_DIR + "\\tvshows";
 	public static String KODI_DOWNLOAD_MOVIES_DIR = KODI_DOWNLOAD_BASE_DIR + "\\movies";

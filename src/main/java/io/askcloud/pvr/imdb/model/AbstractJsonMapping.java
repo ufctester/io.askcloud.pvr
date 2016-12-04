@@ -17,7 +17,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public abstract class AbstractJsonMapping implements Serializable, IStatusMessage {
 
-	private static Logger log = PlexPVRManager.log;
+	private static final Logger log = PlexPVRManager.log;
 
     @JsonProperty("error")
     private ImdbStatusMessage statusMessage = null;

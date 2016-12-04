@@ -1,13 +1,14 @@
 package io.askcloud.pvr.imdb.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.askcloud.pvr.imdb.search.SearchObject;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.askcloud.pvr.imdb.search.SearchObject;
 
 public class ImdbMovieDetails extends SearchObject {
 
