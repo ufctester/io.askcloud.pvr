@@ -1,0 +1,43 @@
+    def fileExists(self,showTye,pathToFile,fileName):
+        xbmc.log('ENTRY -> plexpvr.py fileExists()', xbmc.LOGNOTICE)
+        xbmc.log('    showTye: %s' % (showTye), xbmc.LOGNOTICE)
+        xbmc.log('    pathToFile: %s' % (pathToFile), xbmc.LOGNOTICE)
+        xbmc.log('    fileName: %s' % (fileName), xbmc.LOGNOTICE)
+
+        #Check to see if mp4, flv, avi, mkv file already exists
+        pathToFile = os.path.join(fileName,'%s.mp4'% (fileName))
+        if self.fileExists(showTye,pathToFile):
+            return None
+        
+        #flv
+        pathToFile = os.path.join(fileName,'%s.flv'% (fileName))
+        if self.fileExists(showTye,pathToFile):
+            return None
+
+        #mkv
+        pathToFile = os.path.join(fileName,'%s.mkv'% (fileName))
+        if self.fileExists(showTye,pathToFile):
+            return None  
+
+        #avi
+        pathToFile = os.path.join(fileName,'%s.avi'% (fileName))
+        if self.fileExists(showTye,pathToFile):
+            return None 
+
+        return pathToFile
+
+
+    def fileExists(self,showTye,pathToFile):
+        xbmc.log('ENTRY -> plexpvr.py fileExists()', xbmc.LOGNOTICE)
+        xbmc.log('    showTye: %s' % (showTye), xbmc.LOGNOTICE)
+        xbmc.log('    pathToFile: %s' % (pathToFile), xbmc.LOGNOTICE)
+
+        if os.path.exists(pathToFile):
+            xbmc.log('STOP DOWNLOAD :: %s already exists: %s' % (showTye,pathToFile), xbmc.LOGNOTICE)
+            xbmc.log('EXIT <- fileExists fileExists()', xbmc.LOGNOTICE)
+            return True
+        else:
+            xbmc.log('START DOWNLOAD :: %s does not exists: %s' % (showTye,pathToFile), xbmc.LOGNOTICE)
+        
+        xbmc.log('EXIT <- plexpvr fileExists()', xbmc.LOGNOTICE)
+        return False        
