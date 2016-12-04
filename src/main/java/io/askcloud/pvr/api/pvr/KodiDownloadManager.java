@@ -338,20 +338,20 @@ public class KodiDownloadManager {
 	/**
 	 * 
 	 */
-	public void downloadEpisodes(List<KodiExodusDownloader> missingEpisodes)
+	public void download(List<KodiExodusDownloader> downloadItems)
 	{
-		downloaders.addAll(missingEpisodes);
+		downloaders.addAll(downloadItems);
 		ExecutorService executor = Executors.newFixedThreadPool(10);
 		
 		//here we need to set the first download item ready to run
-		if(missingEpisodes.size()>0)
+		if(downloadItems.size()>0)
 		{
-			missingEpisodes.get(0).setReadyToRun();
+			downloadItems.get(0).setReadyToRun();
 		}
 		
-		for (Iterator iterator = missingEpisodes.iterator(); iterator.hasNext();) {
-			KodiExodusDownloader missingEpisode = (KodiExodusDownloader) iterator.next();
-	        executor.submit(missingEpisode);
+		for (Iterator iterator = downloadItems.iterator(); iterator.hasNext();) {
+			KodiExodusDownloader downloadItem = (KodiExodusDownloader) iterator.next();
+	        executor.submit(downloadItem);
 		}
 		
 		executor.shutdown();

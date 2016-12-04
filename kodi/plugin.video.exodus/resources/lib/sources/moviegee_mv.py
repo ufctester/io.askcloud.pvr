@@ -56,7 +56,22 @@ class source:
 
             url = urlparse.urljoin(self.base_link, url)
 
-            r = client.request(url)
+            h = {'User-Agent': client.agent()}
+
+            r = client.request(url, headers=h, output='extended')
+
+            try:
+                u = client.parseDOM(r[0], 'form', ret='action', attrs = {'method': 'post'})[-1]
+                u = urlparse.urljoin(self.base_link, u)
+
+                p = zip(client.parseDOM(r[0], 'input', ret='name', attrs = {'type': 'hidden'}), client.parseDOM(r[0], 'input', ret='value', attrs = {'type': 'hidden'}))
+                p = urllib.urlencode(dict(p))
+
+                r = client.request(u, post=p, cookie=r[4], headers=h, output='extended')
+            except:
+                pass
+
+            r = r[0]
 
             s = re.findall('"imdbId"\s*:\s*"(.+?)"\s*,\s*"season"\s*:\s*(\d+)\s*,\s*"provider"\s*:\s*"(.+?)"\s*,\s*"name"\s*:\s*"(.+?)"', r)
 

@@ -46,18 +46,20 @@ public class PlexPVRManager {
 	public static int KODI_HTTP_PORT = 9080;
 	public static int KODI_SOCKET_PORT = 9090;
 
-	public static boolean CLEAN_KODI_DOWNLOAD = false;
+	public static boolean CLEAN_KODI_DOWNLOAD = true;
 	public static String KODI_DOWNLOAD_BASE_DIR = "C:\\gitbash\\opt\\kodi\\downloads";
 	public static String KODI_DOWNLOAD_TVSHOWS_DIR = KODI_DOWNLOAD_BASE_DIR + "\\tvshows";
 	public static String KODI_DOWNLOAD_MOVIES_DIR = KODI_DOWNLOAD_BASE_DIR + "\\movies";
 
 	public static String KODI_PVR_DOWNLOAD_FILE = "kodi-downloader.csv";
 	public static String KDOI_PVR_DOWNLOAD_TRACKER = "C:/gitbash/opt/kodi/" + KODI_PVR_DOWNLOAD_FILE;
-	public static String KDOI_PVR_DOWNLOAD_TRACKER_MASTER = "C:/gitbash/opt/eclipse/workspace/io.askcloud.plexpvr/kodi/plugin.video.exodus.updates/" + KODI_PVR_DOWNLOAD_FILE;
+	public static String KDOI_PVR_DOWNLOAD_TRACKER_MASTER = "C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/kodi/plugin.video.exodus.updates/" + KODI_PVR_DOWNLOAD_FILE;
 
 	
-	public static String FILE_BOT_MISSING_EPISODES_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.plexpvr\\missing-episodes.txt";
-	public static String FILE_BOT_MISSING_EPISODES_QUEUE_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.plexpvr\\missing-episodes-queue.txt";
+	public static String FILE_BOT_MISSING_EPISODES_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\missing-episodes.txt";
+	public static String FILE_BOT_MISSING_EPISODES_QUEUE_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\queue\\missing-episodes-queue.txt";
+	public static String FILE_BOT_MOVIE_QUEUE_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\queue\\movie-queue.txt";
+	
 	public static String FILEBOT_AMC_DESTINATION="C:\\tmp\\TVShows_completed";
 	
 	public static String FILE_BOT_EXE="C:\\gitbash\\opt\\filebot\\filebot.exe";
@@ -77,6 +79,8 @@ public class PlexPVRManager {
 	final private SecurityManager orgSecurityManager = System.getSecurityManager();
 	
 	private static Set<String> excludeMissingEpisodes = new LinkedHashSet<String>();
+	
+	private static Set<String> excludeMovies = new LinkedHashSet<String>();
 	
     static
     {
@@ -380,7 +384,7 @@ public class PlexPVRManager {
 		}
 		
 		try {			
-			Main.main(new String[] { "-script", "C:/gitbash/opt/eclipse/workspace/io.askcloud.plexpvr/filebot/find-missing-episodes.groovy", directory, "--output",
+			Main.main(new String[] { "-script", "C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/find-missing-episodes.groovy", directory, "--output",
 					PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE });
 		}
 		catch(SecurityException e)
@@ -398,12 +402,20 @@ public class PlexPVRManager {
 		
 		return missingEpisodes;
 	}
+	
+	/**
+	 * @return
+	 */
+	public List<KodiExodusDownloader> loadMovieQueue()
+	{
+		return loadMovieQueue(PlexPVRManager.FILE_BOT_MOVIE_QUEUE_FILE);
+	}
 
 	/**
 	 * @param directory
 	 */
 	public void findMissingEpisodesPlex(String directory) {
-		Main.main(new String[] { "-script", "C:/gitbash/opt/eclipse/workspace/io.askcloud.plexpvr/filebot/find-missing-episodes-plex.groovy", directory });
+		Main.main(new String[] { "-script", "C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/find-missing-episodes-plex.groovy", directory });
 
 	}
 
@@ -445,6 +457,79 @@ public class PlexPVRManager {
 	 * @param missingEpisodeFile
 	 * @return
 	 */
+	private List<KodiExodusDownloader> loadMovieQueue(String movieQueueFile) {
+		List<KodiExodusDownloader> movies = new ArrayList<KodiExodusDownloader>();
+		if(movieQueueFile == null)
+		{
+			return movies;
+		}
+		
+        InputStream inputStream = null;
+        Reader reader = null;
+        CSVParser parser = null;
+        try {
+        	inputStream = new FileInputStream(movieQueueFile);
+            reader = new InputStreamReader(inputStream, "UTF-8");
+            parser = new CSVParser(reader, CSVFormat.EXCEL.withHeader());
+            try {
+            	//"TVDB_ID,SERIES_NAME,SEASON,EPISODE"
+                for (final CSVRecord record : parser) {
+                	final String imdbid = record.get("IMDB_ID");
+                	final String movieName = record.get("MOVIE_NAME");
+                	
+                	if(!excludeMovies.contains(imdbid))
+                	{
+                    	KodiExodusDownloader movie = createMissingMovie(imdbid,movieName);
+                    	movies.add(movie);
+                	}
+                }
+            } finally {
+                try {
+                	parser.close();	
+				}
+				catch (Exception e) {
+					log.severe("Unable to close " + movieQueueFile + " Parser: " + e.getMessage());
+				}
+                try {
+                	reader.close();
+				}
+				catch (Exception e) {
+					log.severe("Unable to close " + movieQueueFile + " Reader: " + e.getMessage());
+				}
+            }	
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+        finally {
+            try {
+            	parser.close();	
+			}
+			catch (Exception e) {
+				log.severe("Unable to close " + movieQueueFile + " Parser: " + e.getMessage());
+			}
+            try {
+            	reader.close();
+			}
+			catch (Exception e) {
+				log.severe("Unable to close " + movieQueueFile + " Reader: " + e.getMessage());
+			}
+            try {
+            	inputStream.close();
+			}
+			catch (Exception e) {
+				log.severe("Unable to close " + movieQueueFile + " InputStream: " + e.getMessage());
+			}            
+        }
+        
+    	return movies;        
+	}	
+	
+	
+	/**
+	 * @param missingEpisodeFile
+	 * @return
+	 */
 	private List<KodiExodusDownloader> loadMissingEpisodes(String missingEpisodeFile) {
 		List<KodiExodusDownloader> missingEpisodes = new ArrayList<KodiExodusDownloader>();
 		if(missingEpisodeFile == null)
@@ -463,13 +548,14 @@ public class PlexPVRManager {
             	//"TVDB_ID,SERIES_NAME,SEASON,EPISODE"
                 for (final CSVRecord record : parser) {
                 	final String tvdbid = record.get("TVDB_ID");
+                	final String imdbid = record.get("IMDB_ID");
                 	final String seriesName = record.get("SERIES_NAME");
                 	final String season = record.get("SEASON");
                 	final String episode = record.get("EPISODE");
                 	
                 	if(!excludeMissingEpisodes.contains(tvdbid))
                 	{
-                    	KodiExodusDownloader missingEpisode = createMissingEpisode(tvdbid,seriesName,season,episode);
+                    	KodiExodusDownloader missingEpisode = createMissingEpisode(tvdbid,imdbid,seriesName,season,episode);
                     	missingEpisodes.add(missingEpisode);
                 	}
                 }
@@ -478,13 +564,13 @@ public class PlexPVRManager {
                 	parser.close();	
 				}
 				catch (Exception e) {
-					log.severe("Unable to close " + PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE + " Parser: " + e.getMessage());
+					log.severe("Unable to close " + missingEpisodeFile + " Parser: " + e.getMessage());
 				}
                 try {
                 	reader.close();
 				}
 				catch (Exception e) {
-					log.severe("Unable to close " + PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE + " Reader: " + e.getMessage());
+					log.severe("Unable to close " + missingEpisodeFile + " Reader: " + e.getMessage());
 				}
             }	
 		}
@@ -496,19 +582,19 @@ public class PlexPVRManager {
             	parser.close();	
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE + " Parser: " + e.getMessage());
+				log.severe("Unable to close " + missingEpisodeFile + " Parser: " + e.getMessage());
 			}
             try {
             	reader.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE + " Reader: " + e.getMessage());
+				log.severe("Unable to close " + missingEpisodeFile + " Reader: " + e.getMessage());
 			}
             try {
             	inputStream.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE + " InputStream: " + e.getMessage());
+				log.severe("Unable to close " + missingEpisodeFile + " InputStream: " + e.getMessage());
 			}            
         }
         
@@ -522,9 +608,20 @@ public class PlexPVRManager {
 	 * @param episode
 	 * @return
 	 */
-	public KodiExodusDownloader createMissingEpisode(String tvdbid, String seriesName, String season, String episode)
+	public KodiExodusDownloader createMissingEpisode(String tvdbid, String imdbid, String seriesName, String season, String episode)
 	{
-		return new KodiExodusTVShowDownloader(seriesName,null,tvdbid,PlexPVRManager.getInstance().getSeasonInt(season),PlexPVRManager.getInstance().getEpisodeInt(episode));
+		return new KodiExodusTVShowDownloader(seriesName,imdbid,tvdbid,PlexPVRManager.getInstance().getSeasonInt(season),PlexPVRManager.getInstance().getEpisodeInt(episode));
 	}
+	
+	/**
+	 * @param imdbid
+	 * @param movieName
+	 * @return
+	 */
+	public KodiExodusDownloader createMissingMovie(String imdbid, String movieName)
+	{
+		return new KodiExodusMovieDownloader(movieName,imdbid);
+	}
+	
 	
 }

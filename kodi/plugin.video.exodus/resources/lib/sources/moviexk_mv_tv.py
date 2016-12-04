@@ -65,16 +65,25 @@ class source:
             q = self.search_link.decode('base64') % urllib.quote_plus(q)
 
             r = client.request(q)
+
             r = json.loads(r)['results']
             r = [(i['url'], i['titleNoFormatting']) for i in r]
+   
             r = [(i[0], re.findall('(?:^Watch Movie |^Watch |)(.+?)$', i[1])) for i in r]
-            r = [(i[0], i[1][0]) for i in r if i[1]]
+            r = [(i[0], i[1][0].rsplit('TV Series')[0].strip('(')) for i in r if i[1]]
             r = [i for i in r if not 'fb_comment_' in i[0]]
             r = [i for i in r if t == cleantitle.get(i[1])]
-            r = re.sub('/watch-movie-|-\d+$', '/', r[0][0].strip())
+            r = r[0][0].strip()
+            if '/watch-movie-' in r: r = re.sub('/watch-movie-|-\d+$', '/', r)
 
-            y = client.request(r)
-            y = re.findall('(?:D|d)ate\s*:\s*(\d{4})', y)[0]
+            y = re.findall('(\d{4})', r)
+
+            if y:
+                y = y[0]
+            else:
+                y = client.request(r)
+                y = re.findall('(?:D|d)ate\s*:\s*(\d{4})', y)[0]
+
             if not year == y: raise Exception()
 
             url = re.findall('(?://.+?|)(/.+)', r)[0]
@@ -106,10 +115,13 @@ class source:
             url = f.rsplit('?', 1)[0]
 
             r = client.request(url)
+
             r = client.parseDOM(r, 'div', attrs = {'class': 'btn.+?'})
             r = client.parseDOM(r, 'a', ret='href')[0]
+
             r = client.request(r, referer=url)
 
+            r = client.parseDOM(r, 'div', attrs = {'id': 'servers'})
             r = client.parseDOM(r, 'li')
             r = zip(client.parseDOM(r, 'a', ret='href'), client.parseDOM(r, 'a', ret='title'))
 

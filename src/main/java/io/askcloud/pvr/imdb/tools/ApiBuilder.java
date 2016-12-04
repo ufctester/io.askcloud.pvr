@@ -47,7 +47,7 @@ public final class ApiBuilder {
         deserializer.registerSearchObject("tconst", ImdbMovieDetails.class);
         deserializer.registerSearchObject("nconst", ImdbPerson.class);
 
-        Version ver = new Version(1, 0, 0, null, "io.askcloud.plexpvr.api.imdb.tools", "SearchDeserializer");
+        Version ver = new Version(1, 0, 0, null, "io.askcloud.pvr.api.imdb.tools", "SearchDeserializer");
         SimpleModule module = new SimpleModule("PolymorphicSearchDeserializerModule", ver);
         module.addDeserializer(SearchObject.class, deserializer);
 

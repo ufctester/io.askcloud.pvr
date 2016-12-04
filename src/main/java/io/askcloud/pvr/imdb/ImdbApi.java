@@ -740,12 +740,6 @@ public final class ImdbApi {
     /**
      * Get the latest box office information
      *
-     * @return
-     * @throws io.askcloud.plexpvr.api.imdb.ImdbException
-     */
-    /**
-     * Get the latest box office information
-     *
      * @param locale
      * @return
      * @throws io.askcloud.pvr.imdb.ImdbException

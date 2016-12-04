@@ -24,6 +24,6 @@ public class TVShowRequestGetMissingEpisodes extends TVShowRequest {
 	
 	@Override
 	void run() {
-		PlexPVRManager.getInstance().getKodiManager().downloadEpisodes(PlexPVRManager.getInstance().findMissingEpisodes(directory));
+		PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().findMissingEpisodes(directory));
 	}
 }

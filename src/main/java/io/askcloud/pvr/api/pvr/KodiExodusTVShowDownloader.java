@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import io.askcloud.pvr.api.pvr.KodiDownloadManager.DownloadStatus;
@@ -51,6 +52,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 		super();
 		log.entering(CLASS_NAME, "KodiExodusDownloader");
 		log.exiting(CLASS_NAME, "KodiExodusDownloader");
+		imdbid=(StringUtils.isNotBlank(imdbid))?imdbid:null;
 		setImdbID(imdbid);
 		setTVDBID(tvdbid);
 		SHOW_NAME = searchName;

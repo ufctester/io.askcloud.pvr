@@ -26,11 +26,11 @@ public class TVShowRequest extends PlexRequest {
 	@Override
 	void run() {
 		List<KodiExodusDownloader> missingEpisodes = new ArrayList<KodiExodusDownloader>();
-		missingEpisodes.add(PlexPVRManager.getInstance().createMissingEpisode("73141", "American Dad", "3", "17"));
+		missingEpisodes.add(PlexPVRManager.getInstance().createMissingEpisode("73141",null, "American Dad", "3", "17"));
 //		missingEpisodes.add(FileBotManager.getInstance().createMissingEpisode("269586", "Brooklyn Nine-Nine", "1", "2"));
 //		missingEpisodes.add(FileBotManager.getInstance().createMissingEpisode("269586", "Brooklyn Nine-Nine", "1", "3"));
 //		missingEpisodes.add(FileBotManager.getInstance().createMissingEpisode("269586", "Brooklyn Nine-Nine", "1", "4"));
 		
-		PlexPVRManager.getInstance().getKodiManager().downloadEpisodes(missingEpisodes);
+		PlexPVRManager.getInstance().getKodiManager().download(missingEpisodes);
 	}
 }
