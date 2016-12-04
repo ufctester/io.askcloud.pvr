@@ -62,7 +62,7 @@ episodeList.removeAll(episodes)
 //Create the header in the csv
 //tvdbid,seriesName,season,episode
 println "tvdbid,seriesName,season,episode" 
-missingEpisodes.append("TVDB_ID,SERIES_NAME,SEASON,EPISODE")
+missingEpisodes.append("TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE")
 
 def format=new ExpressionFormat("{n} {S00E00}")
 episodeList.each{ e ->
@@ -70,14 +70,10 @@ episodeList.each{ e ->
     info.episodeList.each{  i->
         // Exclude special episodes and those not yet aired.
         if(e[1]==i.season && e[2]==i.episode && i.special==null && i.airdate!=null && i.airdate < simpleNow) {
-            //println i.toString()+" ["+i.airdate.toString()+"]"
-            //println i.seriesName + " S" + i.season + "E" + i.episode + " id: " + i.seriesInfo.id
-            
-            //tvdbid,seriesName,season,episode
             //println i.seriesInfo.id + "," + i.seriesName + "," + i.season + "," + i.episode
             
             //add the \n at the beginning so we don't end up with an empty new line
-            missingEpisodes.append("\n" + i.seriesInfo.id + "," + i.seriesName + "," + i.season + "," + i.episode)
+            missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode)
             //println format.format(i.toString());
         }
     }
