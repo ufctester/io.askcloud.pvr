@@ -39,7 +39,7 @@ import io.askcloud.pvr.api.pvr.PlexPVRManager;
  */
 public class ApiUrl {
 
-	private static Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     // TheMovieDbApi API Base URL
     private static final String TMDB_API_BASE = "http://api.themoviedb.org/3/";
     // Parameter configuration

@@ -1,0 +1,200 @@
+/**
+ * 
+ */
+package io.askcloud.pvr.api;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import io.askcloud.pvr.api.pvr.KodiExodusMovieDownloader;
+import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.themoviedb.TheMovieDbApi;
+import io.askcloud.pvr.themoviedb.enumeration.MovieMethod;
+import io.askcloud.pvr.themoviedb.enumeration.SearchType;
+import io.askcloud.pvr.themoviedb.interfaces.AppendToResponseMethod;
+import io.askcloud.pvr.themoviedb.model.movie.MovieInfo;
+import io.askcloud.pvr.themoviedb.results.ResultList;
+import io.askcloud.pvr.tvdb.TheTVDBApi;
+import io.askcloud.pvr.tvdb.model.Banner;
+import io.askcloud.pvr.tvdb.model.Banners;
+import io.askcloud.pvr.tvdb.model.Episode;
+import io.askcloud.pvr.tvdb.model.Series;
+
+/**
+ * @author ufctester
+ *
+ */
+public class FindTVShowOrMovieRequest extends PlexRequest {
+
+	private static Set<String> findMovies = new LinkedHashSet<String>();
+	
+    static
+    {
+    	findMovies = new LinkedHashSet<String>();
+    	findMovies.add("Santa with Muscles");
+    	findMovies.add("Rudolph, the Red-Nosed Reindeer");
+    	findMovies.add("Trading Places");
+    	findMovies.add("Arthur Christmas");
+    	findMovies.add("While You Were Sleeping");
+    	findMovies.add("Mixed Nuts");
+    	findMovies.add("The Ref");
+    	findMovies.add("The Family Stone");
+    	findMovies.add("One Magic Christmas");
+    	findMovies.add("Just Friends");
+    	findMovies.add("The Christmas That Almost Wasn’t");
+    	findMovies.add("Reindeer Games");
+    }
+    	
+	/**
+	 * 
+	 */
+	public FindTVShowOrMovieRequest() {
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		FindTVShowOrMovieRequest request = new FindTVShowOrMovieRequest();
+		request.run();
+	}
+	
+	@Override
+	void run() {
+		findMovies();
+	}
+	
+	
+	/**
+	 * @param args
+	 */
+	public void findTVShows() {
+		
+		
+		try {
+			TheTVDBApi api = PlexPVRManager.getInstance().getTvdbAPI();
+			List<Series> seriesList = api.searchSeries("24", null);
+			for (Iterator iterator = seriesList.iterator(); iterator.hasNext();) {
+				Series series = (Series) iterator.next();
+				
+				Banners banners = api.getBanners(series.getId());
+				for (Iterator<Banner> bannersIter = banners.getPosterList().iterator(); bannersIter.hasNext();) {
+					Banner banner = bannersIter.next();
+					System.out.println("banner: " + banner.getUrl());
+					
+				}
+				System.out.println("seriesName: " + series.getSeriesName() + " id: " + series.getId());
+				List<Episode> episodes = api.getAllEpisodes(series.getId(), null);
+				for (Iterator iter2 = episodes.iterator(); iter2.hasNext();) {
+					Episode episode = (Episode) iter2.next();
+					//System.out.println("    " + episode.toString());
+				}
+				
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+//		List<String> episodes = FileBotManager.getInstance().getTVEpisodes("24");
+//		for (Iterator iterator = episodes.iterator(); iterator.hasNext();) {
+//			String episode = (String) iterator.next();
+//			
+//		}	
+	}	
+	
+	
+	
+	/**
+	 * @return
+	 */
+	private List<KodiExodusMovieDownloader> findMovies()
+	{
+		List<KodiExodusMovieDownloader> downloads = new ArrayList<KodiExodusMovieDownloader>();
+		
+		for (Iterator iterator = findMovies.iterator(); iterator.hasNext();) {
+			String movieName = (String) iterator.next();
+			MovieInfo movieInfo = findMovie(movieName);
+			if(movieInfo != null)
+			{
+				downloads.add(new KodiExodusMovieDownloader(movieName, movieInfo.getImdbID()));	
+			}
+		}
+		
+		System.out.println("==========================================================================");
+		for (Iterator iterator = downloads.iterator(); iterator.hasNext();) {
+			KodiExodusMovieDownloader kodiExodusMovieDownloader = (KodiExodusMovieDownloader) iterator.next();
+			
+			//System.out.println("IMDBID: " + kodiExodusMovieDownloader.getImdbID() + " movieName: " + kodiExodusMovieDownloader.getMovieName());
+			System.out.println(kodiExodusMovieDownloader.getImdbID() + "," + kodiExodusMovieDownloader.getMovieName());
+		}
+		
+		return downloads;
+	}
+	
+	private MovieInfo findMovie(String movieName)
+	{
+		
+		try {
+			TheMovieDbApi api = PlexPVRManager.getInstance().getTheMovieDbAPI();
+			ResultList<MovieInfo> movieResults = api.searchMovie(movieName, 0, "", null, 0, 0, SearchType.PHRASE);
+			List<MovieInfo> movies = movieResults.getResults();
+			for (Iterator<MovieInfo> iterator = movies.iterator(); iterator.hasNext();) {
+				MovieInfo movieInfo = iterator.next();
+			
+				MovieInfo movieDetailedInfo = api.getMovieInfo(movieInfo.getId(), null, movieDBAppendToResponseBuilder(MovieMethod.class));
+				System.out.println("imdb id: " + movieDetailedInfo.getImdbID() + " moviedbId: " + movieDetailedInfo.getId() + " title: " + movieDetailedInfo.getTitle());
+				
+				String movieShowTitle=movieDetailedInfo.getTitle();
+				if(movieShowTitle == null)
+				{
+					continue;
+				}
+				if(movieName.equalsIgnoreCase(movieShowTitle))
+				{
+					return movieDetailedInfo;
+				}
+				else if(movieShowTitle.startsWith(movieName))
+				{
+					return movieDetailedInfo;
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+//		List<String> episodes = FileBotManager.getInstance().getTVEpisodes("24");
+//		for (Iterator iterator = episodes.iterator(); iterator.hasNext();) {
+//			String episode = (String) iterator.next();
+//			
+//		}	
+		
+		return null;
+	}
+
+    /**
+     * Build up a full list of the AppendToResponse methods into a string for
+     * use in the URL
+     *
+     * @param <T>
+     * @param methodClass
+     * @return
+     */
+    protected static <T extends AppendToResponseMethod> String movieDBAppendToResponseBuilder(Class<T> methodClass) {
+        boolean first = true;
+        StringBuilder atr = new StringBuilder();
+        for (AppendToResponseMethod method : methodClass.getEnumConstants()) {
+            if (first) {
+                first = false;
+            } else {
+                atr.append(",");
+            }
+            atr.append(method.getPropertyString());
+        }
+        return atr.toString();
+    }		
+
+}

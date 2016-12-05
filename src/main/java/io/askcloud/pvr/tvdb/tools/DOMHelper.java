@@ -43,7 +43,7 @@ import io.askcloud.pvr.tvdb.TvDbException;
  */
 public class DOMHelper {
 
-	private static final Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     private static final String YES = "yes";
     private static final String DEFAULT_CHARSET = "UTF-8";
     private static final Charset CHARSET = Charset.forName(DEFAULT_CHARSET);

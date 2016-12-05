@@ -8,7 +8,7 @@ import io.askcloud.pvr.imdb.model.AbstractJsonMapping;
 
 public abstract class AbstractWrapper<E extends AbstractJsonMapping> extends AbstractJsonMapping implements IWrapperResult<E> {
 
-	private static final Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     protected E result;
 
     @Override

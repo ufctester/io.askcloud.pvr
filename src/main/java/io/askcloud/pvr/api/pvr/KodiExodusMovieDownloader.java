@@ -30,7 +30,7 @@ public class KodiExodusMovieDownloader extends KodiExodusDownloader {
 	private String MOVIE_NAME = null;
 
 	private static String CLASS_NAME = KodiExodusMovieDownloader.class.getName();
-	private static Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
 
 	public KodiExodusMovieDownloader(String movieName,String imdbID) {
 		super();

@@ -6,7 +6,7 @@ package io.askcloud.pvr.api.pvr;
 import java.security.Permission;
 
 /**
- * @author apps
+ * @author ufctester
  *
  */
 public class FileBotSecurityManager extends SecurityManager {

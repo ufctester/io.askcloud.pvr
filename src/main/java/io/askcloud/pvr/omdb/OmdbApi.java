@@ -50,7 +50,7 @@ import org.yamj.api.common.http.UserAgentSelector;
  */
 public class OmdbApi {
 
-	private static Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     private final HttpClient httpClient;
     // Jackson JSON configuration
     private static ObjectMapper mapper = new ObjectMapper();

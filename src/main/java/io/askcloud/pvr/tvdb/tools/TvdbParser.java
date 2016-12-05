@@ -35,7 +35,7 @@ import io.askcloud.pvr.tvdb.model.TVDBUpdates;
 
 public class TvdbParser {
 
-	private static final Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     private static final String URL_BANNER = "http://thetvdb.com/banners/";
     private static final String TYPE_BANNER = "banner";
     private static final String TYPE_FANART = "fanart";

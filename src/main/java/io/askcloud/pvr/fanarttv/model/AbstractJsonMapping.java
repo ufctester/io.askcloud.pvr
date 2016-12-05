@@ -36,7 +36,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public abstract class AbstractJsonMapping implements Serializable {
 
-	private static Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     /*
      * Error fields
      */

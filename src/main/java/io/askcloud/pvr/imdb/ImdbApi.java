@@ -53,7 +53,7 @@ import io.askcloud.pvr.imdb.wrapper.WrapperSynopsis;
  */
 public final class ImdbApi {
 
-    private static final Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     private static final String TCONST = "tconst";
     private static final String NCONST = "nconst";
 

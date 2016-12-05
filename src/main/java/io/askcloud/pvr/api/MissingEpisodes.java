@@ -1,12 +1,9 @@
-/**
- * 
- */
 package io.askcloud.pvr.api;
 
 import io.askcloud.pvr.api.pvr.PlexPVRManager;
 
 /**
- * @author apps
+ * @author ufctester
  *
  */
 public class MissingEpisodes extends PlexRequest {

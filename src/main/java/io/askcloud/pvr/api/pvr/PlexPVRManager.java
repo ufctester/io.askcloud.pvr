@@ -31,6 +31,9 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
+import io.askcloud.pvr.themoviedb.MovieDbException;
+import io.askcloud.pvr.themoviedb.TheMovieDbApi;
+import io.askcloud.pvr.tvdb.TheTVDBApi;
 import net.filebot.Main;
 
 /**
@@ -45,6 +48,10 @@ public class PlexPVRManager {
 	public static String KODI_HOST = "localhost";
 	public static int KODI_HTTP_PORT = 9080;
 	public static int KODI_SOCKET_PORT = 9090;
+	
+	//TV and Movie DB API
+	private TheTVDBApi tvdbAPI=null;
+	private TheMovieDbApi moviedbAPI=null;
 
 	public static boolean CLEAN_KODI_DOWNLOAD = false;
 	public static String KODI_DOWNLOAD_BASE_DIR = "C:\\gitbash\\opt\\kodi\\downloads";
@@ -60,7 +67,7 @@ public class PlexPVRManager {
 	public static String FILE_BOT_MISSING_EPISODES_QUEUE_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\queue\\missing-episodes-queue.txt";
 	public static String FILE_BOT_MOVIE_QUEUE_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\queue\\movie-queue.txt";
 	
-	public static String FILEBOT_AMC_DESTINATION="C:\\tmp\\TVShows_completed";
+	public static String FILEBOT_AMC_DESTINATION="C:\\tmp\\CompletedDownloads";
 	
 	public static String FILE_BOT_EXE="C:\\gitbash\\opt\\filebot\\filebot.exe";
 	
@@ -74,7 +81,7 @@ public class PlexPVRManager {
 	public static int KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME=10000; //10 seconds
 	
 	private static String CLASS_NAME = PlexPVRManager.class.getName();
-	public static Logger log = Logger.getLogger(CLASS_NAME);
+	private static Logger log = Logger.getLogger(CLASS_NAME);
 
 	final private SecurityManager orgSecurityManager = System.getSecurityManager();
 	
@@ -242,7 +249,7 @@ public class PlexPVRManager {
 				//log.finest("Directory Found: " + file.toString());
 			}
 			else {
-				log.info(" Size: " + file.length() + "  File Found: " + file.toString());
+				log.info("Size: " + file.length() + "  File Found: " + file.toString());
 			}
 		}
 	}
@@ -430,7 +437,7 @@ public class PlexPVRManager {
 		
 		try {
 			Main.main(new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "copy", "-non-strict", sourceDirectory, "--conflict", "override", "--def",
-					"movieFormat=\"G:/Movies/{fn}\"", "subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "ecludeList", "amc-exclude.txt", "--def", "--log", "all" });			
+					"movieFormat=\"C:/tmp/CompletedDownloads/Movies/{fn}\"", "subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "ecludeList", "amc-exclude.txt", "--def", "--log", "all" });			
 		}
 		catch(SecurityException e)
 		{
@@ -450,7 +457,7 @@ public class PlexPVRManager {
 	 */
 	public void automatedMediaCenterTest(String sourceDirectory, String targetDirectory) {
 		Main.main(new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "test", "-non-strict", sourceDirectory, "--conflict", "override", "--def",
-				"movieFormat=\"G:/Movies/{fn}\"", "subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "--log", "all" });
+				"movieFormat=\"C:/tmp/CompletedDownloads/Movies/{fn}\"", "subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "--log", "all" });
 	}
 	
 	/**
@@ -623,5 +630,39 @@ public class PlexPVRManager {
 		return new KodiExodusMovieDownloader(movieName,imdbid);
 	}
 	
+	/**
+	 * @return
+	 */
+	public TheTVDBApi getTvdbAPI()
+	{
+		if(tvdbAPI == null)
+		{
+			tvdbAPI = new TheTVDBApi("0E6F56E34D3CC366");
+		}
+		return tvdbAPI;
+	}
 	
+	/**
+	 * @return
+	 */
+	public TheMovieDbApi getTheMovieDbAPI()
+	{
+		if(moviedbAPI == null)
+		{
+			try {
+				moviedbAPI = new TheMovieDbApi("db6327125f93ae90aa51493f1586713f");
+			}
+			catch (MovieDbException e) {
+				log.severe("Error trying to get the movie db api: " + e.getMessage());
+			}
+		}
+		return moviedbAPI;
+	}
+	
+	/**
+	 * @return
+	 */
+	public Logger getLogger() {
+		return log;
+	}
 }

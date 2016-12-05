@@ -38,7 +38,7 @@ import org.yamj.api.common.exception.ApiExceptionType;
  */
 public final class OmdbBuilder {
 
-	private static Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     private final OmdbParameters params = new OmdbParameters();
     // Default values (if required)
     private static final boolean DEFAULT_TOMATOES = Boolean.FALSE;

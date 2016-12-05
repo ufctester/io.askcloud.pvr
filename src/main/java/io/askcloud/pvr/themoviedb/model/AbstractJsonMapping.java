@@ -37,7 +37,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public abstract class AbstractJsonMapping implements Serializable {
 
     private static final long serialVersionUID = 100L;
-    private static Logger log = PlexPVRManager.log;
+    private static Logger log = PlexPVRManager.getInstance().getLogger();
 
     /**
      * Handle unknown properties and print a message

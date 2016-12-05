@@ -38,7 +38,7 @@ public class KodiDownloadManager {
 	private JavaConnectionManager conMgr;
 
 	private static String CLASS_NAME = KodiDownloadManager.class.getName();
-	private static Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
 	private boolean monitorDownload=true;
 	private Set<DownloadStatus> downloadStatus = new LinkedHashSet<DownloadStatus>();
 	

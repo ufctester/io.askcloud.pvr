@@ -50,7 +50,7 @@ import io.askcloud.pvr.tvdb.tools.TvdbParser;
  */
 public class TheTVDBApi {
 
-    private static final Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     private String apiKey = null;
     private HttpClient httpClient;
     private static final String BASE_URL = "http://thetvdb.com/api/";

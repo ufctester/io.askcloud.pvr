@@ -31,7 +31,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public abstract class AbstractJsonMapping {
 
-	private static Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     private boolean response = Boolean.FALSE;
     @JsonProperty("Error")
     private String error = "";

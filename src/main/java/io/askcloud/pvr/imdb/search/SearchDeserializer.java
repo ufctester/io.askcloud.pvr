@@ -18,7 +18,7 @@ import io.askcloud.pvr.api.pvr.PlexPVRManager;
 
 public class SearchDeserializer extends StdDeserializer<SearchObject> {
 
-	private static final Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     private final Map<String, Class<? extends SearchObject>> registry = new HashMap<>();
 
     public SearchDeserializer() {

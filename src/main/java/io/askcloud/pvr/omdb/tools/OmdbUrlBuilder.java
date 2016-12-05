@@ -31,7 +31,7 @@ import org.yamj.api.common.exception.ApiExceptionType;
 
 public class OmdbUrlBuilder {
 
-	private static Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     private static final String BASE_URL = "http://www.omdbapi.com/";
     private static final String DELIMITER_FIRST = "?";
     private static final String DELIMITER_SUBSEQUENT = "&";

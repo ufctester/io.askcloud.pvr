@@ -36,7 +36,7 @@ import io.askcloud.pvr.imdb.wrapper.WrapperSearch;
 
 public final class ApiBuilder {
 
-	private static final Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     private static final int MILLIS_PER_SECOND = 1000;
     private static final String DEFAULT_CHARSET = "UTF-8";
     private static final Charset CHARSET = Charset.forName(DEFAULT_CHARSET);

@@ -35,7 +35,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	private DownloadStatus downloadStatus=null;
 	
 	private static String CLASS_NAME = KodiExodusTVShowDownloader.class.getName();
-	private static Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
 	//
 	//	public KodiExodusTVShowSeasonDownloader(String showName, String imdbid) {
 	//		this(showName,imdbid, -1, -1);

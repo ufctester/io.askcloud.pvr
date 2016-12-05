@@ -40,7 +40,7 @@ public final class ApiBuilder {
      * Logger
      */
 
-	private static Logger log = PlexPVRManager.log;
+	private static Logger log = PlexPVRManager.getInstance().getLogger();
     /*
      * FanartTV API Base URL
      */
