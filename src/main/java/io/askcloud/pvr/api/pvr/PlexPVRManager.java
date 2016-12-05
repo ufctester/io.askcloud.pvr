@@ -53,7 +53,7 @@ public class PlexPVRManager {
 	private TheTVDBApi tvdbAPI=null;
 	private TheMovieDbApi moviedbAPI=null;
 
-	public static boolean CLEAN_KODI_DOWNLOAD = false;
+	public static boolean CLEAN_KODI_DOWNLOAD = true;
 	public static String KODI_DOWNLOAD_BASE_DIR = "C:\\gitbash\\opt\\kodi\\downloads";
 	public static String KODI_DOWNLOAD_TVSHOWS_DIR = KODI_DOWNLOAD_BASE_DIR + "\\tvshows";
 	public static String KODI_DOWNLOAD_MOVIES_DIR = KODI_DOWNLOAD_BASE_DIR + "\\movies";
