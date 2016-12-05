@@ -96,6 +96,22 @@ public class PlexPVRManager {
 	
 	private static Set<String> excludeMissingEpisodes = new LinkedHashSet<String>();
 	
+	//default is everything except the exlude list.  This can be overwritten
+	private static Set<String> includeMissingEpisodes = new LinkedHashSet<String>();
+	
+    static
+    {
+		includeMissingEpisodes = new LinkedHashSet<String>();
+		includeMissingEpisodes.add("311946"); //Man with a Plan
+		includeMissingEpisodes.add("311947"); //Pure Genius
+		includeMissingEpisodes.add("305574"); //The Crown
+		includeMissingEpisodes.add("311957"); //No Tomorrow
+		includeMissingEpisodes.add("75657"); //Conviction
+		includeMissingEpisodes.add("296762"); //Westworld
+		includeMissingEpisodes.add("311835"); //Pitch
+		includeMissingEpisodes.add("311877"); //Notorious
+    }
+	
 	private static Set<String> excludeMovies = new LinkedHashSet<String>();
 	
     static
@@ -580,7 +596,16 @@ public class PlexPVRManager {
                 	
                 	boolean seriesEnded=((ended != null) && ("true".equals(ended)))?true: false;
                 	
-                	if(!excludeMissingEpisodes.contains(tvdbid))
+                	//if includeMissingEpisodes is not empty then only include these ones
+                	if(!includeMissingEpisodes.isEmpty())
+                	{
+                		if(includeMissingEpisodes.contains(tvdbid))
+                		{
+                        	KodiExodusDownloader missingEpisode = createMissingEpisode(tvdbid,imdbid,seriesName,season,episode,seriesEnded);
+                        	missingEpisodes.add(missingEpisode);      
+                		}
+                	}
+                	else if(!excludeMissingEpisodes.contains(tvdbid))
                 	{
                     	KodiExodusDownloader missingEpisode = createMissingEpisode(tvdbid,imdbid,seriesName,season,episode,seriesEnded);
                     	missingEpisodes.add(missingEpisode);

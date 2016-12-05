@@ -9,13 +9,13 @@ import io.askcloud.pvr.api.pvr.PlexPVRManager;
  * @author ufctester
  *
  */
-public class FilebotAMCTVShows extends PlexRequest {
+public class FilebotAMCRequest extends PlexRequest {
 
 	
 	/**
 	 * 
 	 */
-	public FilebotAMCTVShows() {
+	public FilebotAMCRequest() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -23,7 +23,7 @@ public class FilebotAMCTVShows extends PlexRequest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		FilebotAMCTVShows amc = new FilebotAMCTVShows();
+		FilebotAMCRequest amc = new FilebotAMCRequest();
 		amc.run();
 	}
 	
