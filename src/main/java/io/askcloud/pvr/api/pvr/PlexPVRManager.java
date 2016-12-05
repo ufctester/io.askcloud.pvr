@@ -102,14 +102,7 @@ public class PlexPVRManager {
     static
     {
 		includeMissingEpisodes = new LinkedHashSet<String>();
-		includeMissingEpisodes.add("311946"); //Man with a Plan
-		includeMissingEpisodes.add("311947"); //Pure Genius
-		includeMissingEpisodes.add("305574"); //The Crown
-		includeMissingEpisodes.add("311957"); //No Tomorrow
-		includeMissingEpisodes.add("75657"); //Conviction
-		includeMissingEpisodes.add("296762"); //Westworld
-		includeMissingEpisodes.add("311835"); //Pitch
-		includeMissingEpisodes.add("311877"); //Notorious
+		//includeMissingEpisodes.add("311946"); //Man with a Plan
     }
 	
 	private static Set<String> excludeMovies = new LinkedHashSet<String>();

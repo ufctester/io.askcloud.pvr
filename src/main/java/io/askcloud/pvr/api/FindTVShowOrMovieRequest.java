@@ -60,13 +60,10 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
     static
     {
     	findTVShows = new LinkedHashSet<String>();
-    	findTVShows.add("No Tomorrow");
-    	findTVShows.add("Timeless");
-    	findTVShows.add("Conviction");
-    	findTVShows.add("Westworld");
-    	findTVShows.add("Luke Cage");
-    	findTVShows.add("Pitch");
-    	findTVShows.add("Notorious");
+    	findTVShows.add("Speechless");
+    	findTVShows.add("Designated Survivor");
+    	findTVShows.add("Lethal Weapon");
+    	findTVShows.add("Bull");
     }
     	
 	/**
