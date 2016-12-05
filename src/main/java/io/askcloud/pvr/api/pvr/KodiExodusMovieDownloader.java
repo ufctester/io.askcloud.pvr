@@ -39,10 +39,11 @@ public class KodiExodusMovieDownloader extends KodiExodusDownloader {
 	
 	@Override
 	protected void setThreadName() {
-		String threadName = "KodiDownloader [" + MOVIE_NAME + "]";
+		
+		String threadName = null;
+		threadName = "KodiDownloader [" + getLastDownloadStatus().getThreadPrefix() + "% " + MOVIE_NAME + "]";
 		final Thread currentThread = Thread.currentThread();
-        final String oldName = currentThread.getName();
-        currentThread.setName(threadName);		
+        currentThread.setName(threadName);			
 	}
 	
 	public String getMovieName() {
@@ -51,7 +52,7 @@ public class KodiExodusMovieDownloader extends KodiExodusDownloader {
 	
 	@Override
 	protected DownloadStatus getUpdatedDownloadStatus() {
-		return KodiDownloadManager.getInstance().getDownloadStatus(MOVIE_NAME);
+		return PlexPVRManager.getInstance().getKodiManager().getDownloadStatus(MOVIE_NAME);
 	}
 	
 	/**
@@ -80,7 +81,7 @@ public class KodiExodusMovieDownloader extends KodiExodusDownloader {
 		GetDirectory exodus = new GetDirectory(
 				"plugin://plugin.video.exodus/?action=moviePage&url=http%3A%2F%2Fapi-v2launch.trakt.tv%2Fsearch%3Ftype%3Dmovie%26limit%3D20%26page%3D1%26query%3D" + movie);
 			
-		KodiDownloadManager.getInstance().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
+		PlexPVRManager.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			/*
 			 * plugin://plugin.video.exodus/?action=play&title=Door+to+Door&year=2002&imdb=tt0274468&meta=%7B%22rating%22%3A+%227.9%22%2C+%22votes%22%3A+%223%2C515%22%2C+%22writer%22%3A+%22William+H.+Macy+%2F+Steven+Schachter%22%2C+%22cast%22%3A+%5B%5B%22William+H.+Macy%22%2C+%22%22%5D%2C+%5B%22Kyra+Sedgwick%22%2C+%22%22%5D%2C+%5B%22Kathy+Baker%22%2C+%22%22%5D%2C+%5B%22Joel+Brooks%22%2C+%22%22%5D%5D%2C+%22plot%22%3A+%22Bill+Porter%2C+a+man+afflicted+with+cerebral+palsy%2C+is+desperate+to+find+a+job+despite+his+condition.+He+uses+his+sense+of+humor%2C+determination+and+winning+spirit+to+convince+a+manager+to+hire+him+as+a+door-to-door+salesman+for+Watkins%2C+a+supplier+of+household+items+and+baking+products.+Porter+walks+several+miles+every+day+on+his+sales+route%2C+eventually+working+his+way+into+the+hearts+of+his+customers.+This+film+is+based+on+a+true+story.%22%2C+%22poster%22%3A+%22https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FM%2FMV5BMjAzMzk2MzkwN15BMl5BanBnXkFtZTYwOTE1Mzg5._V1_SX500.jpg%22%2C+%22title%22%3A+%22Door+to+Door%22%2C+%22originaltitle%22%3A+%22Door+to+Door%22%2C+%22premiered%22%3A+%222002-07-14%22%2C+%22next%22%3A+%22http%3A%2F%2Fapi-v2launch.trakt.tv%2Fsearch%3Flimit%3D20%26type%3Dmovie%26page%3D2%26query%3DThe%2BDoors%22%2C+%22director%22%3A+%22Steven+Schachter%22%2C+%22genre%22%3A+%22Drama%22%2C+%22mediatype%22%3A+%22movie%22%2C+%22imdb%22%3A+%22tt0274468%22%2C+%22trailer%22%3A+%22plugin%3A%2F%2Fplugin.video.exodus%2F%3Faction%3Dtrailer%26name%3DDoor%2Bto%2BDoor%2B%25282002%2529%22%2C+%22year%22%3A+%222002%22%2C+%22duration%22%3A+%225400%22%2C+%22poster3%22%3A+%22https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Fw300%2F3sFU5Tig9bfETcPL1piYXMuGTff.jpg%22%2C+%22metacache%22%3A+true%2C+%22fanart2%22%3A+%22https%3A%2F%2Fimage.tmdb.org%2Ft%2Fp%2Fw1280%2FwkMBBKDf848bQgIhWzrnX1nn9n4.jpg%22%7D&t=20161125145244696000
@@ -182,7 +183,7 @@ public class KodiExodusMovieDownloader extends KodiExodusDownloader {
 
 		log.info("Calling Kodi: Download " + movieName);
 		try {
-			KodiDownloadManager.getInstance().getConMgr().call(exodus, new ApiCallback<String>() {
+			PlexPVRManager.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<String>() {
 
 				@Override
 				public void onResponse(AbstractCall<String> call) {

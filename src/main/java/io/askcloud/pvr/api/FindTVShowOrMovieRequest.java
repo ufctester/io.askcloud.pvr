@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.askcloud.pvr.api.pvr.KodiExodusMovieDownloader;
+import io.askcloud.pvr.api.pvr.KodiExodusTVShowDownloader;
 import io.askcloud.pvr.api.pvr.PlexPVRManager;
 import io.askcloud.pvr.themoviedb.TheMovieDbApi;
 import io.askcloud.pvr.themoviedb.enumeration.MovieMethod;
@@ -31,9 +32,17 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
 
 	private static Set<String> findMovies = new LinkedHashSet<String>();
 	
+	private static Set<String> findTVShows = new LinkedHashSet<String>();
+	
     static
     {
     	findMovies = new LinkedHashSet<String>();
+    	findMovies.add("National Lampoon's Christmas Vacation");
+    	findMovies.add("The Santa Clause 3");
+    	findMovies.add("Home Alone 2");
+    	findMovies.add("Home Alone 3");
+    	findMovies.add("Ernest Saves Christmas");
+    	findMovies.add("Frosty the Snowman");    	    	
     	findMovies.add("Santa with Muscles");
     	findMovies.add("Rudolph, the Red-Nosed Reindeer");
     	findMovies.add("Trading Places");
@@ -46,6 +55,18 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
     	findMovies.add("Just Friends");
     	findMovies.add("The Christmas That Almost Wasn’t");
     	findMovies.add("Reindeer Games");
+    }
+   
+    static
+    {
+    	findTVShows = new LinkedHashSet<String>();
+    	findTVShows.add("No Tomorrow");
+    	findTVShows.add("Timeless");
+    	findTVShows.add("Conviction");
+    	findTVShows.add("Westworld");
+    	findTVShows.add("Luke Cage");
+    	findTVShows.add("Pitch");
+    	findTVShows.add("Notorious");
     }
     	
 	/**
@@ -65,35 +86,65 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
 	
 	@Override
 	void run() {
-		findMovies();
+		findTVShows();
 	}
 	
 	
 	/**
 	 * @param args
 	 */
-	public void findTVShows() {
+	public List<KodiExodusTVShowDownloader> findTVShows() {
+		
+		List<KodiExodusTVShowDownloader> downloads = new ArrayList<KodiExodusTVShowDownloader>();
+		
+		for (Iterator iterator = findTVShows.iterator(); iterator.hasNext();) {
+			String tvShow = (String) iterator.next();
+			Series tvshowInfo = findTVShow(tvShow);
+			if(tvshowInfo != null)
+			{
+				downloads.add(new KodiExodusTVShowDownloader(tvShow, null,tvshowInfo.getId(),1,1,false));	
+			}
+		}
+		
+		System.out.println("==========================================================================");
+		for (Iterator iterator = downloads.iterator(); iterator.hasNext();) {
+			KodiExodusTVShowDownloader kodiExodusTVShowDownloader = (KodiExodusTVShowDownloader) iterator.next();
+			
+			//System.out.println("IMDBID: " + kodiExodusMovieDownloader.getImdbID() + " movieName: " + kodiExodusMovieDownloader.getMovieName());
+			System.out.println(kodiExodusTVShowDownloader.getTVDBID() + "," + kodiExodusTVShowDownloader.getShowName());
+		}
+		
+		return downloads;
 		
 		
+
+	}	
+	
+	
+	private Series findTVShow(String name)
+	{
 		try {
 			TheTVDBApi api = PlexPVRManager.getInstance().getTvdbAPI();
-			List<Series> seriesList = api.searchSeries("24", null);
+			List<Series> seriesList = api.searchSeries(name, null);
 			for (Iterator iterator = seriesList.iterator(); iterator.hasNext();) {
 				Series series = (Series) iterator.next();
 				
-				Banners banners = api.getBanners(series.getId());
-				for (Iterator<Banner> bannersIter = banners.getPosterList().iterator(); bannersIter.hasNext();) {
-					Banner banner = bannersIter.next();
-					System.out.println("banner: " + banner.getUrl());
-					
+//				Banners banners = api.getBanners(series.getId());
+//				for (Iterator<Banner> bannersIter = banners.getPosterList().iterator(); bannersIter.hasNext();) {
+//					Banner banner = bannersIter.next();
+//					System.out.println("banner: " + banner.getUrl());
+//					
+//				}
+//				System.out.println("seriesName: " + series.getSeriesName() + " id: " + series.getId());
+//				List<Episode> episodes = api.getAllEpisodes(series.getId(), null);
+//				for (Iterator iter2 = episodes.iterator(); iter2.hasNext();) {
+//					Episode episode = (Episode) iter2.next();
+//					//System.out.println("    " + episode.toString());
+//				}
+				if(series.getSeriesName().toLowerCase().startsWith(name.toLowerCase()))
+				{
+					return series;
 				}
-				System.out.println("seriesName: " + series.getSeriesName() + " id: " + series.getId());
-				List<Episode> episodes = api.getAllEpisodes(series.getId(), null);
-				for (Iterator iter2 = episodes.iterator(); iter2.hasNext();) {
-					Episode episode = (Episode) iter2.next();
-					//System.out.println("    " + episode.toString());
-				}
-				
 			}
 		}
 		catch (Exception e) {
@@ -103,9 +154,9 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
 //		for (Iterator iterator = episodes.iterator(); iterator.hasNext();) {
 //			String episode = (String) iterator.next();
 //			
-//		}	
-	}	
-	
+//		}		
+		return null;
+	}
 	
 	
 	/**

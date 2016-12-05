@@ -3,6 +3,8 @@ package io.askcloud.pvr.api.pvr;
 import java.util.Iterator;
 import java.util.Stack;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.askcloud.pvr.api.pvr.KodiDownloadManager.DownloadStatus;
 
 /**
@@ -25,6 +27,33 @@ abstract public class KodiExodusDownloader extends KodiExodusRequest {
 		super();
 	}
 
+	/**
+	 * Some shows are named "The Americans (2013)" which can not be found in kodi
+	 * @param searchString
+	 * @return
+	 */
+	protected String normailizeSearchName(String searchString)
+	{
+		String results = searchString;
+		if(results == null)
+		{
+			return results;
+		}
+		
+		//Some shows are named "The Americans (2013)" which can not be found in kodi
+		String searchStringWithBrackets =StringUtils.substringBetween(searchString, "(", ")");
+		if(searchStringWithBrackets != null)
+		{
+			results = searchString.replace("(" + searchStringWithBrackets + ")", "");
+		}
+		else
+		{
+			results = searchString;
+		}
+		
+		return StringUtils.normalizeSpace(results);
+	}
+	
 	/**
 	 * Set the Thread Name
 	 */
@@ -175,7 +204,7 @@ abstract public class KodiExodusDownloader extends KodiExodusRequest {
 	 */
 	protected void handleStopHung()
 	{
-		
+		log.severe("Download Looks like it is hung: " + toString());
 	}	
 	
 	abstract protected DownloadStatus getUpdatedDownloadStatus();

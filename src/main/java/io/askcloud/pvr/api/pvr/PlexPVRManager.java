@@ -30,6 +30,8 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import io.askcloud.pvr.themoviedb.MovieDbException;
 import io.askcloud.pvr.themoviedb.TheMovieDbApi;
@@ -53,7 +55,10 @@ public class PlexPVRManager {
 	private TheTVDBApi tvdbAPI=null;
 	private TheMovieDbApi moviedbAPI=null;
 
-	public static boolean CLEAN_KODI_DOWNLOAD = true;
+	public static boolean CLEAN_KODI_DOWNLOAD = false;
+	
+	public static String PLEX_TVSHOWS_DIR =  "C:\\Entertainment\\TVShows";
+	
 	public static String KODI_DOWNLOAD_BASE_DIR = "C:\\gitbash\\opt\\kodi\\downloads";
 	public static String KODI_DOWNLOAD_TVSHOWS_DIR = KODI_DOWNLOAD_BASE_DIR + "\\tvshows";
 	public static String KODI_DOWNLOAD_MOVIES_DIR = KODI_DOWNLOAD_BASE_DIR + "\\movies";
@@ -62,9 +67,13 @@ public class PlexPVRManager {
 	public static String KDOI_PVR_DOWNLOAD_TRACKER = "C:/gitbash/opt/kodi/" + KODI_PVR_DOWNLOAD_FILE;
 	public static String KDOI_PVR_DOWNLOAD_TRACKER_MASTER = "C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/kodi/plugin.video.exodus.updates/" + KODI_PVR_DOWNLOAD_FILE;
 
+	//FileBot Groovy Scripts
+	public static String FILE_BOT_FIND_MISSING_EPISODES="C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/find-missing-episodes.groovy";
+	public static String FILE_BOT_FIND_ENDED_EPISODES="C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/find-series-ended.groovy";
 	
-	public static String FILE_BOT_MISSING_EPISODES_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\missing-episodes.txt";
-	public static String FILE_BOT_MISSING_EPISODES_QUEUE_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\queue\\missing-episodes-queue.txt";
+	public static String FILE_BOT_ENDED_EPISODES_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\queue\\series-ended.txt";
+	public static String FILE_BOT_MISSING_EPISODES_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\queue\\series-missing-episodes.txt";
+	public static String FILE_BOT_MISSING_EPISODES_QUEUE_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\queue\\series-missing-episodes-queue.txt";
 	public static String FILE_BOT_MOVIE_QUEUE_FILE="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\queue\\movie-queue.txt";
 	
 	public static String FILEBOT_AMC_DESTINATION="C:\\tmp\\CompletedDownloads";
@@ -159,67 +168,32 @@ public class PlexPVRManager {
 		log.entering(CLASS_NAME, "init");
 		
 		initLogger();
-
-		//copy master kodi-downloader.csv download file 
-		File sourceFile = new File(KDOI_PVR_DOWNLOAD_TRACKER_MASTER);
-		File targetFile = new File(KDOI_PVR_DOWNLOAD_TRACKER);
-		try {
-			FileUtils.copyFile(sourceFile, targetFile);
-		}
-		catch (Exception e) {
-			log.severe("ERROR copying file: " + KDOI_PVR_DOWNLOAD_TRACKER_MASTER + " to file: " + KDOI_PVR_DOWNLOAD_TRACKER);
-		}
-
-		//Kodi TVShows
-		recreateKodiDownloadDirectoy(KODI_DOWNLOAD_TVSHOWS_DIR);
-
-		//Kodi Movies
-		recreateKodiDownloadDirectoy(KODI_DOWNLOAD_MOVIES_DIR);
 		
 		log.exiting(CLASS_NAME, "init");
 	}
 	
-
-	private void recreateKodiDownloadDirectoy(String directory) {
-		
-		log.entering(CLASS_NAME, "recreateKodiDownloadDirectoy", new Object[] {directory});
-		
-		if(!CLEAN_KODI_DOWNLOAD)
-		{
-			return;
-		}
-		
-		//delete old downloads directory
-		try {
-			File kodiDownloads = new File(directory);
-			log.info("Deleting Old Kodi Download Files: " + directory);
-			printFilesAndDirs(kodiDownloads);
-			FileUtils.deleteQuietly(kodiDownloads);
-
-			log.info("Old Kodi Download Files Should Be Deleted: " + directory);
-			printFilesAndDirs(kodiDownloads);
-		}
-		catch (Exception e) {
-			log.severe("ERROR deleting file: " + directory);
-		}
-		log.exiting(CLASS_NAME, "recreateKodiDownloadDirectoy");
-	}
-	
-	public void recreateDirectory(String targetDirectory)
+	public void recreateDirectory(String directory)
 	{
-		log.entering(CLASS_NAME, "recreateDirectory", new Object[] {targetDirectory});
+		log.entering(CLASS_NAME, "recreateDirectory", new Object[] {directory});
 		
-		File targetDirectoryFile = new File(targetDirectory);
-		FileUtils.deleteQuietly(targetDirectoryFile);
 		try {
+			
+			File targetDirectoryFile = new File(directory);
+			log.info("Deleting Old Directory and Files: " + directory);
+			printFilesAndDirs(targetDirectoryFile);
+			FileUtils.deleteQuietly(targetDirectoryFile);
+			
 			FileUtils.forceMkdir(targetDirectoryFile);
+			
+			log.info("Old Files Should Be Gone: " + directory);
+			printFilesAndDirs(targetDirectoryFile);			
 		}
 		catch (Exception e) {
-			log.severe("Unable to recreate directory: " + targetDirectory);
+			log.severe("Unable to recreate directory: " + directory + " exception: " + e.getMessage());
 		}
 		log.exiting(CLASS_NAME, "recreateDirectory");
 	}
-
+	
 	private void printFilesAndDirs(File directory) {
 		if ((directory == null) || (!directory.exists())) {
 			return;
@@ -235,8 +209,9 @@ public class PlexPVRManager {
 				log.info("     File Found: " + file.toString());
 			}
 		}
-	}
+	}	
 	
+
 	public void printFileSizes(File directory) {
 		if ((directory == null) || (!directory.exists())) {
 			return;
@@ -343,8 +318,6 @@ public class PlexPVRManager {
 		System.setSecurityManager(orgSecurityManager);
 	}
 
-	//Main.main(new String[]{"-script","C:/gitbash/opt/filebot/scripts/find-missing-episodes.groovy", directory});
-	//Main.main(new String[]{"--format", "{plex}", "-script","C:/gitbash/opt/eclipse/workspace-odc/kodi-exodus-json-rpc/filebot/find-missing-episodes.groovy", directory});
 	//Main.main(new String[]{"-list", "--db", "thetvdb", "--q", "Dexter","--format", "{plex}"});
 	//
 
@@ -391,8 +364,7 @@ public class PlexPVRManager {
 		}
 		
 		try {			
-			Main.main(new String[] { "-script", "C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/find-missing-episodes.groovy", directory, "--output",
-					PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE });
+			Main.main(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory, "--output",PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE });
 		}
 		catch(SecurityException e)
 		{
@@ -411,6 +383,40 @@ public class PlexPVRManager {
 	}
 	
 	/**
+	 * @param directory
+	 * @return
+	 */
+	public List<KodiExodusDownloader> findCompletedEpisodes(String directory) {
+		log.entering(CLASS_NAME, "findCompletedEpisodes", new Object[] {directory});
+		File missingEpisodeFile = new File(PlexPVRManager.FILE_BOT_ENDED_EPISODES_FILE);
+		try {
+			log.info("Deleting old missing episode file: " + missingEpisodeFile);
+			FileUtils.deleteQuietly(missingEpisodeFile);
+		}
+		catch (Exception e) {
+			log.severe("ERROR deleting file: " + missingEpisodeFile);
+		}
+		
+		try {			
+			Main.main(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_ENDED_EPISODES, directory, "--output",PlexPVRManager.FILE_BOT_ENDED_EPISODES_FILE });
+		}
+		catch(SecurityException e)
+		{
+			log.severe("Error getting missing episodes: " + e.getMessage());			
+			e.printStackTrace();
+		}
+		finally {
+			unsetFilebotSecurityManager();
+		}
+		
+		List<KodiExodusDownloader> missingEpisodes = loadMissingEpisodes(PlexPVRManager.FILE_BOT_ENDED_EPISODES_FILE);
+		
+		log.exiting(CLASS_NAME, "findCompletedEpisodes");
+		
+		return missingEpisodes;
+	}	
+	
+	/**
 	 * @return
 	 */
 	public List<KodiExodusDownloader> loadMovieQueue()
@@ -418,6 +424,15 @@ public class PlexPVRManager {
 		return loadMovieQueue(PlexPVRManager.FILE_BOT_MOVIE_QUEUE_FILE);
 	}
 
+	/**
+	 * @return
+	 */
+	public List<KodiExodusDownloader> loadTVShowQueue()
+	{
+		return loadMissingEpisodes(PlexPVRManager.FILE_BOT_MISSING_EPISODES_QUEUE_FILE);
+	}
+	
+	
 	/**
 	 * @param directory
 	 */
@@ -432,16 +447,15 @@ public class PlexPVRManager {
 	 */
 	public void automatedMediaCenter(String sourceDirectory, String targetDirectory) {
 		log.entering(CLASS_NAME, "findMissingEpisodes", new Object[] {sourceDirectory,targetDirectory});
-		
-		PlexPVRManager.getInstance().recreateDirectory(targetDirectory);
-		
+				
+		String fileBotDestForwardSlashes=targetDirectory.replace("\\\\", "/");
 		try {
-			Main.main(new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "copy", "-non-strict", sourceDirectory, "--conflict", "override", "--def",
-					"movieFormat=\"C:/tmp/CompletedDownloads/Movies/{fn}\"", "subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "ecludeList", "amc-exclude.txt", "--def", "--log", "all" });			
+			Main.main(new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "copy", "-non-strict", sourceDirectory, "--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
+					"subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "ecludeList", "amc-exclude.txt", "--def", "--log", "all" });			
 		}
 		catch(SecurityException e)
 		{
-			log.severe("Error getting missing episodes: " + e.getMessage());			
+			log.severe("Error Handling Filebot AMC: " + e.getMessage());			
 			e.printStackTrace();
 		}
 		finally {
@@ -456,8 +470,11 @@ public class PlexPVRManager {
 	 * @param targetDirectory
 	 */
 	public void automatedMediaCenterTest(String sourceDirectory, String targetDirectory) {
-		Main.main(new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "test", "-non-strict", sourceDirectory, "--conflict", "override", "--def",
-				"movieFormat=\"C:/tmp/CompletedDownloads/Movies/{fn}\"", "subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "--log", "all" });
+		
+		
+		String fileBotDestForwardSlashes=targetDirectory.replace("\\\\", "/");
+		Main.main(new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "test", "-non-strict", sourceDirectory, "--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
+				"subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "--log", "all" });
 	}
 	
 	/**
@@ -554,15 +571,18 @@ public class PlexPVRManager {
             try {
             	//"TVDB_ID,SERIES_NAME,SEASON,EPISODE"
                 for (final CSVRecord record : parser) {
-                	final String tvdbid = record.get("TVDB_ID");
-                	final String imdbid = record.get("IMDB_ID");
-                	final String seriesName = record.get("SERIES_NAME");
-                	final String season = record.get("SEASON");
-                	final String episode = record.get("EPISODE");
+                	String tvdbid = record.get("TVDB_ID");
+                	String imdbid = record.get("IMDB_ID");
+                	String seriesName = record.get("SERIES_NAME");
+                	String season = record.get("SEASON");
+                	String episode = record.get("EPISODE");
+                	String ended = record.get("ENDED");
+                	
+                	boolean seriesEnded=((ended != null) && ("true".equals(ended)))?true: false;
                 	
                 	if(!excludeMissingEpisodes.contains(tvdbid))
                 	{
-                    	KodiExodusDownloader missingEpisode = createMissingEpisode(tvdbid,imdbid,seriesName,season,episode);
+                    	KodiExodusDownloader missingEpisode = createMissingEpisode(tvdbid,imdbid,seriesName,season,episode,seriesEnded);
                     	missingEpisodes.add(missingEpisode);
                 	}
                 }
@@ -615,9 +635,9 @@ public class PlexPVRManager {
 	 * @param episode
 	 * @return
 	 */
-	public KodiExodusDownloader createMissingEpisode(String tvdbid, String imdbid, String seriesName, String season, String episode)
+	public KodiExodusDownloader createMissingEpisode(String tvdbid, String imdbid, String seriesName, String season, String episode,boolean ended)
 	{
-		return new KodiExodusTVShowDownloader(seriesName,imdbid,tvdbid,PlexPVRManager.getInstance().getSeasonInt(season),PlexPVRManager.getInstance().getEpisodeInt(episode));
+		return new KodiExodusTVShowDownloader(seriesName,imdbid,tvdbid,PlexPVRManager.getInstance().getSeasonInt(season),PlexPVRManager.getInstance().getEpisodeInt(episode),ended);
 	}
 	
 	/**

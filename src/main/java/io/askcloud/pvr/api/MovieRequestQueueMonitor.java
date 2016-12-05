@@ -20,6 +20,7 @@ public class MovieRequestQueueMonitor extends PlexRequest {
 	
 	@Override
 	void run() {
+		PlexPVRManager.CLEAN_KODI_DOWNLOAD=true;
 		PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadMovieQueue());
 	}
 }

@@ -11,19 +11,17 @@ public class TVShowRequestQueueMonitor extends TVShowRequest {
 		super();
 	}
 
-
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {	
 		TVShowRequestQueueMonitor missingEpisodes = new TVShowRequestQueueMonitor();
-		missingEpisodes.run();
-		
-		//PlexPVRManager.getInstance().getKodiManager().downloadMovieFromKodiExodus("The Doors","tt0101761");		
+		missingEpisodes.run();	
 	}
 	
 	@Override
 	void run() {
-		PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().findMissingEpisodes(directory));
+		PlexPVRManager.CLEAN_KODI_DOWNLOAD=true;
+		PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowQueue());
 	}
 }

@@ -27,27 +27,16 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	//i.e. 24 or Person of Interest
 	private String SHOW_NAME = null;
 	
-	//
 	private int SEASON = -1;
 	
 	private int EPISODE = -1;
 	
-	private DownloadStatus downloadStatus=null;
+	private boolean seriesEnded=false;
 	
 	private static String CLASS_NAME = KodiExodusTVShowDownloader.class.getName();
 	private static Logger log = PlexPVRManager.getInstance().getLogger();
-	//
-	//	public KodiExodusTVShowSeasonDownloader(String showName, String imdbid) {
-	//		this(showName,imdbid, -1, -1);
-	//
-	//	}
-	//
-	//	public KodiExodusTVShowSeasonDownloader(String showName,String imdbid, int season) {
-	//
-	//		this(showName,imdbid, season, -1);
-	//	}
 
-	public KodiExodusTVShowDownloader(String searchName, String imdbid, String tvdbid,int season, int episode) {
+	public KodiExodusTVShowDownloader(String searchName, String imdbid, String tvdbid,int season, int episode,boolean seriesEnded) {
 
 		super();
 		log.entering(CLASS_NAME, "KodiExodusDownloader");
@@ -55,9 +44,20 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 		imdbid=(StringUtils.isNotBlank(imdbid))?imdbid:null;
 		setImdbID(imdbid);
 		setTVDBID(tvdbid);
-		SHOW_NAME = searchName;
+		SHOW_NAME = normailizeSearchName(searchName);
 		SEASON = season;
 		EPISODE = episode;
+		this.seriesEnded=seriesEnded;
+	}
+	
+	public String getShowName() {
+		return SHOW_NAME;
+	}
+	/**
+	 * @return
+	 */
+	public boolean isSeriesEnded() {
+		return seriesEnded;
 	}
 
 	
@@ -73,7 +73,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	@Override
 	protected DownloadStatus getUpdatedDownloadStatus() {
 		String name = SHOW_NAME + " S" + PlexPVRManager.getInstance().getSeason(Integer.valueOf(SEASON).toString()) + "E" + PlexPVRManager.getInstance().getEpisode(Integer.valueOf(EPISODE).toString());
-		return KodiDownloadManager.getInstance().getDownloadStatus(name);
+		return PlexPVRManager.getInstance().getKodiManager().getDownloadStatus(name);
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 				"plugin://plugin.video.exodus/?action=tvshowPage&url=http%3A%2F%2Fapi-v2launch.trakt.tv%2Fsearch%3Ftype%3Dshow%26limit%3D3020%26page%3D1%26query%3D" + tvShow);
 
 		log.info("Season URL: " + "plugin://plugin.video.exodus/?action=tvshowPage&url=http%3A%2F%2Fapi-v2launch.trakt.tv%2Fsearch%3Ftype%3Dshow%26limit%3D30%26page%3D1%26query%3D" + tvShow);
-		KodiDownloadManager.getInstance().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
+		PlexPVRManager.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			/*
 			 * plugin://plugin.video.exodus/?action=seasons&tvshowtitle=Person of Interest&year=2011&imdb=tt1839578&tvdb=248742
@@ -169,7 +169,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 		log.fine("donwloadTVShowSeasonURL: " + decode);
 		GetDirectory exodus = new GetDirectory(tvShowURL);
 
-		KodiDownloadManager.getInstance().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
+		PlexPVRManager.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			@Override
 			public void onResponse(AbstractCall<ListModel.FileItem> call) {
@@ -219,7 +219,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 		log.entering(CLASS_NAME, "downloadTVShowSeasonEpisode", new Object[] { tvshowtitle, season, tvShowSeasonURL });
 		GetDirectory exodus = new GetDirectory(tvShowSeasonURL);
 
-		KodiDownloadManager.getInstance().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
+		PlexPVRManager.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			@Override
 			public void onResponse(AbstractCall<ListModel.FileItem> call) {
@@ -311,7 +311,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 
 		log.info("Calling Kodi: Download " + tvshowtitle + " S" + PlexPVRManager.getInstance().getSeason(season) + "E" + PlexPVRManager.getInstance().getEpisode(episode));
 		//KodiDownloadManager.getInstance().getConMgr().call(exodus, null);
-		KodiDownloadManager.getInstance().getConMgr().call(exodus, new ApiCallback<String>() {
+		PlexPVRManager.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<String>() {
 
 			@Override
 			public void onResponse(AbstractCall<String> call) {

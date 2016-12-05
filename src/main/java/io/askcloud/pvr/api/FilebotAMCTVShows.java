@@ -29,6 +29,8 @@ public class FilebotAMCTVShows extends PlexRequest {
 	
 	@Override
 	void run() {
+		//re-create the target directory
+		PlexPVRManager.getInstance().recreateDirectory(PlexPVRManager.FILEBOT_AMC_DESTINATION);
 		PlexPVRManager.getInstance().automatedMediaCenter(PlexPVRManager.KODI_DOWNLOAD_TVSHOWS_DIR,PlexPVRManager.FILEBOT_AMC_DESTINATION);
 		PlexPVRManager.getInstance().automatedMediaCenter(PlexPVRManager.KODI_DOWNLOAD_MOVIES_DIR,PlexPVRManager.FILEBOT_AMC_DESTINATION);
 	}

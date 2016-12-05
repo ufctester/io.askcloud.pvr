@@ -4,13 +4,11 @@ import io.askcloud.pvr.api.pvr.PlexPVRManager;
 
 public class TVShowRequestGetMissingEpisodes extends TVShowRequest {
 	
-	//private String directory =  "C:\\Entertainment\\TVShows";
-	private String directory =  "C:\\Entertainment\\TVShows";
+	
 			
 	public TVShowRequestGetMissingEpisodes() {
 		super();
 	}
-
 
 	/**
 	 * @param args
@@ -24,6 +22,7 @@ public class TVShowRequestGetMissingEpisodes extends TVShowRequest {
 	
 	@Override
 	void run() {
-		PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().findMissingEpisodes(directory));
+		PlexPVRManager.CLEAN_KODI_DOWNLOAD=true;
+		PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().findMissingEpisodes(PlexPVRManager.PLEX_TVSHOWS_DIR));
 	}
 }

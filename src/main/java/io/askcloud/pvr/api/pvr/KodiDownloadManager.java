@@ -1,10 +1,12 @@
 package io.askcloud.pvr.api.pvr;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,6 +18,9 @@ import java.util.logging.Logger;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.QuoteMode;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import io.askcloud.pvr.kodi.jsonrpc.api.AbstractCall;
 import io.askcloud.pvr.kodi.jsonrpc.api.call.Addons;
@@ -69,7 +74,7 @@ public class KodiDownloadManager {
 		
 		public boolean containsInFile(String name)
 		{
-			if((getFile() != null) && (getFile().contains(name)))
+			if((getFile() != null) && (getFile().toLowerCase().contains(name.toLowerCase())))
 			{
 				return true;
 			}
@@ -110,12 +115,18 @@ public class KodiDownloadManager {
 		{
 			return ("100".equals(getPercent()));
 		}
+		
+		@Override
+		public String toString() {
+			StringBuffer sBuffer = new StringBuffer();
+			sBuffer.append(getPercent() + "% ");
+			sBuffer.append(getFile());
+			sBuffer.append(" donwloaded: " + getDownloaded());
+			sBuffer.append(" total: " + getTotal());
+			return sBuffer.toString();
+		}		
 	}
 	
-	private KodiDownloadManager() {
-		super();
-	}
-
 	public static KodiDownloadManager getInstance() {
 		if (eINSTANCE == null) {
 			eINSTANCE = new KodiDownloadManager();
@@ -125,6 +136,31 @@ public class KodiDownloadManager {
 		return eINSTANCE;
 	}
 	
+	
+	private KodiDownloadManager() {
+		super();
+		
+		//copy master kodi-downloader.csv download file 
+		File sourceFile = new File(PlexPVRManager.KDOI_PVR_DOWNLOAD_TRACKER_MASTER);
+		File targetFile = new File(PlexPVRManager.KDOI_PVR_DOWNLOAD_TRACKER);
+		try {
+			FileUtils.copyFile(sourceFile, targetFile);
+		}
+		catch (Exception e) {
+			log.severe("ERROR copying file: " + PlexPVRManager.KDOI_PVR_DOWNLOAD_TRACKER_MASTER + " to file: " + PlexPVRManager.KDOI_PVR_DOWNLOAD_TRACKER);
+		}
+
+		if(PlexPVRManager.CLEAN_KODI_DOWNLOAD)
+		{
+			//Kodi TVShows
+			PlexPVRManager.getInstance().recreateDirectory(PlexPVRManager.KODI_DOWNLOAD_TVSHOWS_DIR);
+
+			//Kodi Movies
+			PlexPVRManager.getInstance().recreateDirectory(PlexPVRManager.KODI_DOWNLOAD_MOVIES_DIR);
+		}	
+	}
+
+
 	public JavaConnectionManager getConMgr() {
 		if (conMgr == null) {
 			HostConfig config = new HostConfig(PlexPVRManager.KODI_HOST, PlexPVRManager.KODI_HTTP_PORT, PlexPVRManager.KODI_SOCKET_PORT);
@@ -166,7 +202,7 @@ public class KodiDownloadManager {
 		Addons.ExecuteAddon exodus = new Addons.ExecuteAddon("plugin.video.exodus",clearCacheAndSourcesCacheURL);
 
 		try {
-			KodiDownloadManager.getInstance().getConMgr().call(exodus, new ApiCallback<String>() {
+			PlexPVRManager.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<String>() {
 
 				@Override
 				public void onResponse(AbstractCall<String> call) {
@@ -254,7 +290,9 @@ public class KodiDownloadManager {
 					try {
 						//Pool every 5 seconds
 						thisThread.sleep(PlexPVRManager.KODI_MONITOR_DOWNLOAD_CSV_FILE_LOADER);
-						loadKodiDownloadStatusUpdates();
+						Set<DownloadStatus> loadDownloadedStatus=loadKodiDownloadStatusUpdates();
+				        downloadStatus.clear();
+				        downloadStatus.addAll(loadDownloadedStatus);
 					}
 					catch (Exception e) {
 						e.printStackTrace();
@@ -266,7 +304,7 @@ public class KodiDownloadManager {
 		thread.start();		
 	}		
 	
-	private Set<DownloadStatus> loadKodiDownloadStatusUpdates() {
+	synchronized public Set<DownloadStatus> loadKodiDownloadStatusUpdates() {
 		Set<DownloadStatus> loadDownloadedStatus = new LinkedHashSet<DownloadStatus>();
 		
         InputStream inputStream = null;
@@ -275,7 +313,8 @@ public class KodiDownloadManager {
         try {
         	inputStream = new FileInputStream(PlexPVRManager.KDOI_PVR_DOWNLOAD_TRACKER);
             reader = new InputStreamReader(inputStream, "UTF-8");
-            parser = new CSVParser(reader, CSVFormat.EXCEL.withHeader());
+            CSVFormat format = CSVFormat.EXCEL.withHeader().withQuoteMode(QuoteMode.MINIMAL);
+            parser = new CSVParser(reader, format);
             try {
                 for (final CSVRecord record : parser) {
                 	final String percent = record.get("PERCENT").replaceAll("%","");
@@ -329,10 +368,7 @@ public class KodiDownloadManager {
 			}            
         }
         
-        
-        downloadStatus.clear();
-        downloadStatus.addAll(loadDownloadedStatus);
-    	return downloadStatus;        
+    	return loadDownloadedStatus;        
 	}
 	
 	/**

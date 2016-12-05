@@ -59,24 +59,22 @@ episodeList = episodeList as LinkedHashSet
 episodeList.removeAll(episodes)
 
 //Create the header in the csv
-//tvdbid,seriesName,season,episode
-println "tvdbid,seriesName,season,episode" 
-missingEpisodes.append("TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED")
+missingEpisodes.append("TVDB_ID,IMDB_ID,SERIES_NAME,ENDED")
 
-def format=new ExpressionFormat("{n} {S00E00}")
-episodeList.each{ e ->
-    def info=showInfo.get(e[0])
-    info.episodeList.each{  i->
-        // Exclude special episodes and those not yet aired.
-        if(e[1]==i.season && e[2]==i.episode && i.special==null && i.airdate!=null && i.airdate < simpleNow) {
-        
-            if(i.seriesInfo.status == 'Ended'){
-            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",true")
-            } 
-            else
-            {
-            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",false")
-            }
-        }
-    }
+for( Map.Entry<String,Object> entry : showInfo.entrySet()){
+	String key = entry.getKey();
+	Object value = (Object)entry.getValue();
+    //println "key: " + key + " value: " + value;
+  
+	AbstractEpisodeListProvider.SeriesData data = (AbstractEpisodeListProvider.SeriesData)value;
+  
+	if(data.seriesInfo.status == 'Ended'){
+		missingEpisodes.append("\n" + data.seriesInfo.id + "," + "," + data.seriesInfo.name + ",true")
+	} 
+	else
+	{
+		missingEpisodes.append("\n" + data.seriesInfo.id + "," + "," + data.seriesInfo.name + ",false")
+	}
+	              
 }
+

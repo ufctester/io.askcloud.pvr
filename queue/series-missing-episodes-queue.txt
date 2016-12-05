@@ -1,0 +1,10 @@
+TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED
+311946,,Man with a Plan,1,1,false
+311947,,Pure Genius,1,1,false
+305574,,The Crown,1,1,false
+311957,,No Tomorrow,1,1,false
+75657,,Timeless,1,1,false
+75075,,Conviction,1,1,false
+296762,,Westworld,1,1,false
+311835,,Pitch,1,1,false
+83019,,Notorious,1,1,false
