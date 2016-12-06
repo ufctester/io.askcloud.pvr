@@ -1890,8 +1890,6 @@ TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED
 84107,,Cheaters,15,20,true
 84107,,Cheaters,15,21,true
 84107,,Cheaters,15,22,true
-311878,,Conviction (2016),1,2,false
-311878,,Conviction (2016),1,3,false
 311878,,Conviction (2016),1,4,false
 74709,,Cops,1,7,false
 74709,,Cops,1,9,false
@@ -2563,6 +2561,10 @@ TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED
 75692,,Law & Order: Special Victims Unit,16,20,false
 75692,,Law & Order: Special Victims Unit,17,1,false
 75692,,Law & Order: Special Victims Unit,17,2,false
+311790,,Lethal Weapon,1,2,false
+311790,,Lethal Weapon,1,3,false
+311790,,Lethal Weapon,1,4,false
+311790,,Lethal Weapon,1,5,false
 80731,,Long Way Down,1,7,true
 266104,,Louis CK,1,2,true
 266104,,Louis CK,1,3,true
@@ -2570,7 +2572,6 @@ TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED
 266104,,Louis CK,1,5,true
 266104,,Louis CK,1,6,true
 266104,,Louis CK,1,7,true
-311946,,Man With A Plan,1,2,false
 73388,,MythBusters,2003,1,true
 73388,,MythBusters,2003,2,true
 73388,,MythBusters,2003,3,true
@@ -2849,26 +2850,10 @@ TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED
 72201,,Nip/Tuck,7,7,true
 72201,,Nip/Tuck,7,8,true
 72201,,Nip/Tuck,7,9,true
-311957,,No Tomorrow,1,2,false
-311957,,No Tomorrow,1,3,false
-311957,,No Tomorrow,1,4,false
-311957,,No Tomorrow,1,5,false
-311877,,Notorious (2016),1,2,false
-311877,,Notorious (2016),1,3,false
-311877,,Notorious (2016),1,4,false
-311877,,Notorious (2016),1,5,false
-311877,,Notorious (2016),1,6,false
-311877,,Notorious (2016),1,7,false
 248835,,Once Upon a Time (2011),3,22,false
 248835,,Once Upon a Time (2011),4,9,false
 248835,,Once Upon a Time (2011),4,22,false
 72632,,Party of Five,4,21,true
-311835,,Pitch,1,2,false
-311835,,Pitch,1,3,false
-311835,,Pitch,1,4,false
-311835,,Pitch,1,5,false
-311835,,Pitch,1,6,false
-311947,,Pure Genius,1,2,false
 248841,,Scandal (2012),5,13,false
 248841,,Scandal (2012),5,14,false
 248841,,Scandal (2012),5,15,false
@@ -2966,6 +2951,10 @@ TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED
 75897,,South Park,20,4,false
 75897,,South Park,20,5,false
 75897,,South Park,20,6,false
+311875,,Speechless,1,2,false
+311875,,Speechless,1,3,false
+311875,,Speechless,1,4,false
+311875,,Speechless,1,5,false
 78576,,Survivor (UK),1,1,true
 78576,,Survivor (UK),1,2,true
 78576,,Survivor (UK),1,3,true
@@ -3317,15 +3306,6 @@ TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED
 77666,,The Amazing Race,28,10,false
 77666,,The Amazing Race,28,11,false
 77666,,The Amazing Race,28,12,false
-305574,,The Crown,1,2,false
-305574,,The Crown,1,3,false
-305574,,The Crown,1,4,false
-305574,,The Crown,1,5,false
-305574,,The Crown,1,6,false
-305574,,The Crown,1,7,false
-305574,,The Crown,1,8,false
-305574,,The Crown,1,9,false
-305574,,The Crown,1,10,false
 279121,,The Flash (2014),2,1,false
 279121,,The Flash (2014),2,2,false
 279121,,The Flash (2014),2,3,false
@@ -3488,7 +3468,3 @@ TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED
 97731,,Tosh.0,7,7,false
 97731,,Tosh.0,7,10,false
 97731,,Tosh.0,7,24,false
-296762,,Westworld,1,2,false
-296762,,Westworld,1,3,false
-296762,,Westworld,1,4,false
-296762,,Westworld,1,5,false

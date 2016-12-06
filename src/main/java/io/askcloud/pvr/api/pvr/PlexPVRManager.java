@@ -119,6 +119,7 @@ public class PlexPVRManager {
 		excludeMissingEpisodes.add("84107"); //Cheaters
 		excludeMissingEpisodes.add("74709"); //Cops
 		excludeMissingEpisodes.add("72546"); //CSI: Crime Scene Inves	
+		excludeMissingEpisodes.add("261190");// Decending
 		excludeMissingEpisodes.add("183831"); //Hardcore Pawn
 		excludeMissingEpisodes.add("75692"); //Law & Order: Special Victims Unit
 		excludeMissingEpisodes.add("73388"); //MythBusters

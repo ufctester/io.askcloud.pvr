@@ -212,10 +212,16 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	 */
 	private void downloadTVShowSeasonEpisode(String tvshowtitle, String season, String tvShowSeasonURL) {
 
+		//we don't handle full seasons
 		if(SEASON < 1){
 			return;
 		}
 
+		//ensure the season we want is the one we are querying
+		if(Integer.valueOf(season).intValue() != SEASON) {
+			return;
+		}
+		
 		log.entering(CLASS_NAME, "downloadTVShowSeasonEpisode", new Object[] { tvshowtitle, season, tvShowSeasonURL });
 		GetDirectory exodus = new GetDirectory(tvShowSeasonURL);
 
