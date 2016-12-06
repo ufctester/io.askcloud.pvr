@@ -258,7 +258,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 
 						//info("action: " + action + " tvshow: " + tvshowtitle + " Season " + season + " Episode " + episode + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
 						//info("title: " + title + " S" + seasonStr + "E" + episodeStr + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
-						log.info("Season " + PlexPVRManager.getInstance().getSeason(season) + "E" + PlexPVRManager.getInstance().getEpisode(episode) + " title: " + title + " premiered: " + premiered + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
+						log.fine("Season " + PlexPVRManager.getInstance().getSeason(season) + "E" + PlexPVRManager.getInstance().getEpisode(episode) + " title: " + title + " premiered: " + premiered + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
 						downloadTVShowBySeasonEpisodeFromURL(tvshowtitle, season, episode, res.file);
 					}
 					catch (Exception e) {
@@ -295,11 +295,11 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 		}
 
 		if (!shouldDownloadEpisode) {
-			log.info("EPISODES DOES NOT INCLUDE " + episode + " SO DO NOT DOWNLOAD TVSHOW: " + tvshowtitle + " season: " + season + " episode: " + episode);
+			log.fine("EPISODES DOES NOT INCLUDE " + episode + " SO DO NOT DOWNLOAD TVSHOW: " + tvshowtitle + " season: " + season + " episode: " + episode);
 			return;
 		}
 		else {
-			log.info("EPISODES includes " + episode + " so download tvshow: " + tvshowtitle + " season: " + season + " episode: " + episode);
+			log.fine("EPISODES includes " + episode + " so download tvshow: " + tvshowtitle + " season: " + season + " episode: " + episode);
 		}
 
 		//Check if it is a missing episode
