@@ -85,8 +85,8 @@ args.getFiles().each{ f ->
     	log.fine("TV Show is in exclude list: " + f);
     }
     else if (f.isVideo()) {
-    	log.info("Accept video file: " + f);
-    	log.info("Searching for video metadata: " + f);
+    	log.fine("Accept video file: " + f);
+    	log.fine("Searching for video metadata: " + f);
         // Get info from the filename
         def episode = parseEpisodeNumber(f)
         def show = detectSeriesName(f)
