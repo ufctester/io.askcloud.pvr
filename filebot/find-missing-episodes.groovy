@@ -10,23 +10,83 @@ import net.filebot.media.*
 
 // Define first what is now.
 log.fine("Run script [$_args.script] at [$now]")
+
 args.withIndex().each{ f, i -> if (f.exists()) { log.finest "Argument[$i]: $f" } else { log.warning "Argument[$i]: File does not exist: $f" } }
 
 def now = Calendar.instance
 def simpleNow=new SimpleDate(now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
 
+// extra options, myepisodes updates and email notifications
+excludeList = tryQuietly{ def f = excludeList as File; f.isAbsolute() ? f : outputFolder.resolve(f.path) }
+
 def episodes=[]    // This will keep the list of episodes we have
 def episodeList=[] // This will keep the list of all episodes
 def showInfo = [:] // This will keep map of show infomation indexed by the TVDB
 def seen=[:]       // This will keep a list of the shows already queried.
-print "Processing files..."
 
 missingEpisodes = tryLogCatch{ any{ _args.output }{ '.' }.toFile().getCanonicalFile() }
 println "missingEpisodes: " + missingEpisodes.toString() 
 
+// define and load exclude list (e.g. to make sure files are only processed once)
+excludeSeriesSet = []
+
+if (excludeList) {
+	log.info "Exclude File Exists.  Iterate over exclude list: " + excludeList
+	if (excludeList.exists()) {
+		excludeSeriesSet=excludeList as String[]
+		log.fine "Use excludes: $excludeList ${excludeSeriesSet} size: (${excludeSeriesSet.size()})"
+	} else {
+		log.fine "Use excludes: $excludeList"
+		if ((!excludeList.parentFile.isDirectory() && !excludeList.parentFile.mkdirs()) || (!excludeList.isFile() && !excludeList.createNewFile())) {
+			fail "Failed to create excludeList: $excludeList"
+		}
+	}
+}
+
+
+def acceptFile(f, excludeSet) {
+	log.fine "aceptFile() ... Determine if should filter Season from Episode: $f " + " excludeSet: " + excludeSet
+
+	log.fine "Looping over excludeSet: " + excludeSet
+//	excludeSeriesSet.each {
+//	    log.fine "excludeSeriesSet ${it}"
+//	}
+	
+	if (f.isHidden()) {
+		log.fine "Ignore hidden: $f"
+		return false
+	}
+
+	if (f.isDirectory() && f.name ==~ /[.@].+|Cops|bin|initrd|opt|sbin|var|dev|lib|proc|sys|var.defaults|etc|lost.found|root|tmp|etc.defaults|mnt|run|usr|System.Volume.Information/) {
+		log.info "Ignore system path: $f"
+		return false
+	}
+	
+	log.fine "Exclude series set: " + excludeSet
+	// ignore archives that are on the exclude path list
+	for (i = 0; i < excludeSet.length; i++) {
+		log.fine "Exclude item " + excludeSet[i].toString().toLowerCase()
+		log.fine "File " + f
+		if(f.toString().toLowerCase().contains(excludeSet[i].toString().toLowerCase()))
+		{
+			log.fine "*** Excluded Series: $f"
+			return false;
+		}	   
+	}	
+
+	// process only media files (accept audio files only if music mode is enabled)
+	return f.isDirectory() || f.isVideo() || f.isSubtitle() || (music && f.isAudio())
+}
+
 args.getFiles().each{ f ->
-    // start looping through the video files.
-    if (f.isVideo()) {
+    // start looping through the video files.   
+    if(!acceptFile(f,excludeSeriesSet))
+    {
+    	log.fine("TV Show is in exclude list: " + f);
+    }
+    else if (f.isVideo()) {
+    	log.info("Accept video file: " + f);
+    	log.info("Searching for video metadata: " + f);
         // Get info from the filename
         def episode = parseEpisodeNumber(f)
         def show = detectSeriesName(f)

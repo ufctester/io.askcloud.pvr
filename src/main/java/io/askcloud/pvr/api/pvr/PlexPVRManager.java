@@ -68,6 +68,7 @@ public class PlexPVRManager {
 	public static String KDOI_PVR_DOWNLOAD_TRACKER_MASTER = "C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/kodi/plugin.video.exodus.updates/" + KODI_PVR_DOWNLOAD_FILE;
 
 	//FileBot Groovy Scripts
+	public static String FILE_BOT_FIND_MISSING_EPISODES_EXCLUDES="C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/find-missing-episodes-excludes.txt";
 	public static String FILE_BOT_FIND_MISSING_EPISODES="C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/find-missing-episodes.groovy";
 	public static String FILE_BOT_FIND_ENDED_EPISODES="C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/find-series-ended.groovy";
 	
@@ -110,7 +111,7 @@ public class PlexPVRManager {
     static
     {
     	excludeMissingEpisodes = new LinkedHashSet<String>();
-		excludeMissingEpisodes.add("73141"); //American Dad!
+		//excludeMissingEpisodes.add("73141"); //American Dad!
 		excludeMissingEpisodes.add("76706"); //Big Brother
 		excludeMissingEpisodes.add("72549"); //Big Brother (UK)
 		excludeMissingEpisodes.add("81563"); //Border Security
@@ -122,7 +123,7 @@ public class PlexPVRManager {
 		excludeMissingEpisodes.add("261190");// Decending
 		excludeMissingEpisodes.add("183831"); //Hardcore Pawn
 		excludeMissingEpisodes.add("75692"); //Law & Order: Special Victims Unit
-		excludeMissingEpisodes.add("73388"); //MythBusters
+		//excludeMissingEpisodes.add("73388"); //MythBusters
 		excludeMissingEpisodes.add("75897"); //South Park
 		excludeMissingEpisodes.add("77666"); //The Amazing Race
 		excludeMissingEpisodes.add("71663"); //The Simpsons
@@ -374,7 +375,7 @@ public class PlexPVRManager {
 		}
 		
 		try {			
-			Main.main(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory, "--output",PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE });
+			Main.main(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory,"--output",PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE , "--def", "excludeList=" + FILE_BOT_FIND_MISSING_EPISODES_EXCLUDES,"--log", "info"});
 		}
 		catch(SecurityException e)
 		{
