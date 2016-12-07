@@ -60,7 +60,7 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
     static
     {
     	findTVShows = new LinkedHashSet<String>();
-    	findTVShows.add("Speechless");
+    	findTVShows.add("Bates Motel");
     	findTVShows.add("Designated Survivor");
     	findTVShows.add("Lethal Weapon");
     	findTVShows.add("Bull");

@@ -28,6 +28,9 @@ import java.util.logging.SimpleFormatter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
@@ -333,16 +336,31 @@ public class PlexPVRManager {
 	//
 
 	
-	private void callFileBot(List<String> args)
+	private void callFileBot(String[] args)
 	{
-		args.add(0, FILE_BOT_EXE);
-		String[] cmd = args.toArray(new String[args.size()]);
+		//args.add(0, FILE_BOT_EXE);
+		//String[] cmd = args.toArray(new String[args.size()]);
+		StringBuffer commandArgs = new StringBuffer();
+        for (String arg : args)
+        	commandArgs.append(" " + arg);
+        
+//        try {
+//            Process p = Runtime.getRuntime().exec(cmd);
+//            p.waitFor();
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//		}
+        
         try {
-            Process p = Runtime.getRuntime().exec(cmd);
-            p.waitFor();
+            String line = FILE_BOT_EXE + commandArgs;
+            CommandLine cmdLine = CommandLine.parse(line);
+            DefaultExecutor executor = new DefaultExecutor();
+            executor.setExitValue(1);
+            int exitValue = executor.execute(cmdLine);   
 		}
 		catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 	/**
@@ -375,7 +393,9 @@ public class PlexPVRManager {
 		}
 		
 		try {			
-			Main.main(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory,"--output",PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE , "--def", "excludeList=" + FILE_BOT_FIND_MISSING_EPISODES_EXCLUDES,"--log", "info"});
+			//Main.main(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory,"--output",PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE , "--def", "excludeList=" + FILE_BOT_FIND_MISSING_EPISODES_EXCLUDES,"--log", "info"});
+			//callFileBot(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory,"--output",PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE , "--def", "excludeList=" + FILE_BOT_FIND_MISSING_EPISODES_EXCLUDES,"--log", "info"});
+			callFileBot(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory,"--output",PlexPVRManager.FILE_BOT_MISSING_EPISODES_FILE , "--def", "excludeList=" + FILE_BOT_FIND_MISSING_EPISODES_EXCLUDES,"--log", "all"});
 		}
 		catch(SecurityException e)
 		{
