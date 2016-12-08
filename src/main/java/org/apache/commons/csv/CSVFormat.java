@@ -494,15 +494,15 @@ public final class CSVFormat implements Serializable {
      * @param header
      *            the header
      * @param skipHeaderRecord
-     *            TODO
+     *            
      * @param allowMissingColumnNames
-     *            TODO
+     *            
      * @param ignoreHeaderCase
-     *            TODO
+     *            
      * @param trim
-     *            TODO
+     *            
      * @param trailingDelimiter
-     *            TODO
+     *            
      * @throws IllegalArgumentException
      *             if the delimiter is a line break character
      */
@@ -988,7 +988,7 @@ public final class CSVFormat implements Serializable {
             } else {
                 char c = value.charAt(pos);
 
-                // TODO where did this rule come from?
+                // TODO BASE_CODE: where did this rule come from?
                 if (newRecord && (c < '0' || c > '9' && c < 'A' || c > 'Z' && c < 'a' || c > 'z')) {
                     quote = true;
                 } else if (c <= COMMENT) {

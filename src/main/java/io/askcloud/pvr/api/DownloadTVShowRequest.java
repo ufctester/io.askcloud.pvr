@@ -6,9 +6,9 @@ import java.util.List;
 import io.askcloud.pvr.api.pvr.KodiExodusDownloader;
 import io.askcloud.pvr.api.pvr.PlexPVRManager;
 
-public class TVShowRequest extends PlexRequest {
+public class DownloadTVShowRequest extends PlexRequest {
 				
-	public TVShowRequest() {
+	public DownloadTVShowRequest() {
 		super();
 	}
 
@@ -17,7 +17,7 @@ public class TVShowRequest extends PlexRequest {
 	 * @param args
 	 */
 	public static void main(String[] args) {	
-		TVShowRequest missingEpisodes = new TVShowRequest();
+		DownloadTVShowRequest missingEpisodes = new DownloadTVShowRequest();
 		missingEpisodes.run();
 		
 		//PlexPVRManager.getInstance().getKodiManager().downloadMovieFromKodiExodus("The Doors","tt0101761");		

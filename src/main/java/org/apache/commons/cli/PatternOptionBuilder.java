@@ -49,7 +49,7 @@ import java.util.Date;
  * </pre>
  *
  * <p>
- * TODO: These need to break out to OptionType and also to be pluggable.
+ * TODO BASE_CODE: These need to break out to OptionType and also to be pluggable.
  * </p>
  *
  * @version $Id: PatternOptionBuilder.java 1677406 2015-05-03 14:27:31Z britter $

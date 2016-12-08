@@ -2,17 +2,17 @@ package io.askcloud.pvr.api;
 
 import io.askcloud.pvr.api.pvr.PlexPVRManager;
 
-public class MovieRequestQueueMonitor extends PlexRequest {
+public class DownloadMovieQueueMonitorRequest extends PlexRequest {
 
-	public MovieRequestQueueMonitor() {
-		// TODO Auto-generated constructor stub
+	public DownloadMovieQueueMonitorRequest() {
+		super();
 	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {	
-		MovieRequestQueueMonitor requestMovie = new MovieRequestQueueMonitor();
+		DownloadMovieQueueMonitorRequest requestMovie = new DownloadMovieQueueMonitorRequest();
 		requestMovie.run();
 		
 		//PlexPVRManager.getInstance().getKodiManager().downloadMovieFromKodiExodus("The Doors","tt0101761");		

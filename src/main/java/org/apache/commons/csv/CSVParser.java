@@ -440,7 +440,7 @@ public final class CSVParser implements Iterable<CSVRecord>, Closeable {
                 try {
                     return CSVParser.this.nextRecord();
                 } catch (final IOException e) {
-                    // TODO: This is not great, throw an ISE instead?
+                    // TODO BASE_CODE: This is not great, throw an ISE instead?
                     throw new RuntimeException(e);
                 }
             }

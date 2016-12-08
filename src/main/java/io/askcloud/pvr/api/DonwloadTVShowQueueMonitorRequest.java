@@ -2,12 +2,12 @@ package io.askcloud.pvr.api;
 
 import io.askcloud.pvr.api.pvr.PlexPVRManager;
 
-public class TVShowRequestQueueMonitor extends TVShowRequest {
+public class DonwloadTVShowQueueMonitorRequest extends DownloadTVShowRequest {
 	
 	//private String directory =  "C:\\Entertainment\\TVShows";
 	private String directory =  "C:\\Entertainment\\TVShows";
 			
-	public TVShowRequestQueueMonitor() {
+	public DonwloadTVShowQueueMonitorRequest() {
 		super();
 	}
 
@@ -15,12 +15,13 @@ public class TVShowRequestQueueMonitor extends TVShowRequest {
 	 * @param args
 	 */
 	public static void main(String[] args) {	
-		TVShowRequestQueueMonitor missingEpisodes = new TVShowRequestQueueMonitor();
+		DonwloadTVShowQueueMonitorRequest missingEpisodes = new DonwloadTVShowQueueMonitorRequest();
 		missingEpisodes.run();	
 	}
 	
 	@Override
 	void run() {
+		
 		PlexPVRManager.CLEAN_KODI_DOWNLOAD=true;
 		PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowQueue());
 	}

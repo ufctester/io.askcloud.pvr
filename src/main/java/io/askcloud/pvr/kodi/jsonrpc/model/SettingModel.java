@@ -2490,7 +2490,7 @@ public final class SettingModel {
       if (valueList != null) {
         final ArrayNode an = OM.createArrayNode();
         for (Value item : valueList) {
-          an.add(item.toString()); // FIXME: item not valid, toString?!
+          an.add(item.toString()); // TODO BASE_CODE: fixme: item not valid, toString?!
         }
         ;
         return an;

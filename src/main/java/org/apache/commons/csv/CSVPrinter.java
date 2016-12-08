@@ -63,7 +63,7 @@ public final class CSVPrinter implements Flushable, Closeable {
 
         this.out = out;
         this.format = format;
-        // TODO: Is it a good idea to do this here instead of on the first call to a print method?
+        // TODO BASE_CODE: Is it a good idea to do this here instead of on the first call to a print method?
         // It seems a pain to have to track whether the header has already been printed or not.
         if (format.getHeaderComments() != null) {
             for (final String line : format.getHeaderComments()) {

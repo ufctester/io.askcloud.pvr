@@ -9,7 +9,7 @@ abstract public class PlexRequest {
 	protected static Logger log = PlexPVRManager.getInstance().getLogger();
 	
 	public PlexRequest() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 	
 	abstract void run();

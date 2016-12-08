@@ -82,7 +82,7 @@ abstract public class KodiExodusDownloader extends KodiExodusRequest {
 					Thread.sleep(PlexPVRManager.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME);
 				}
 				catch (Exception e) {
-					// TODO: handle exception
+					// TODO BASE_CODE: handle exception
 				}
 			}
 		}
@@ -137,7 +137,7 @@ abstract public class KodiExodusDownloader extends KodiExodusRequest {
 				Thread.sleep(PlexPVRManager.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME);
 			}
 			catch (Exception e) {
-				// TODO: handle exception
+				// TODO BASE_CODE: handle exception
 			}
 			
 			DownloadStatus status = getUpdatedDownloadStatus();

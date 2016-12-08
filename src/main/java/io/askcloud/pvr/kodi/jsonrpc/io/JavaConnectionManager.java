@@ -71,7 +71,7 @@ public class JavaConnectionManager {
 
   public void connect(HostConfig config) {
     if (isConnected) {
-      // TODO throw exception
+      // TODO BASE_CODE: throw exception
       return;
     }
     this.hostConfig = config;
@@ -146,7 +146,7 @@ public class JavaConnectionManager {
       notifyDisconnect();
     }
     else {
-      // TODO throw exception
+      // TODO BASE_CODE: throw exception
     }
   }
 
@@ -157,7 +157,7 @@ public class JavaConnectionManager {
       System.out.println("node error: " + node);
       // notifyError(new ApiException(node),
       // node.get("id").getValueAsText());
-      // TODO
+      // TODO BASE_CODE:
       // check if notification or api call
     }
     else if (node.has("id")) {
@@ -171,7 +171,7 @@ public class JavaConnectionManager {
         callback.onResponse(call);
       }
       else {
-        // TODO
+        // TODO BASE_CODE:
       }
     }
     else if (node.has("method") && "Input.OnInputRequested".equals(node.get("method").getTextValue())) {
@@ -210,7 +210,7 @@ public class JavaConnectionManager {
       bufferedWriter.flush();
     }
     catch (IOException e) {
-      // TODO
+      // TODO BASE_CODE:
     }
   }
 

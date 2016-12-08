@@ -70,7 +70,7 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
 	 * 
 	 */
 	public FindTVShowOrMovieRequest() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**

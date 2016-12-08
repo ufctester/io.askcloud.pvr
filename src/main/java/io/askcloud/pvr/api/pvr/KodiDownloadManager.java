@@ -91,7 +91,7 @@ public class KodiDownloadManager {
 				return Integer.valueOf(getPercent()).intValue();
 			}
 			catch (Exception e) {
-				// TODO: handle exception
+				// TODO BASE_CODE: handle exception
 			}
 			return 0;
 		}
@@ -224,7 +224,7 @@ public class KodiDownloadManager {
 			Thread.sleep(PlexPVRManager.CLEAR_CACHE_THREAD_WAIT_TIME);
 		}
 		catch (Exception e) {
-			// TODO: handle exception
+			// TODO BASE_CODE: handle exception
 		}
 		
 		log.exiting(CLASS_NAME, "clearCacheAndSources");
@@ -396,7 +396,7 @@ public class KodiDownloadManager {
         		Thread.currentThread().sleep(5000);
 			}
 			catch (Exception e) {
-				// TODO: handle exception
+				// TODO BASE_CODE: handle exception
 			}
         }
         System.out.println("Finished all threads for tvshow batch");

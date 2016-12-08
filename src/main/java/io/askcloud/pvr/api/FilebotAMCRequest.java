@@ -16,7 +16,7 @@ public class FilebotAMCRequest extends PlexRequest {
 	 * 
 	 */
 	public FilebotAMCRequest() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**

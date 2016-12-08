@@ -8,7 +8,7 @@ public class PrintRecursiveDirectoryFileSizes extends PlexRequest {
 
 	private String directory = null;
 	public PrintRecursiveDirectoryFileSizes() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 

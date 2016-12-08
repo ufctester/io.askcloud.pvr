@@ -9,7 +9,7 @@ import net.filebot.format.*
 import net.filebot.media.*
 
 // Define first what is now.
-log.fine("Run script [$_args.script] at [$now]")
+log.info("Run script [$_args.script] at [$now]")
 
 args.withIndex().each{ f, i -> if (f.exists()) { log.finest "Argument[$i]: $f" } else { log.warning "Argument[$i]: File does not exist: $f" } }
 
@@ -25,13 +25,13 @@ def showInfo = [:] // This will keep map of show infomation indexed by the TVDB
 def seen=[:]       // This will keep a list of the shows already queried.
 
 missingEpisodes = tryLogCatch{ any{ _args.output }{ '.' }.toFile().getCanonicalFile() }
-println "missingEpisodes: " + missingEpisodes.toString() 
+log.info "missingEpisodes: " + missingEpisodes.toString() 
 
 // define and load exclude list (e.g. to make sure files are only processed once)
 excludeSeriesSet = []
 
 if (excludeList) {
-	log.info "Exclude File Exists.  Iterate over exclude list: " + excludeList
+	log.fine "Exclude File Exists.  Iterate over exclude list: " + excludeList
 	if (excludeList.exists()) {
 		excludeSeriesSet=excludeList as String[]
 		log.fine "Use excludes: $excludeList ${excludeSeriesSet} size: (${excludeSeriesSet.size()})"
@@ -58,7 +58,7 @@ def acceptFile(f, excludeSet) {
 	}
 
 	if (f.isDirectory() && f.name ==~ /[.@].+|Cops|bin|initrd|opt|sbin|var|dev|lib|proc|sys|var.defaults|etc|lost.found|root|tmp|etc.defaults|mnt|run|usr|System.Volume.Information/) {
-		log.info "Ignore system path: $f"
+		log.fine "Ignore system path: $f"
 		return false
 	}
 	
@@ -82,11 +82,10 @@ args.getFiles().each{ f ->
     // start looping through the video files.   
     if(!acceptFile(f,excludeSeriesSet))
     {
-    	log.fine("TV Show is in exclude list: " + f);
+    	log.info "TV Show is in exclude list: " + f;
     }
     else if (f.isVideo()) {
-    	log.fine("Accept video file: " + f);
-    	log.fine("Searching for video metadata: " + f);
+    	log.info "Accept video file: " + f + " Searchig for video metadata";
         // Get info from the filename
         def episode = parseEpisodeNumber(f)
         def show = detectSeriesName(f)
@@ -110,7 +109,7 @@ args.getFiles().each{ f ->
             episodes << [info.seriesInfo.id,episode.season,episode.episode]     
         }
         else {
-            log.info "** Could not parse "+f.toString()
+            log.info "ERROR: Could not parse " + f.toString()
         }
     }
 }
