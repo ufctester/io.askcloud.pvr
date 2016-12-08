@@ -2,13 +2,13 @@ package io.askcloud.pvr.imdb.wrapper;
 
 import java.util.logging.Logger;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.imdb.model.AbstractJsonMapping;
 
 
 public abstract class AbstractWrapper<E extends AbstractJsonMapping> extends AbstractJsonMapping implements IWrapperResult<E> {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     protected E result;
 
     @Override

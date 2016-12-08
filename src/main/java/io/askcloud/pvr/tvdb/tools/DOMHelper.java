@@ -32,7 +32,7 @@ import org.yamj.api.common.exception.ApiExceptionType;
 import org.yamj.api.common.http.DigestedResponse;
 import org.yamj.api.common.http.DigestedResponseReader;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.tvdb.TvDbException;
 
 /**
@@ -43,7 +43,7 @@ import io.askcloud.pvr.tvdb.TvDbException;
  */
 public class DOMHelper {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     private static final String YES = "yes";
     private static final String DEFAULT_CHARSET = "UTF-8";
     private static final Charset CHARSET = Charset.forName(DEFAULT_CHARSET);

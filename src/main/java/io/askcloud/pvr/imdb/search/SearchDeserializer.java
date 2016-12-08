@@ -13,12 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 
 
 public class SearchDeserializer extends StdDeserializer<SearchObject> {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     private final Map<String, Class<? extends SearchObject>> registry = new HashMap<>();
 
     public SearchDeserializer() {

@@ -34,7 +34,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	private boolean seriesEnded=false;
 	
 	private static String CLASS_NAME = KodiExodusTVShowDownloader.class.getName();
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
 
 	public KodiExodusTVShowDownloader(String searchName, String imdbid, String tvdbid,int season, int episode,boolean seriesEnded) {
 
@@ -64,7 +64,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	@Override
 	protected void setThreadName() {
 		String threadName = null;
-		threadName = "KodiDownloader [" + getLastDownloadStatus().getThreadPrefix() + "% " + SHOW_NAME + " " + "S" + PlexPVRManager.getInstance().getSeason(Integer.valueOf(SEASON).toString()) + "E" + PlexPVRManager.getInstance().getEpisode(Integer.valueOf(EPISODE).toString()) + "]";
+		threadName = "KodiDownloader [" + getLastDownloadStatus().getThreadPrefix() + "% " + SHOW_NAME + " " + "S" + HTPC.getInstance().getSeason(Integer.valueOf(SEASON).toString()) + "E" + HTPC.getInstance().getEpisode(Integer.valueOf(EPISODE).toString()) + "]";
 		final Thread currentThread = Thread.currentThread();
         currentThread.setName(threadName);	
 	}
@@ -72,8 +72,8 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	
 	@Override
 	protected DownloadStatus getUpdatedDownloadStatus() {
-		String name = SHOW_NAME + " S" + PlexPVRManager.getInstance().getSeason(Integer.valueOf(SEASON).toString()) + "E" + PlexPVRManager.getInstance().getEpisode(Integer.valueOf(EPISODE).toString());
-		return PlexPVRManager.getInstance().getKodiManager().getDownloadStatus(name);
+		String name = SHOW_NAME + " S" + HTPC.getInstance().getSeason(Integer.valueOf(SEASON).toString()) + "E" + HTPC.getInstance().getEpisode(Integer.valueOf(EPISODE).toString());
+		return HTPC.getInstance().getKodiManager().getDownloadStatus(name);
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 				"plugin://plugin.video.exodus/?action=tvshowPage&url=http%3A%2F%2Fapi-v2launch.trakt.tv%2Fsearch%3Ftype%3Dshow%26limit%3D3020%26page%3D1%26query%3D" + tvShow);
 
 		log.info("Season URL: " + "plugin://plugin.video.exodus/?action=tvshowPage&url=http%3A%2F%2Fapi-v2launch.trakt.tv%2Fsearch%3Ftype%3Dshow%26limit%3D30%26page%3D1%26query%3D" + tvShow);
-		PlexPVRManager.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
+		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			/*
 			 * plugin://plugin.video.exodus/?action=seasons&tvshowtitle=Person of Interest&year=2011&imdb=tt1839578&tvdb=248742
@@ -169,7 +169,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 		log.fine("donwloadTVShowSeasonURL: " + decode);
 		GetDirectory exodus = new GetDirectory(tvShowURL);
 
-		PlexPVRManager.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
+		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			@Override
 			public void onResponse(AbstractCall<ListModel.FileItem> call) {
@@ -225,7 +225,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 		log.entering(CLASS_NAME, "downloadTVShowSeasonEpisode", new Object[] { tvshowtitle, season, tvShowSeasonURL });
 		GetDirectory exodus = new GetDirectory(tvShowSeasonURL);
 
-		PlexPVRManager.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
+		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			@Override
 			public void onResponse(AbstractCall<ListModel.FileItem> call) {
@@ -258,7 +258,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 
 						//info("action: " + action + " tvshow: " + tvshowtitle + " Season " + season + " Episode " + episode + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
 						//info("title: " + title + " S" + seasonStr + "E" + episodeStr + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
-						log.fine("Season " + PlexPVRManager.getInstance().getSeason(season) + "E" + PlexPVRManager.getInstance().getEpisode(episode) + " title: " + title + " premiered: " + premiered + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
+						log.fine("Season " + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode) + " title: " + title + " premiered: " + premiered + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
 						downloadTVShowBySeasonEpisodeFromURL(tvshowtitle, season, episode, res.file);
 					}
 					catch (Exception e) {
@@ -315,9 +315,9 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 		Addons.ExecuteAddon exodus = new Addons.ExecuteAddon("plugin.video.exodus", tvShowSeasonEpisodeURL);
 		//GetDirectory exodus = new GetDirectory(tvShowSeasonEpisodeURL);
 
-		log.info("Calling Kodi: Download " + tvshowtitle + " S" + PlexPVRManager.getInstance().getSeason(season) + "E" + PlexPVRManager.getInstance().getEpisode(episode));
+		log.info("Calling Kodi: Download " + tvshowtitle + " S" + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode));
 		//KodiDownloadManager.getInstance().getConMgr().call(exodus, null);
-		PlexPVRManager.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<String>() {
+		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<String>() {
 
 			@Override
 			public void onResponse(AbstractCall<String> call) {
@@ -335,30 +335,30 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 
 
 	private boolean episodeExists(String tvShowName, String season, String episode) {
-		String showFileName = tvShowName + " " + "S" + PlexPVRManager.getInstance().getSeason(season) + "E" + PlexPVRManager.getInstance().getEpisode(episode);
+		String showFileName = tvShowName + " " + "S" + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode);
 
 		log.info("Checking if episode exists.  tvShowName: " + tvShowName + " season: " + season + " episode: " + episode);
 
 		//mp4
-		File file = new File(PlexPVRManager.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".mp4");
+		File file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".mp4");
 		if (file.exists() && !file.isDirectory()) {
 			log.info("Episode alerady exists: " + file.toString());
 			return true;
 		}
 
-		file = new File(PlexPVRManager.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".mkv");
+		file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".mkv");
 		if (file.exists() && !file.isDirectory()) {
 			log.info("Episode alerady exists: " + file.toString());
 			return true;
 		}
 
-		file = new File(PlexPVRManager.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".avi");
+		file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".avi");
 		if (file.exists() && !file.isDirectory()) {
 			log.info("Episode alerady exists: " + file.toString());
 			return true;
 		}
 
-		file = new File(PlexPVRManager.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".flv");
+		file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".flv");
 		if (file.exists() && !file.isDirectory()) {
 			log.info("Episode alerady exists: " + file.toString());
 			return true;
@@ -370,7 +370,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	@Override
 	public String toString() {
 		StringBuffer sBuffer = new StringBuffer();
-		sBuffer.append("TVDB_ID: " + getTVDBID() + " SeriesName: " + SHOW_NAME + " S" + PlexPVRManager.getInstance().getSeason(Integer.valueOf(SEASON).toString()) + "E" + PlexPVRManager.getInstance().getEpisode(Integer.valueOf(EPISODE).toString()));
+		sBuffer.append("TVDB_ID: " + getTVDBID() + " SeriesName: " + SHOW_NAME + " S" + HTPC.getInstance().getSeason(Integer.valueOf(SEASON).toString()) + "E" + HTPC.getInstance().getEpisode(Integer.valueOf(EPISODE).toString()));
 		return sBuffer.toString();
 	}	
 }

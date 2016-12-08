@@ -19,7 +19,7 @@
  */
 package io.askcloud.pvr.omdb.tools;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.omdb.OMDBException;
 import io.askcloud.pvr.omdb.emumerations.PlotType;
 import io.askcloud.pvr.omdb.emumerations.ResultType;
@@ -38,7 +38,7 @@ import org.yamj.api.common.exception.ApiExceptionType;
  */
 public final class OmdbBuilder {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     private final OmdbParameters params = new OmdbParameters();
     // Default values (if required)
     private static final boolean DEFAULT_TOMATOES = Boolean.FALSE;

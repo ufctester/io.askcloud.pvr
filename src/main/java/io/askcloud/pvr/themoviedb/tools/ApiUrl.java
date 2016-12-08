@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 /**
  * The API URL that is used to construct the API call
  *
@@ -39,7 +39,7 @@ import io.askcloud.pvr.api.pvr.PlexPVRManager;
  */
 public class ApiUrl {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     // TheMovieDbApi API Base URL
     private static final String TMDB_API_BASE = "http://api.themoviedb.org/3/";
     // Parameter configuration

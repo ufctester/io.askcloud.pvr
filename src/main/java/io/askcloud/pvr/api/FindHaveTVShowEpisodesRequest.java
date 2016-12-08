@@ -1,6 +1,6 @@
 package io.askcloud.pvr.api;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 
 /**
  * @author ufctester
@@ -25,7 +25,7 @@ public class FindHaveTVShowEpisodesRequest extends PlexRequest {
 	
 	@Override
 	void run() {
-		PlexPVRManager.getInstance().findTVShowEpisodesHave(PlexPVRManager.PLEX_TVSHOWS_DIR);		
+		HTPC.getInstance().findTVShowEpisodesHave(HTPC.PLEX_TVSHOWS_DIR);		
 	}
 
 }

@@ -1,6 +1,6 @@
 package io.askcloud.pvr.api;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 
 /**
  * @author ufctester
@@ -26,7 +26,7 @@ public class FindCompletedTVShowEpisodesRequest extends PlexRequest {
 	@Override
 	void run() {
 
-		PlexPVRManager.getInstance().findCompletedEpisodes(PlexPVRManager.PLEX_TVSHOWS_DIR);		
+		HTPC.getInstance().findCompletedEpisodes(HTPC.PLEX_TVSHOWS_DIR);		
 	}
 
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.askcloud.pvr.api.pvr.KodiExodusDownloader;
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 
 public class DownloadTVShowRequest extends PlexRequest {
 				
@@ -26,11 +26,11 @@ public class DownloadTVShowRequest extends PlexRequest {
 	@Override
 	void run() {
 		List<KodiExodusDownloader> missingEpisodes = new ArrayList<KodiExodusDownloader>();
-		missingEpisodes.add(PlexPVRManager.getInstance().createMissingEpisode("73141",null, "American Dad", "3", "17",false));
+		missingEpisodes.add(HTPC.getInstance().createMissingEpisode("73141",null, "American Dad", "3", "17",false));
 //		missingEpisodes.add(FileBotManager.getInstance().createMissingEpisode("269586", "Brooklyn Nine-Nine", "1", "2"));
 //		missingEpisodes.add(FileBotManager.getInstance().createMissingEpisode("269586", "Brooklyn Nine-Nine", "1", "3"));
 //		missingEpisodes.add(FileBotManager.getInstance().createMissingEpisode("269586", "Brooklyn Nine-Nine", "1", "4"));
 		
-		PlexPVRManager.getInstance().getKodiManager().download(missingEpisodes);
+		//PlexPVRManager.getInstance().getKodiManager().download(missingEpisodes);
 	}
 }

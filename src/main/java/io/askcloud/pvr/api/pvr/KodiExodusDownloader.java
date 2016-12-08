@@ -79,7 +79,7 @@ abstract public class KodiExodusDownloader extends KodiExodusRequest {
 					//set the thread name
 					getLastDownloadStatus().setThreadPrefix("WAITING-KODI-LOAD-SOURCES");
 					setThreadName();
-					Thread.sleep(PlexPVRManager.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME);
+					Thread.sleep(HTPC.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME);
 				}
 				catch (Exception e) {
 					// TODO BASE_CODE: handle exception
@@ -113,7 +113,7 @@ abstract public class KodiExodusDownloader extends KodiExodusRequest {
 			if(!requestHasBeenMade)
 			{
 				requestHasBeenMade=true;
-				PlexPVRManager.getInstance().getKodiManager().readyToProcessNextRequest(this);
+				HTPC.getInstance().getKodiManager().readyToProcessNextRequest(this);
 			}
 		}
 	}
@@ -134,7 +134,7 @@ abstract public class KodiExodusDownloader extends KodiExodusRequest {
 			setThreadName();
 			
 			try {
-				Thread.sleep(PlexPVRManager.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME);
+				Thread.sleep(HTPC.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME);
 			}
 			catch (Exception e) {
 				// TODO BASE_CODE: handle exception
@@ -146,7 +146,7 @@ abstract public class KodiExodusDownloader extends KodiExodusRequest {
 			if((!requestHasBeenMade) && (!"".equals(status.getDownloaded())))
 			{
 				requestHasBeenMade=true;
-				PlexPVRManager.getInstance().getKodiManager().readyToProcessNextRequest(this);
+				HTPC.getInstance().getKodiManager().readyToProcessNextRequest(this);
 			}
 			
 			//get the download files
@@ -155,7 +155,7 @@ abstract public class KodiExodusDownloader extends KodiExodusRequest {
 			//If it is complete then we can return
 			if(status.isComplete())
 			{
-				handleStopCompleted();
+				downloadCompleted(status);
 				return;
 			}
 			
@@ -180,7 +180,7 @@ abstract public class KodiExodusDownloader extends KodiExodusRequest {
 				//we are over 50
 				if(counter > maxIdleThreshold)
 				{
-					handleStopHung();
+					downloadHung(status);
 					return;
 				}
 			}
@@ -192,17 +192,17 @@ abstract public class KodiExodusDownloader extends KodiExodusRequest {
 	}
 	
 	/**
-	 * 
+	 * The download completed and is 100%
 	 */
-	protected void handleStopCompleted()
+	protected void downloadCompleted(DownloadStatus status)
 	{
-		
+		log.info("Download is complete: " + status.getPercent() + "%" + status.getFile());
 	}
 	
 	/**
 	 * 
 	 */
-	protected void handleStopHung()
+	protected void downloadHung(DownloadStatus status)
 	{
 		log.severe("Download Looks like it is hung: " + toString());
 	}	

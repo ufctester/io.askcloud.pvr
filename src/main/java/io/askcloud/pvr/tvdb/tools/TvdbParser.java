@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.tvdb.TvDbException;
 import io.askcloud.pvr.tvdb.model.Actor;
 import io.askcloud.pvr.tvdb.model.Banner;
@@ -35,7 +35,7 @@ import io.askcloud.pvr.tvdb.model.TVDBUpdates;
 
 public class TvdbParser {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     private static final String URL_BANNER = "http://thetvdb.com/banners/";
     private static final String TYPE_BANNER = "banner";
     private static final String TYPE_FANART = "fanart";

@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import org.apache.http.client.HttpClient;
 import org.yamj.api.common.http.SimpleHttpClientBuilder;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.imdb.model.ImdbBoxOffice;
 import io.askcloud.pvr.imdb.model.ImdbChartMoviemeter;
 import io.askcloud.pvr.imdb.model.ImdbChartStarmeter;
@@ -53,7 +53,7 @@ import io.askcloud.pvr.imdb.wrapper.WrapperSynopsis;
  */
 public final class ImdbApi {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     private static final String TCONST = "tconst";
     private static final String NCONST = "nconst";
 

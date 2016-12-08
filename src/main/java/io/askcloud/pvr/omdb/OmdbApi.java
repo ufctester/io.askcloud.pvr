@@ -21,7 +21,7 @@ package io.askcloud.pvr.omdb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.omdb.model.OmdbVideoFull;
 import io.askcloud.pvr.omdb.model.SearchResults;
 import io.askcloud.pvr.omdb.tools.OmdbBuilder;
@@ -50,7 +50,7 @@ import org.yamj.api.common.http.UserAgentSelector;
  */
 public class OmdbApi {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     private final HttpClient httpClient;
     // Jackson JSON configuration
     private static ObjectMapper mapper = new ObjectMapper();

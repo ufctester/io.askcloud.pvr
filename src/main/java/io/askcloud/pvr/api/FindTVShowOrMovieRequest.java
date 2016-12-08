@@ -11,7 +11,7 @@ import java.util.Set;
 
 import io.askcloud.pvr.api.pvr.KodiExodusMovieDownloader;
 import io.askcloud.pvr.api.pvr.KodiExodusTVShowDownloader;
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.themoviedb.TheMovieDbApi;
 import io.askcloud.pvr.themoviedb.enumeration.MovieMethod;
 import io.askcloud.pvr.themoviedb.enumeration.SearchType;
@@ -121,7 +121,7 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
 	private Series findTVShow(String name)
 	{
 		try {
-			TheTVDBApi api = PlexPVRManager.getInstance().getTvdbAPI();
+			TheTVDBApi api = HTPC.getInstance().getTvdbAPI();
 			List<Series> seriesList = api.searchSeries(name, null);
 			for (Iterator iterator = seriesList.iterator(); iterator.hasNext();) {
 				Series series = (Series) iterator.next();
@@ -187,7 +187,7 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
 	{
 		
 		try {
-			TheMovieDbApi api = PlexPVRManager.getInstance().getTheMovieDbAPI();
+			TheMovieDbApi api = HTPC.getInstance().getTheMovieDbAPI();
 			ResultList<MovieInfo> movieResults = api.searchMovie(movieName, 0, "", null, 0, 0, SearchType.PHRASE);
 			List<MovieInfo> movies = movieResults.getResults();
 			for (Iterator<MovieInfo> iterator = movies.iterator(); iterator.hasNext();) {

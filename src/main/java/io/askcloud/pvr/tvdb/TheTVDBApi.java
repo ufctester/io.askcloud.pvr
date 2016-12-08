@@ -34,7 +34,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.HttpClient;
 import org.yamj.api.common.http.SimpleHttpClientBuilder;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.tvdb.model.Actor;
 import io.askcloud.pvr.tvdb.model.Banners;
 import io.askcloud.pvr.tvdb.model.Episode;
@@ -50,7 +50,7 @@ import io.askcloud.pvr.tvdb.tools.TvdbParser;
  */
 public class TheTVDBApi {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     private String apiKey = null;
     private HttpClient httpClient;
     private static final String BASE_URL = "http://thetvdb.com/api/";

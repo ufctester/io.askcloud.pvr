@@ -1,12 +1,9 @@
 package io.askcloud.pvr.api;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 
 public class DonwloadTVShowQueueMonitorRequest extends DownloadTVShowRequest {
 	
-	//private String directory =  "C:\\Entertainment\\TVShows";
-	private String directory =  "C:\\Entertainment\\TVShows";
-			
 	public DonwloadTVShowQueueMonitorRequest() {
 		super();
 	}
@@ -22,7 +19,7 @@ public class DonwloadTVShowQueueMonitorRequest extends DownloadTVShowRequest {
 	@Override
 	void run() {
 		
-		PlexPVRManager.CLEAN_KODI_DOWNLOAD=true;
-		PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowQueue());
+		HTPC.CLEAN_KODI_DOWNLOAD=true;
+		HTPC.getInstance().getKodiManager().downloadSeriesEpisodeQueue();
 	}
 }

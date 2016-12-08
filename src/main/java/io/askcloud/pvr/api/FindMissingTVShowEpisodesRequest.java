@@ -1,6 +1,6 @@
 package io.askcloud.pvr.api;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 
 /**
  * @author ufctester
@@ -25,7 +25,7 @@ public class FindMissingTVShowEpisodesRequest extends PlexRequest {
 	
 	@Override
 	void run() {
-		PlexPVRManager.getInstance().findMissingTVShowEpisodes(PlexPVRManager.PLEX_TVSHOWS_DIR);		
+		HTPC.getInstance().findMissingTVShowEpisodes(HTPC.PLEX_TVSHOWS_DIR);		
 	}
 
 }

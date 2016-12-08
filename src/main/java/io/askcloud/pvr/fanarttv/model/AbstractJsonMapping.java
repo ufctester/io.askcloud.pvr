@@ -22,7 +22,7 @@ package io.askcloud.pvr.fanarttv.model;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 
 import java.io.Serializable;
 import java.util.logging.Logger;
@@ -36,7 +36,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public abstract class AbstractJsonMapping implements Serializable {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     /*
      * Error fields
      */

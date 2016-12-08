@@ -19,7 +19,7 @@
  */
 package io.askcloud.pvr.fanarttv.tools;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.fanarttv.FanartTvException;
 import io.askcloud.pvr.fanarttv.enumeration.BaseType;
 
@@ -40,7 +40,7 @@ public final class ApiBuilder {
      * Logger
      */
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     /*
      * FanartTV API Base URL
      */

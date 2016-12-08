@@ -1,0 +1,7 @@
+TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED
+269586,,Brooklyn Nine-Nine,3,1,false
+269586,,Brooklyn Nine-Nine,3,3,false
+269586,,Brooklyn Nine-Nine,3,4,false
+269586,,Brooklyn Nine-Nine,3,5,false
+269586,,Brooklyn Nine-Nine,3,6,false
+269586,,Brooklyn Nine-Nine,3,7,false

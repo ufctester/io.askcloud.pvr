@@ -21,7 +21,7 @@ package io.askcloud.pvr.themoviedb.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 
 import java.io.Serializable;
 import java.util.logging.Logger;
@@ -37,7 +37,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public abstract class AbstractJsonMapping implements Serializable {
 
     private static final long serialVersionUID = 100L;
-    private static Logger log = PlexPVRManager.getInstance().getLogger();
+    private static Logger log = HTPC.getInstance().getLogger();
 
     /**
      * Handle unknown properties and print a message

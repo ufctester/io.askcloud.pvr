@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.imdb.ImdbException;
 import io.askcloud.pvr.imdb.model.AbstractJsonMapping;
 import io.askcloud.pvr.imdb.model.ImdbError;
@@ -36,7 +36,7 @@ import io.askcloud.pvr.imdb.wrapper.WrapperSearch;
 
 public final class ApiBuilder {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     private static final int MILLIS_PER_SECOND = 1000;
     private static final String DEFAULT_CHARSET = "UTF-8";
     private static final Charset CHARSET = Charset.forName(DEFAULT_CHARSET);

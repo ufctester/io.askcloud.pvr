@@ -18,7 +18,7 @@ import io.askcloud.pvr.kodi.jsonrpc.api.call.Addons;
 abstract public class KodiExodusRequest implements Runnable {
 
 	private static String CLASS_NAME = KodiExodusRequest.class.getName();
-	protected static Logger log = PlexPVRManager.getInstance().getLogger();
+	protected static Logger log = HTPC.getInstance().getLogger();
 	private String IMDB_ID = null;
 	private String TVDB_ID = null;
 

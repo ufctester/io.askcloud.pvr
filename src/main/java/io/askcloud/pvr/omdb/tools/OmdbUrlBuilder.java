@@ -19,7 +19,7 @@
  */
 package io.askcloud.pvr.omdb.tools;
 
-import io.askcloud.pvr.api.pvr.PlexPVRManager;
+import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.omdb.OMDBException;
 import io.askcloud.pvr.omdb.emumerations.PlotType;
 
@@ -31,7 +31,7 @@ import org.yamj.api.common.exception.ApiExceptionType;
 
 public class OmdbUrlBuilder {
 
-	private static Logger log = PlexPVRManager.getInstance().getLogger();
+	private static Logger log = HTPC.getInstance().getLogger();
     private static final String BASE_URL = "http://www.omdbapi.com/";
     private static final String DELIMITER_FIRST = "?";
     private static final String DELIMITER_SUBSEQUENT = "&";
