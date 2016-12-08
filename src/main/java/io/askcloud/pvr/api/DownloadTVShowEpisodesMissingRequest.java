@@ -4,7 +4,7 @@ import io.askcloud.pvr.api.pvr.PlexPVRManager;
 
 public class DownloadTVShowEpisodesMissingRequest extends DownloadTVShowRequest {
 	
-	
+	private static String CLASS_NAME = DownloadTVShowEpisodesMissingRequest.class.getName();	
 			
 	public DownloadTVShowEpisodesMissingRequest() {
 		super();
@@ -22,7 +22,11 @@ public class DownloadTVShowEpisodesMissingRequest extends DownloadTVShowRequest 
 	
 	@Override
 	void run() {
+		log.entering(CLASS_NAME, "run");
 		PlexPVRManager.CLEAN_KODI_DOWNLOAD=true;
+		log.info("Calling: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
 		PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing());
+		log.info("Completd: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
+		log.entering(CLASS_NAME, "run");
 	}
 }

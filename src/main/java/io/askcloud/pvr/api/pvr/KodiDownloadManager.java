@@ -374,8 +374,14 @@ public class KodiDownloadManager {
 	/**
 	 * 
 	 */
-	public void download(List<KodiExodusDownloader> downloadItems)
+	public void download(List<KodiExodusDownloader> downloadItemsFull)
 	{
+		List<KodiExodusDownloader> downloadItems = new ArrayList<KodiExodusDownloader>();
+		if(downloadItemsFull.size() >= 2)
+		{
+			downloadItems.add(downloadItemsFull.get(0));
+			downloadItems.add(downloadItemsFull.get(1));
+		}
 		downloaders.addAll(downloadItems);
 		ExecutorService executor = Executors.newFixedThreadPool(10);
 		

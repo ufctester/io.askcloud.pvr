@@ -85,6 +85,9 @@ public class PlexPVRManager {
 	
 	private Level LOG_LEVEL = Level.INFO;
 
+	//queue lock file wait time
+	public static int QUEUE_LOCK_FILE_WAIT_TIME=10000; //10 seconds
+	
 	//Kodi Exodus Clear Cache Wait time for the thread so the cache can be completely cleared before continuing.
 	public static int CLEAR_CACHE_THREAD_WAIT_TIME=10000; //10 seconds
 	
@@ -179,13 +182,14 @@ public class PlexPVRManager {
 		
 		@Override
 		public void onProcessComplete(int exitValue) {
-			// TODO Auto-generated method stub
+			log.entering(CLASS_NAME, "onProcessComplete");
+			log.exiting(CLASS_NAME, "onProcessComplete");
 			super.onProcessComplete(exitValue);
 		}
 		@Override
 		public void onProcessFailed(ExecuteException e) {
-			
-			// TODO Auto-generated method stub
+			log.entering(CLASS_NAME, "onProcessFailed",e);
+			log.exiting(CLASS_NAME, "onProcessFailed");
 			super.onProcessFailed(e);
 		}
 		
@@ -417,9 +421,6 @@ public class PlexPVRManager {
 		
 		try {		
 			directory="\"" + directory + "\"";
-			//Main.main(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory,"--output",PlexPVRManager.FILEBOT_SERIES_EPISODES_MISSING_FILE , "--def", "excludeList=" + FILE_BOT_FIND_MISSING_EPISODES_EXCLUDES,"--log", "all"});
-			//callFileBot(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory,"--output",PlexPVRManager.FILEBOT_SERIES_EPISODES_MISSING_FILE , "--def", "excludeList=" + FILE_BOT_FIND_MISSING_EPISODES_EXCLUDES,"--log", "info"});
-			//Main.main(new String[] { "-list", "--db", "thetvdb", "--q", "Dexter", "--format", "{plex}" });
 			callFileBot(new String[] { "-script", PlexPVRManager.FILEBOT_FIND_SERIES_EPISODES_HAVE, directory,"--output",PlexPVRManager.FILEBOT_SERIES_EPISODES_HAVE_FILE , "--log", "info"});
 		}
 		catch(SecurityException e)
@@ -436,9 +437,8 @@ public class PlexPVRManager {
 	
 	/**
 	 * @param directory
-	 * @return
 	 */
-	public List<KodiExodusDownloader> findMissingTVShowEpisodes(String directory) {
+	public void findMissingTVShowEpisodes(String directory) {
 		log.entering(CLASS_NAME, "findMissingEpisodes", new Object[] {directory});
 		File missingEpisodeFile = new File(PlexPVRManager.FILEBOT_SERIES_EPISODES_MISSING_FILE);
 		try {
@@ -465,18 +465,14 @@ public class PlexPVRManager {
 			unsetFilebotSecurityManager();
 		}
 		
-		List<KodiExodusDownloader> missingEpisodes = loadTVShowRequests(PlexPVRManager.FILEBOT_SERIES_EPISODES_MISSING_FILE);
-		
 		log.exiting(CLASS_NAME, "findMissingEpisodes");
-		
-		return missingEpisodes;
 	}
 	
 	/**
 	 * @param directory
 	 * @return
 	 */
-	public List<KodiExodusDownloader> findCompletedEpisodes(String directory) {
+	public void findCompletedEpisodes(String directory) {
 		log.entering(CLASS_NAME, "findCompletedEpisodes", new Object[] {directory});
 		File seriesEndedFile = new File(PlexPVRManager.FILEBOT_SERIES_ENDED_EPISODES_FILE);
 		try {
@@ -500,11 +496,7 @@ public class PlexPVRManager {
 			unsetFilebotSecurityManager();
 		}
 		
-		List<KodiExodusDownloader> missingEpisodes = loadTVShowRequests(PlexPVRManager.FILEBOT_SERIES_ENDED_EPISODES_FILE);
-		
 		log.exiting(CLASS_NAME, "findCompletedEpisodes");
-		
-		return missingEpisodes;
 	}	
 	
 	/**
@@ -655,20 +647,10 @@ public class PlexPVRManager {
         InputStream inputStream = null;
         Reader reader = null;
         CSVParser parser = null;
-        File missingEpisodeFile = new File(missingEpisodeFileString);
-        
-        //FIXME Check to see if there is a lock file then create one
-//        if(missingEpisodeFile.exists())
-//        {
-//        	//FIXME we need to pause the thread and check again
-//        }
-//        else
-//        {
-//        	FileUtils.copyFile(missingEpisodeFile, destFile);
-//        }
-        
+        File missingEpisodeLockFile = null;
         try {
-        	inputStream = new FileInputStream(missingEpisodeFile);
+        	missingEpisodeLockFile = waitForLockFile(missingEpisodeFileString);
+        	inputStream = new FileInputStream(missingEpisodeLockFile);
             reader = new InputStreamReader(inputStream, "UTF-8");
             parser = new CSVParser(reader, CSVFormat.EXCEL.withHeader());
             
@@ -700,31 +682,92 @@ public class PlexPVRManager {
             }
 		}
 		catch (Exception e) {
-			// TODO BASE_CODE: handle exception
+			// FIXME: handle exception
+			log.severe("Error loading TVShow Requests: " + missingEpisodeLockFile);
 		}
         finally {
             try {
             	parser.close();	
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + missingEpisodeFile + " Parser: " + e.getMessage());
+				log.severe("Unable to close " + missingEpisodeLockFile + " Parser: " + e.getMessage());
 			}
             try {
             	reader.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + missingEpisodeFile + " Reader: " + e.getMessage());
+				log.severe("Unable to close " + missingEpisodeLockFile + " Reader: " + e.getMessage());
 			}
             try {
             	inputStream.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + missingEpisodeFile + " InputStream: " + e.getMessage());
-			}            
+				log.severe("Unable to close " + missingEpisodeLockFile + " InputStream: " + e.getMessage());
+			}   
+            
+            //delete the lock file
+            try {
+            	if((missingEpisodeLockFile != null) && (missingEpisodeLockFile.exists()))
+            	{
+            		missingEpisodeLockFile.delete();
+            	}
+			}
+			catch (Exception e) {
+				log.severe("ERROR: Unable to close " + missingEpisodeFileString + " InputStream: " + e.getMessage());
+			}
         }
         
     	return missingEpisodes;        
 	}		
+	
+	/**
+	 * FIXME DSP When loading the TVShowRequests we should put a lock in place so we can have multiple applications to handle the 
+	 * tv show requests
+	 * @param missingEpisodeFile
+	 * @return
+	 */
+	synchronized private File waitForLockFile(String masterFileString) {
+		log.entering(CLASS_NAME, "waitForLockFile", new Object[] { masterFileString });
+		if(masterFileString == null)
+		{
+			log.severe("Error with the inpurt masterFile: " + masterFileString);
+			return null;
+		}
+		
+        String masterFileLockString=masterFileString + ".lock";
+        File masterFileLock = new File(masterFileLockString);
+        File masterFile = new File(masterFileString);
+        
+        //FIXME Check to see if there is a lock file and if not create one
+        while(true)
+        {    
+            if(masterFileLock.exists())
+            {
+            	try {
+                	//FIXME we need to pause the thread and check again
+                	Thread.sleep(PlexPVRManager.QUEUE_LOCK_FILE_WAIT_TIME);
+				}
+				catch (Exception e) {
+					log.severe("ERROR waiting while sleeping while polling for lock file.");
+				}
+            }
+            else
+            {
+            	try {
+            		FileUtils.copyFile(masterFile, masterFileLock);
+            		if(masterFileLock.exists())
+            		{
+            			break;
+            		}
+    			}
+    			catch (Exception e) {
+    				log.severe("Could not create lock file for: " + masterFileString + " lock file: " + masterFileLockString);
+    			}
+            }
+        }
+        
+    	return masterFileLock;        
+	}			
 	
 	/**
 	 * @param tvdbid
