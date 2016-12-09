@@ -19,16 +19,14 @@
  */
 package io.askcloud.pvr.fanarttv.model;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.askcloud.pvr.api.pvr.HTPC;
-
 import java.io.Serializable;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Abstract class to handle any unknown properties by outputting a log message
  *
@@ -36,7 +34,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public abstract class AbstractJsonMapping implements Serializable {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = AbstractJsonMapping.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
     /*
      * Error fields
      */
@@ -58,7 +57,7 @@ public abstract class AbstractJsonMapping implements Serializable {
         unknown.append(": Unknown property='").append(key);
         unknown.append("' value='").append(value).append("'");
 
-        log.info(unknown.toString());
+        LOG.info(unknown.toString());
     }
 
     @Override

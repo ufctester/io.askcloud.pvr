@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.askcloud.pvr.api;
+package io.askcloud.pvr.api.main;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,9 +9,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.askcloud.pvr.api.pvr.KodiExodusMovieDownloader;
-import io.askcloud.pvr.api.pvr.KodiExodusTVShowDownloader;
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
+import io.askcloud.pvr.api.kodi.KodiMovieDownloader;
+import io.askcloud.pvr.api.kodi.KodiTVShowDownloader;
 import io.askcloud.pvr.themoviedb.TheMovieDbApi;
 import io.askcloud.pvr.themoviedb.enumeration.MovieMethod;
 import io.askcloud.pvr.themoviedb.enumeration.SearchType;
@@ -84,28 +84,31 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
 	@Override
 	void run() {
 		findTVShows();
+		
+		//exit the java program
+		System.exit(0);
 	}
 	
 	
 	/**
 	 * @param args
 	 */
-	public List<KodiExodusTVShowDownloader> findTVShows() {
+	public List<KodiTVShowDownloader> findTVShows() {
 		
-		List<KodiExodusTVShowDownloader> downloads = new ArrayList<KodiExodusTVShowDownloader>();
+		List<KodiTVShowDownloader> downloads = new ArrayList<KodiTVShowDownloader>();
 		
 		for (Iterator iterator = findTVShows.iterator(); iterator.hasNext();) {
 			String tvShow = (String) iterator.next();
 			Series tvshowInfo = findTVShow(tvShow);
 			if(tvshowInfo != null)
 			{
-				downloads.add(new KodiExodusTVShowDownloader(tvShow, null,tvshowInfo.getId(),1,1,false));	
+				downloads.add(new KodiTVShowDownloader(tvShow, null,tvshowInfo.getId(),1,1,false));	
 			}
 		}
 		
 		System.out.println("==========================================================================");
 		for (Iterator iterator = downloads.iterator(); iterator.hasNext();) {
-			KodiExodusTVShowDownloader kodiExodusTVShowDownloader = (KodiExodusTVShowDownloader) iterator.next();
+			KodiTVShowDownloader kodiExodusTVShowDownloader = (KodiTVShowDownloader) iterator.next();
 			
 			//System.out.println("IMDBID: " + kodiExodusMovieDownloader.getImdbID() + " movieName: " + kodiExodusMovieDownloader.getMovieName());
 			System.out.println(kodiExodusTVShowDownloader.getTVDBID() + "," + kodiExodusTVShowDownloader.getShowName());
@@ -159,22 +162,22 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
 	/**
 	 * @return
 	 */
-	private List<KodiExodusMovieDownloader> findMovies()
+	private List<KodiMovieDownloader> findMovies()
 	{
-		List<KodiExodusMovieDownloader> downloads = new ArrayList<KodiExodusMovieDownloader>();
+		List<KodiMovieDownloader> downloads = new ArrayList<KodiMovieDownloader>();
 		
 		for (Iterator iterator = findMovies.iterator(); iterator.hasNext();) {
 			String movieName = (String) iterator.next();
 			MovieInfo movieInfo = findMovie(movieName);
 			if(movieInfo != null)
 			{
-				downloads.add(new KodiExodusMovieDownloader(movieName, movieInfo.getImdbID()));	
+				downloads.add(new KodiMovieDownloader(movieName, movieInfo.getImdbID()));	
 			}
 		}
 		
 		System.out.println("==========================================================================");
 		for (Iterator iterator = downloads.iterator(); iterator.hasNext();) {
-			KodiExodusMovieDownloader kodiExodusMovieDownloader = (KodiExodusMovieDownloader) iterator.next();
+			KodiMovieDownloader kodiExodusMovieDownloader = (KodiMovieDownloader) iterator.next();
 			
 			//System.out.println("IMDBID: " + kodiExodusMovieDownloader.getImdbID() + " movieName: " + kodiExodusMovieDownloader.getMovieName());
 			System.out.println(kodiExodusMovieDownloader.getImdbID() + "," + kodiExodusMovieDownloader.getMovieName());

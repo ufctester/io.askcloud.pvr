@@ -19,7 +19,7 @@
  */
 package io.askcloud.pvr.omdb.tools;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
 import io.askcloud.pvr.omdb.OMDBException;
 import io.askcloud.pvr.omdb.emumerations.PlotType;
 
@@ -31,7 +31,9 @@ import org.yamj.api.common.exception.ApiExceptionType;
 
 public class OmdbUrlBuilder {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = OmdbUrlBuilder.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
+
     private static final String BASE_URL = "http://www.omdbapi.com/";
     private static final String DELIMITER_FIRST = "?";
     private static final String DELIMITER_SUBSEQUENT = "&";
@@ -87,7 +89,7 @@ public class OmdbUrlBuilder {
         // Append the callback function - This is not used by this API
         appendParam(params, Param.CALLBACK, sb);
 
-        log.info("Created URL: "+  sb.toString());
+        LOG.info("Created URL: "+  sb.toString());
         return sb.toString();
     }
 

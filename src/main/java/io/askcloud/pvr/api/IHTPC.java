@@ -1,4 +1,4 @@
-package io.askcloud.pvr.api.pvr;
+package io.askcloud.pvr.api;
 
 
 import java.util.logging.Level;
@@ -16,8 +16,10 @@ public interface IHTPC {
 	
 	//Logger Details
 	public Level LOG_LEVEL = Level.INFO;
-	public String CLASS_NAME = HTPC.class.getName();
-	public Logger log = Logger.getLogger(CLASS_NAME);
+	
+	public String LOG_DOWNLOAD_TR = "io.askcloud.pvr.api.kodi.status";
+	public String LOG_LOAD_KODI_STATUS_TR = "io.askcloud.pvr.api.kodi.loadstatus";
+	public String LOG_DOWNLOAD_KODI_MONITOR_THREAD_TR = "io.askcloud.pvr.api.kodi.monitor";
 	
 	
 	public static String PLEX_TVSHOWS_DIR =  "C:\\Entertainment\\TVShows";
@@ -66,9 +68,9 @@ public interface IHTPC {
 	//Kodi Exodus Clear Cache Wait time for the thread so the cache can be completely cleared before continuing.
 	public static int CLEAR_CACHE_THREAD_WAIT_TIME=10000; //10 seconds
 	
-	public static int KODI_MONITOR_DOWNLOAD_PERCENTAGE_CSV_FILE_LOADER=5000; //5 seconds
+	public static int KODI_MONITOR_DOWNLOAD_PERCENTAGE_CSV_FILE_LOADER=10000; //10 seconds
 	
-	public static int KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME=10000; //10 seconds
+	public static int KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME=20000; //20 seconds
 
 	
 }

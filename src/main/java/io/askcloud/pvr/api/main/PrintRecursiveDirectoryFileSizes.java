@@ -1,8 +1,8 @@
-package io.askcloud.pvr.api;
+package io.askcloud.pvr.api.main;
 
 import java.io.File;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
 
 public class PrintRecursiveDirectoryFileSizes extends PlexRequest {
 
@@ -23,6 +23,9 @@ public class PrintRecursiveDirectoryFileSizes extends PlexRequest {
 	@Override
 	void run() {
 		HTPC.getInstance().printFileSizes(new File(directory));
+		
+		//exit the java program
+		System.exit(0);
 		
 	}
 }

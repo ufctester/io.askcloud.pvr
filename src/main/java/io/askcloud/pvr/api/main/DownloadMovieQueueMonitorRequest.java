@@ -1,6 +1,6 @@
-package io.askcloud.pvr.api;
+package io.askcloud.pvr.api.main;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
 
 public class DownloadMovieQueueMonitorRequest extends PlexRequest {
 
@@ -21,6 +21,9 @@ public class DownloadMovieQueueMonitorRequest extends PlexRequest {
 	@Override
 	void run() {
 		HTPC.CLEAN_KODI_DOWNLOAD=true;
-		HTPC.getInstance().getKodiManager().downloadMoviesQueue();;
+		HTPC.getInstance().getKodiManager().downloadMoviesQueue();
+		
+		//exit the java program
+		System.exit(0);
 	}
 }

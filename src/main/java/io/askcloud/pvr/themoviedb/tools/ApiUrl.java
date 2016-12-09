@@ -31,7 +31,8 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
+import io.askcloud.pvr.fanarttv.tools.ApiBuilder;
 /**
  * The API URL that is used to construct the API call
  *
@@ -39,7 +40,8 @@ import io.askcloud.pvr.api.pvr.HTPC;
  */
 public class ApiUrl {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = ApiUrl.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
     // TheMovieDbApi API Base URL
     private static final String TMDB_API_BASE = "http://api.themoviedb.org/3/";
     // Parameter configuration
@@ -100,7 +102,7 @@ public class ApiUrl {
     public URL buildUrl(final TmdbParameters params) {
         StringBuilder urlString = new StringBuilder(TMDB_API_BASE);
 
-        log.info("Method: " + method.getValue() + " Sub-method: " + submethod.getValue() + " Params: " + ToStringBuilder.reflectionToString(params, ToStringStyle.SHORT_PREFIX_STYLE));
+        LOG.info("Method: " + method.getValue() + " Sub-method: " + submethod.getValue() + " Params: " + ToStringBuilder.reflectionToString(params, ToStringStyle.SHORT_PREFIX_STYLE));
 
         // Get the start of the URL, substituting TV for the season or episode methods
         if (method == MethodBase.SEASON || method == MethodBase.EPISODE) {
@@ -119,10 +121,10 @@ public class ApiUrl {
         urlString.append(otherProcessing(params));
 
         try {
-        	log.info("URL: "+  urlString.toString());
+        	LOG.info("URL: "+  urlString.toString());
             return new URL(urlString.toString());
         } catch (MalformedURLException ex) {
-        	log.severe("Failed to create URL: " + urlString.toString() + " exception: " + ex.toString());
+        	LOG.severe("Failed to create URL: " + urlString.toString() + " exception: " + ex.toString());
             return null;
         }
     }
@@ -153,7 +155,7 @@ public class ApiUrl {
         try {
             urlString.append(URLEncoder.encode(query, "UTF-8"));
         } catch (UnsupportedEncodingException ex) {
-        	log.severe("Unable to encode query: " + query + " exception: " + ex.toString());
+        	LOG.severe("Unable to encode query: " + query + " exception: " + ex.toString());
             // If we can't encode it, try it raw
             urlString.append(query);
         }

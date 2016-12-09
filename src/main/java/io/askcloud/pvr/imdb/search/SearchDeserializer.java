@@ -13,12 +13,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
+import io.askcloud.pvr.tvdb.tools.DOMHelper;
 
 
 public class SearchDeserializer extends StdDeserializer<SearchObject> {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = SearchDeserializer.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
     private final Map<String, Class<? extends SearchObject>> registry = new HashMap<>();
 
     public SearchDeserializer() {
@@ -39,23 +41,23 @@ public class SearchDeserializer extends StdDeserializer<SearchObject> {
         while (elementsIterator.hasNext()) {
             Map.Entry<String, JsonNode> element = elementsIterator.next();
             String name = element.getKey();
-            log.info("Name: " + name + " value: " + element.getValue().asText()); 
+            LOG.info("Name: " + name + " value: " + element.getValue().asText()); 
 
             if (registry.containsKey(name)) {
                 searchClass = registry.get(name);
-                log.info("Using class: " + searchClass.getSimpleName());
+                LOG.info("Using class: " + searchClass.getSimpleName());
                 break;
             }
         }
 
         if (searchClass == null) {
-            log.info("END: No search class!");
+            LOG.info("END: No search class!");
             return new SearchObject();
         }
 
         SearchObject so = mapper.readValue(jp, searchClass);
-        log.info("SO: " + so.toString());
-        log.info("END");
+        LOG.info("SO: " + so.toString());
+        LOG.info("END");
         return so;
     }
 }

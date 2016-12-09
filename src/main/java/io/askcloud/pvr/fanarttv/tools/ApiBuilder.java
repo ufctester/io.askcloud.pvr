@@ -19,7 +19,7 @@
  */
 package io.askcloud.pvr.fanarttv.tools;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
 import io.askcloud.pvr.fanarttv.FanartTvException;
 import io.askcloud.pvr.fanarttv.enumeration.BaseType;
 
@@ -40,7 +40,8 @@ public final class ApiBuilder {
      * Logger
      */
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = ApiBuilder.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
     /*
      * FanartTV API Base URL
      */
@@ -155,10 +156,10 @@ public final class ApiBuilder {
      */
     private URL convertUrl(StringBuilder searchUrl) throws FanartTvException {
         try {
-        	log.info("URL: "+  searchUrl.toString());
+        	LOG.info("URL: "+  searchUrl.toString());
             return new URL(searchUrl.toString());
         } catch (MalformedURLException ex) {
-        	log.severe(FAILED_TO_CREATE_URL + " " + searchUrl.toString() + " exception: " + ex.toString());
+        	LOG.severe(FAILED_TO_CREATE_URL + " " + searchUrl.toString() + " exception: " + ex.toString());
             throw new FanartTvException(ApiExceptionType.INVALID_URL, "Unable to conver String to URL", 0, searchUrl.toString(), ex);
         }
     }

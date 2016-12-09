@@ -34,7 +34,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.HttpClient;
 import org.yamj.api.common.http.SimpleHttpClientBuilder;
 
-import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.tvdb.model.Actor;
 import io.askcloud.pvr.tvdb.model.Banners;
 import io.askcloud.pvr.tvdb.model.Episode;
@@ -50,7 +49,8 @@ import io.askcloud.pvr.tvdb.tools.TvdbParser;
  */
 public class TheTVDBApi {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = TheTVDBApi.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
     private String apiKey = null;
     private HttpClient httpClient;
     private static final String BASE_URL = "http://thetvdb.com/api/";
@@ -107,7 +107,7 @@ public class TheTVDBApi {
             urlBuilder.append(language).append(XML_EXTENSION);
         }
 
-        log.fine(URL + " " + urlBuilder.toString());
+        LOG.fine(URL + " " + urlBuilder.toString());
         List<Series> seriesList = TvdbParser.getSeriesList(urlBuilder.toString());
         if (seriesList.isEmpty()) {
             return null;
@@ -138,7 +138,7 @@ public class TheTVDBApi {
                 urlBuilder.append(language).append(XML_EXTENSION);
             }
 
-            log.fine(URL + " " + urlBuilder.toString());
+            LOG.fine(URL + " " + urlBuilder.toString());
             episodeList = TvdbParser.getAllEpisodes(urlBuilder.toString(), -1);
         }
         return episodeList;
@@ -165,7 +165,7 @@ public class TheTVDBApi {
             urlBuilder.append(language).append(XML_EXTENSION);
         }
 
-        log.fine(URL + " " + urlBuilder.toString());
+        LOG.fine(URL + " " + urlBuilder.toString());
         return TvdbParser.getAllEpisodes(urlBuilder.toString(), season);
     }
 
@@ -229,7 +229,7 @@ public class TheTVDBApi {
             urlBuilder.append(language).append(XML_EXTENSION);
         }
 
-        log.fine(URL + " " + urlBuilder.toString());
+        LOG.fine(URL + " " + urlBuilder.toString());
         return TvdbParser.getEpisode(urlBuilder.toString());
     }
 
@@ -255,7 +255,7 @@ public class TheTVDBApi {
             urlBuilder.append(language).append(XML_EXTENSION);
         }
 
-        log.fine(URL + " " + urlBuilder.toString());
+        LOG.fine(URL + " " + urlBuilder.toString());
         return TvdbParser.getEpisode(urlBuilder.toString());
     }
 
@@ -279,7 +279,7 @@ public class TheTVDBApi {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 date = dateFormat.parse(episode.getFirstAired());
             } catch (ParseException ex) {
-                log.severe("Failed to transform date: {} " + episode.getFirstAired() + " " + ex.getMessage());
+                LOG.severe("Failed to transform date: {} " + episode.getFirstAired() + " " + ex.getMessage());
                 date = null;
             }
 
@@ -308,7 +308,7 @@ public class TheTVDBApi {
                   .append(seriesId)
                   .append("/banners.xml");
 
-        log.fine(URL + " " + urlBuilder.toString());
+        LOG.fine(URL + " " + urlBuilder.toString());
         Banners b = TvdbParser.getBanners(urlBuilder.toString());
 
         if (b != null) {
@@ -333,7 +333,7 @@ public class TheTVDBApi {
                   .append(seriesId)
                   .append("/actors.xml");
 
-        log.fine(URL + " " + urlBuilder.toString());
+        LOG.fine(URL + " " + urlBuilder.toString());
         return TvdbParser.getActors(urlBuilder.toString());
     }
 
@@ -356,12 +356,12 @@ public class TheTVDBApi {
                 urlBuilder.append("&language=").append(language);
             }
         } catch (UnsupportedEncodingException ex) {
-            log.severe("Failed to encode title: " + title + " exception: " + ex.getMessage());
+            LOG.severe("Failed to encode title: " + title + " exception: " + ex.getMessage());
             // Try and use the raw title
             urlBuilder.append(title);
         }
 
-        log.fine(URL + " " + urlBuilder.toString());
+        LOG.fine(URL + " " + urlBuilder.toString());
         return TvdbParser.getSeriesList(urlBuilder.toString());
     }
 
@@ -386,7 +386,7 @@ public class TheTVDBApi {
             urlBuilder.append(XML_EXTENSION);
         }
 
-        log.fine(URL + " " + urlBuilder.toString());
+        LOG.fine(URL + " " + urlBuilder.toString());
         return TvdbParser.getEpisode(urlBuilder.toString());
     }
 
@@ -414,7 +414,7 @@ public class TheTVDBApi {
                   .append(apiKey)
                   .append(WEEKLY_UPDATES_URL);
 
-        log.fine(URL + " " + urlBuilder.toString());
+        LOG.fine(URL + " " + urlBuilder.toString());
         return TvdbParser.getUpdates(urlBuilder.toString(), seriesId);
     }
 
@@ -432,7 +432,7 @@ public class TheTVDBApi {
                   .append("/languages")
                   .append(XML_EXTENSION);
 
-        log.fine(URL + " " + urlBuilder.toString());
+        LOG.fine(URL + " " + urlBuilder.toString());
         return TvdbParser.getLanguages(urlBuilder.toString());
     }
 

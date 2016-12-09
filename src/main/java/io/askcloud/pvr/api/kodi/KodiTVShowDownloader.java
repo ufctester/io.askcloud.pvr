@@ -1,4 +1,4 @@
-package io.askcloud.pvr.api.pvr;
+package io.askcloud.pvr.api.kodi;
 
 import java.io.File;
 import java.net.URL;
@@ -10,7 +10,8 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import io.askcloud.pvr.api.pvr.KodiDownloadManager.DownloadStatus;
+import io.askcloud.pvr.api.HTPC;
+import io.askcloud.pvr.api.kodi.KodiManager.DownloadStatus;
 import io.askcloud.pvr.kodi.jsonrpc.api.AbstractCall;
 import io.askcloud.pvr.kodi.jsonrpc.api.call.Addons;
 import io.askcloud.pvr.kodi.jsonrpc.api.call.Files.GetDirectory;
@@ -22,7 +23,7 @@ import io.askcloud.pvr.kodi.jsonrpc.model.ListModel;
  * @author UFCTester
  *
  */
-public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
+public class KodiTVShowDownloader extends KodiDownloader {
 
 	//i.e. 24 or Person of Interest
 	private String SHOW_NAME = null;
@@ -33,14 +34,14 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	
 	private boolean seriesEnded=false;
 	
-	private static String CLASS_NAME = KodiExodusTVShowDownloader.class.getName();
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = KodiTVShowDownloader.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
-	public KodiExodusTVShowDownloader(String searchName, String imdbid, String tvdbid,int season, int episode,boolean seriesEnded) {
+	public KodiTVShowDownloader(String searchName, String imdbid, String tvdbid,int season, int episode,boolean seriesEnded) {
 
 		super();
-		log.entering(CLASS_NAME, "KodiExodusDownloader");
-		log.exiting(CLASS_NAME, "KodiExodusDownloader");
+		LOG.entering(CLASS_NAME, "KodiExodusDownloader");
+		LOG.exiting(CLASS_NAME, "KodiExodusDownloader");
 		imdbid=(StringUtils.isNotBlank(imdbid))?imdbid:null;
 		setImdbID(imdbid);
 		setTVDBID(tvdbid);
@@ -53,6 +54,14 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	public String getShowName() {
 		return SHOW_NAME;
 	}
+	
+	public int getSeason() {
+		return SEASON;
+	}
+	
+	public int getEpisode() {
+		return EPISODE;
+	}
 	/**
 	 * @return
 	 */
@@ -64,7 +73,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	@Override
 	protected void setThreadName() {
 		String threadName = null;
-		threadName = "KodiDownloader [" + getLastDownloadStatus().getThreadPrefix() + "% " + SHOW_NAME + " " + "S" + HTPC.getInstance().getSeason(Integer.valueOf(SEASON).toString()) + "E" + HTPC.getInstance().getEpisode(Integer.valueOf(EPISODE).toString()) + "]";
+		threadName = "KodiDownloader [" + getLastDownloadStatus().getThreadPrefix() + "% " + SHOW_NAME + " " + "S" + HTPC.getInstance().getSeason(SEASON) + "E" + HTPC.getInstance().getEpisode(EPISODE) + "]";
 		final Thread currentThread = Thread.currentThread();
         currentThread.setName(threadName);	
 	}
@@ -72,13 +81,18 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	
 	@Override
 	protected DownloadStatus getUpdatedDownloadStatus() {
-		String name = SHOW_NAME + " S" + HTPC.getInstance().getSeason(Integer.valueOf(SEASON).toString()) + "E" + HTPC.getInstance().getEpisode(Integer.valueOf(EPISODE).toString());
+		String name = createTVEpisodeName(SHOW_NAME, SEASON, EPISODE);
 		return HTPC.getInstance().getKodiManager().getDownloadStatus(name);
+	}
+	
+	public static String createTVEpisodeName(String showName, int season,int episode)
+	{
+		return showName + " S" + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode);
 	}
 
 	@Override
 	protected void requestDownload() {
-		log.entering(CLASS_NAME, "requestDownload");
+		LOG.entering(CLASS_NAME, "requestDownload");
 
 		//Exodus calls urllib.quote_plus() on the show name before it makes the rest call
 		String tvShow = URLEncoder.encode(SHOW_NAME);
@@ -86,7 +100,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 		GetDirectory exodus = new GetDirectory(
 				"plugin://plugin.video.exodus/?action=tvshowPage&url=http%3A%2F%2Fapi-v2launch.trakt.tv%2Fsearch%3Ftype%3Dshow%26limit%3D3020%26page%3D1%26query%3D" + tvShow);
 
-		log.info("Season URL: " + "plugin://plugin.video.exodus/?action=tvshowPage&url=http%3A%2F%2Fapi-v2launch.trakt.tv%2Fsearch%3Ftype%3Dshow%26limit%3D30%26page%3D1%26query%3D" + tvShow);
+		LOG.info("Season URL: " + "plugin://plugin.video.exodus/?action=tvshowPage&url=http%3A%2F%2Fapi-v2launch.trakt.tv%2Fsearch%3Ftype%3Dshow%26limit%3D30%26page%3D1%26query%3D" + tvShow);
 		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			/*
@@ -94,7 +108,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 			 */
 			@Override
 			public void onResponse(AbstractCall<ListModel.FileItem> call) {
-				log.entering(CLASS_NAME, "downloadTVShow::onResponse", new Object[] { call });
+				LOG.entering(CLASS_NAME, "downloadTVShow::onResponse", new Object[] { call });
 
 				String tvShowURL = null;
 				//seach for the right tv show
@@ -105,7 +119,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 						String pluginURL = res.file;
 						String url = URLDecoder.decode(res.file);
 						//System.out.println(" searchNav " + call.getResults().size() + " sources");
-						log.info("TV Show: " + url);
+						LOG.info("TV Show: " + url);
 						//plugin://plugin.video.exodus/?action=seasons&tvshowtitle=Brothers & Sisters&year=2006&imdb=tt0758737&tvdb=79506
 						URL urlObj = new URL(pluginURL.replaceAll("plugin://", "http://"));
 
@@ -148,35 +162,35 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 					downloadTVShowSeasons(tvShowURL);
 				}
 				else {
-					log.severe("ERROR: Unable to find TV Show named: " + SHOW_NAME);
+					LOG.severe("ERROR: Unable to find TV Show named: " + SHOW_NAME);
 				}
 			}
 
 			@Override
 			public void onError(int code, String message, String hint) {
-				log.severe("ERROR " + code + ": " + message);
+				LOG.severe("ERROR " + code + ": " + message);
 			}
 		});
-		log.exiting(CLASS_NAME, "requestDownload");
+		LOG.exiting(CLASS_NAME, "requestDownload");
 	}
 
 	/**
 	 * plugin://plugin.video.exodus/?action=seasons&tvshowtitle=Person of Interest&year=2011&imdb=tt1839578&tvdb=248742
 	 */
 	private void downloadTVShowSeasons(String tvShowURL) {
-		log.entering(CLASS_NAME, "downloadTVShowSeasons", new Object[] { tvShowURL });
+		LOG.entering(CLASS_NAME, "downloadTVShowSeasons", new Object[] { tvShowURL });
 		String decode = URLDecoder.decode(tvShowURL);
-		log.fine("donwloadTVShowSeasonURL: " + decode);
+		LOG.fine("donwloadTVShowSeasonURL: " + decode);
 		GetDirectory exodus = new GetDirectory(tvShowURL);
 
 		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			@Override
 			public void onResponse(AbstractCall<ListModel.FileItem> call) {
-				log.entering(CLASS_NAME, "downloadTVShowSeasons::onResponse", new Object[] { call });
+				LOG.entering(CLASS_NAME, "downloadTVShowSeasons::onResponse", new Object[] { call });
 
 				for (ListModel.FileItem res : call.getResults()) {
-					//log.fine("  " + res.file);
+					//LOG.fine("  " + res.file);
 					try {
 
 						URL urlObj = new URL(res.file.replaceAll("plugin://", "http://"));
@@ -189,7 +203,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 						String imdb = query.get("imdb");
 						String tvdb = query.get("tvdb");
 						String season = query.get("season");
-						log.finest("action: " + action + " tvshow: " + tvshowtitle + " Season " + season + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
+						LOG.fine("action: " + action + " tvshow: " + tvshowtitle + " Season " + season + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
 						downloadTVShowSeasonEpisode(tvshowtitle, season, res.file);
 					}
 					catch (Exception e) {
@@ -200,11 +214,11 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 
 			@Override
 			public void onError(int code, String message, String hint) {
-				log.severe("ERROR " + code + ": " + message);
+				LOG.severe("ERROR " + code + ": " + message);
 			}
 		});
 
-		log.exiting(CLASS_NAME, "downloadTVShowSeasons");
+		LOG.exiting(CLASS_NAME, "downloadTVShowSeasons");
 	}
 
 	/**
@@ -222,7 +236,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 			return;
 		}
 		
-		log.entering(CLASS_NAME, "downloadTVShowSeasonEpisode", new Object[] { tvshowtitle, season, tvShowSeasonURL });
+		LOG.entering(CLASS_NAME, "downloadTVShowSeasonEpisode", new Object[] { tvshowtitle, season, tvShowSeasonURL });
 		GetDirectory exodus = new GetDirectory(tvShowSeasonURL);
 
 		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
@@ -232,7 +246,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 
 				//This is called for each season episode
 				for (ListModel.FileItem res : call.getResults()) {
-					log.fine("  " + res.file);
+					LOG.fine("  " + res.file);
 					try {
 						URL urlObj = new URL(res.file.replaceAll("plugin://", "http://"));
 
@@ -258,7 +272,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 
 						//info("action: " + action + " tvshow: " + tvshowtitle + " Season " + season + " Episode " + episode + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
 						//info("title: " + title + " S" + seasonStr + "E" + episodeStr + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
-						log.fine("Season " + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode) + " title: " + title + " premiered: " + premiered + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
+						LOG.fine("Season " + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode) + " title: " + title + " premiered: " + premiered + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
 						downloadTVShowBySeasonEpisodeFromURL(tvshowtitle, season, episode, res.file);
 					}
 					catch (Exception e) {
@@ -269,17 +283,17 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 
 			@Override
 			public void onError(int code, String message, String hint) {
-				log.severe("ERROR " + code + ": " + message);
+				LOG.severe("ERROR " + code + ": " + message);
 			}
 		});
-		log.exiting(CLASS_NAME, "downloadTVShowSeasonEpisode");
+		LOG.exiting(CLASS_NAME, "downloadTVShowSeasonEpisode");
 	}
 
 	/**
 	 * plugin://plugin.video.exodus/?action=play&title=Pilot&year=2011&imdb=tt1839578&tvdb=248742&season=1&episode=1&tvshowtitle=Person+of+Interest&premiered=2011-09-22&meta=%7B%22rating%22%3A+%227.7%22%2C+%22imdb%22%3A+%22tt1839578%22%2C+%22year%22%3A+%222011%22%2C+%22duration%22%3A+%222700%22%2C+%22plot%22%3A+%22Reese+and+Finch+must+figure+out+whether+a+young+prosecutor+is+a+victim+or+a+suspect.%22%2C+%22votes%22%3A+%22293%22%2C+%22thumb%22%3A+%22http%3A%2F%2Fthetvdb.com%2Fbanners%2Fepisodes%2F248742%2F4099507.jpg%22%2C+%22title%22%3A+%22Pilot%22%2C+%22tvdb%22%3A+%22248742%22%2C+%22mpaa%22%3A+%22TV-14%22%2C+%22writer%22%3A+%22Jonathan+Nolan%22%2C+%22label%22%3A+%22Pilot%22%2C+%22season%22%3A+%221%22%2C+%22status%22%3A+%22Ended%22%2C+%22poster%22%3A+%22http%3A%2F%2Fthetvdb.com%2Fbanners%2Fposters%2F248742-16.jpg%22%2C+%22tvshowtitle%22%3A+%22Person+of+Interest%22%2C+%22mediatype%22%3A+%22episode%22%2C+%22director%22%3A+%22David+Semel%22%2C+%22studio%22%3A+%22CBS%22%2C+%22genre%22%3A+%22Action+%2F+Adventure+%2F+Drama+%2F+Mystery+%2F+Thriller%22%2C+%22banner%22%3A+%22http%3A%2F%2Fthetvdb.com%2Fbanners%2Fgraphical%2F248742-g11.jpg%22%2C+%22fanart%22%3A+%22http%3A%2F%2Fthetvdb.com%2Fbanners%2Ffanart%2Foriginal%2F248742-21.jpg%22%2C+%22episode%22%3A+%221%22%2C+%22premiered%22%3A+%222011-09-22%22%2C+%22cast%22%3A+%5B%5B%22Michael+Emerson%22%2C+%22%22%5D%2C+%5B%22Jim+Caviezel%22%2C+%22%22%5D%2C+%5B%22Amy+Acker%22%2C+%22%22%5D%2C+%5B%22Sarah+Shahi%22%2C+%22%22%5D%2C+%5B%22Taraji+P.+Henson%22%2C+%22%22%5D%2C+%5B%22Kevin+Chapman%22%2C+%22%22%5D%2C+%5B%22Paige+Turco%22%2C+%22%22%5D%2C+%5B%22John+Nolan%22%2C+%22%22%5D%2C+%5B%22Enrico+Colantoni%22%2C+%22%22%5D%5D%2C+%22trailer%22%3A+%22plugin%3A%2F%2Fplugin.video.exodus%2F%3Faction%3Dtrailer%26name%3DPerson%2Bof%2BInterest%22%7D&t=20161121170832290000
 	 */
 	private void downloadTVShowBySeasonEpisodeFromURL(String tvshowtitle, String season, String episode, String tvShowSeasonEpisodeURL) {
-		log.entering(CLASS_NAME, "downloadTVShowBySeasonEpisodeFromURL", new Object[] { tvshowtitle, season, episode, tvShowSeasonEpisodeURL });
+		LOG.entering(CLASS_NAME, "downloadTVShowBySeasonEpisodeFromURL", new Object[] { tvshowtitle, season, episode, tvShowSeasonEpisodeURL });
 		if(Integer.valueOf(season).intValue() != SEASON) {
 			return;
 		}
@@ -295,11 +309,11 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 		}
 
 		if (!shouldDownloadEpisode) {
-			log.fine("EPISODES DOES NOT INCLUDE " + episode + " SO DO NOT DOWNLOAD TVSHOW: " + tvshowtitle + " season: " + season + " episode: " + episode);
+			LOG.fine("EPISODES DOES NOT INCLUDE " + episode + " SO DO NOT DOWNLOAD TVSHOW: " + tvshowtitle + " season: " + season + " episode: " + episode);
 			return;
 		}
 		else {
-			log.fine("EPISODES includes " + episode + " so download tvshow: " + tvshowtitle + " season: " + season + " episode: " + episode);
+			LOG.fine("EPISODES includes " + episode + " so download tvshow: " + tvshowtitle + " season: " + season + " episode: " + episode);
 		}
 
 		//Check if it is a missing episode
@@ -310,57 +324,57 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 		
 		//plugin://plugin.video.exodus/?action=play&title=Pilot&year=2011&imdb=tt1839578&tvdb=248742&season=1&episode=1&tvshowtitle=Person+of+Interest&premiered=2011-09-22&meta=%7B%22rating%22%3A+%227.7%22%2C+%22imdb%22%3A+%22tt1839578%22%2C+%22year%22%3A+%222011%22%2C+%22duration%22%3A+%222700%22%2C+%22plot%22%3A+%22Reese+and+Finch+must+figure+out+whether+a+young+prosecutor+is+a+victim+or+a+suspect.%22%2C+%22votes%22%3A+%22293%22%2C+%22thumb%22%3A+%22http%3A%2F%2Fthetvdb.com%2Fbanners%2Fepisodes%2F248742%2F4099507.jpg%22%2C+%22title%22%3A+%22Pilot%22%2C+%22tvdb%22%3A+%22248742%22%2C+%22mpaa%22%3A+%22TV-14%22%2C+%22writer%22%3A+%22Jonathan+Nolan%22%2C+%22label%22%3A+%22Pilot%22%2C+%22season%22%3A+%221%22%2C+%22status%22%3A+%22Ended%22%2C+%22poster%22%3A+%22http%3A%2F%2Fthetvdb.com%2Fbanners%2Fposters%2F248742-16.jpg%22%2C+%22tvshowtitle%22%3A+%22Person+of+Interest%22%2C+%22mediatype%22%3A+%22episode%22%2C+%22director%22%3A+%22David+Semel%22%2C+%22studio%22%3A+%22CBS%22%2C+%22genre%22%3A+%22Action+%2F+Adventure+%2F+Drama+%2F+Mystery+%2F+Thriller%22%2C+%22banner%22%3A+%22http%3A%2F%2Fthetvdb.com%2Fbanners%2Fgraphical%2F248742-g11.jpg%22%2C+%22fanart%22%3A+%22http%3A%2F%2Fthetvdb.com%2Fbanners%2Ffanart%2Foriginal%2F248742-21.jpg%22%2C+%22episode%22%3A+%221%22%2C+%22premiered%22%3A+%222011-09-22%22%2C+%22cast%22%3A+%5B%5B%22Michael+Emerson%22%2C+%22%22%5D%2C+%5B%22Jim+Caviezel%22%2C+%22%22%5D%2C+%5B%22Amy+Acker%22%2C+%22%22%5D%2C+%5B%22Sarah+Shahi%22%2C+%22%22%5D%2C+%5B%22Taraji+P.+Henson%22%2C+%22%22%5D%2C+%5B%22Kevin+Chapman%22%2C+%22%22%5D%2C+%5B%22Paige+Turco%22%2C+%22%22%5D%2C+%5B%22John+Nolan%22%2C+%22%22%5D%2C+%5B%22Enrico+Colantoni%22%2C+%22%22%5D%5D%2C+%22trailer%22%3A+%22plugin%3A%2F%2Fplugin.video.exodus%2F%3Faction%3Dtrailer%26name%3DPerson%2Bof%2BInterest%22%7D&t=20161121170832290000
 		tvShowSeasonEpisodeURL = tvShowSeasonEpisodeURL.replace("plugin://plugin.video.exodus/?action=play", "?action=tvDownloader");
-		log.info("url: " + tvShowSeasonEpisodeURL);
+		LOG.info("Calling URL To Kodi Exodus: " + tvShowSeasonEpisodeURL);
 
 		Addons.ExecuteAddon exodus = new Addons.ExecuteAddon("plugin.video.exodus", tvShowSeasonEpisodeURL);
 		//GetDirectory exodus = new GetDirectory(tvShowSeasonEpisodeURL);
 
-		log.info("Calling Kodi: Download " + tvshowtitle + " S" + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode));
+		LOG.info("Calling Kodi: Download " + tvshowtitle + " S" + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode));
 		//KodiDownloadManager.getInstance().getConMgr().call(exodus, null);
 		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<String>() {
 
 			@Override
 			public void onResponse(AbstractCall<String> call) {
-				log.entering(CLASS_NAME, "clearCacheAndSources::onResponse", new Object[] { call });
+				LOG.entering(CLASS_NAME, "clearCacheAndSources::onResponse", new Object[] { call });
 			}
 
 			@Override
 			public void onError(int code, String message, String hint) {
-				log.severe("ERROR " + code + ": " + message);
+				LOG.severe("ERROR " + code + ": " + message);
 			}
 		});
 	
-		log.exiting(CLASS_NAME, "downloadTVShowBySeasonEpisodeFromURL");
+		LOG.exiting(CLASS_NAME, "downloadTVShowBySeasonEpisodeFromURL");
 	}
 
 
 	private boolean episodeExists(String tvShowName, String season, String episode) {
 		String showFileName = tvShowName + " " + "S" + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode);
 
-		log.info("Checking if episode exists.  tvShowName: " + tvShowName + " season: " + season + " episode: " + episode);
+		LOG.fine("Checking if episode exists.  tvShowName: " + tvShowName + " season: " + season + " episode: " + episode);
 
 		//mp4
 		File file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".mp4");
 		if (file.exists() && !file.isDirectory()) {
-			log.info("Episode alerady exists: " + file.toString());
+			LOG.fine("Episode alerady exists: " + file.toString());
 			return true;
 		}
 
 		file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".mkv");
 		if (file.exists() && !file.isDirectory()) {
-			log.info("Episode alerady exists: " + file.toString());
+			LOG.fine("Episode alerady exists: " + file.toString());
 			return true;
 		}
 
 		file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".avi");
 		if (file.exists() && !file.isDirectory()) {
-			log.info("Episode alerady exists: " + file.toString());
+			LOG.fine("Episode alerady exists: " + file.toString());
 			return true;
 		}
 
 		file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".flv");
 		if (file.exists() && !file.isDirectory()) {
-			log.info("Episode alerady exists: " + file.toString());
+			LOG.fine("Episode alerady exists: " + file.toString());
 			return true;
 		}
 
@@ -370,7 +384,7 @@ public class KodiExodusTVShowDownloader extends KodiExodusDownloader {
 	@Override
 	public String toString() {
 		StringBuffer sBuffer = new StringBuffer();
-		sBuffer.append("TVDB_ID: " + getTVDBID() + " SeriesName: " + SHOW_NAME + " S" + HTPC.getInstance().getSeason(Integer.valueOf(SEASON).toString()) + "E" + HTPC.getInstance().getEpisode(Integer.valueOf(EPISODE).toString()));
+		sBuffer.append("TVDB_ID: " + getTVDBID() + " SeriesName: " + SHOW_NAME + " S" + HTPC.getInstance().getSeason(SEASON) + "E" + HTPC.getInstance().getEpisode(EPISODE));
 		return sBuffer.toString();
 	}	
 }

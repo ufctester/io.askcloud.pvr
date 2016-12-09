@@ -1,6 +1,6 @@
-package io.askcloud.pvr.api;
+package io.askcloud.pvr.api.main;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
 
 public class DonwloadTVShowQueueMonitorRequest extends DownloadTVShowRequest {
 	
@@ -21,5 +21,8 @@ public class DonwloadTVShowQueueMonitorRequest extends DownloadTVShowRequest {
 		
 		HTPC.CLEAN_KODI_DOWNLOAD=true;
 		HTPC.getInstance().getKodiManager().downloadSeriesEpisodeQueue();
+		
+		//exit the java program
+		System.exit(0);
 	}
 }

@@ -32,7 +32,8 @@ import org.yamj.api.common.exception.ApiExceptionType;
 import org.yamj.api.common.http.DigestedResponse;
 import org.yamj.api.common.http.DigestedResponseReader;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
+import io.askcloud.pvr.imdb.tools.ApiBuilder;
 import io.askcloud.pvr.tvdb.TvDbException;
 
 /**
@@ -43,7 +44,8 @@ import io.askcloud.pvr.tvdb.TvDbException;
  */
 public class DOMHelper {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = DOMHelper.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
     private static final String YES = "yes";
     private static final String DEFAULT_CHARSET = "UTF-8";
     private static final Charset CHARSET = Charset.forName(DEFAULT_CHARSET);
@@ -194,10 +196,10 @@ public class DOMHelper {
             trans.transform(new DOMSource(doc), new StreamResult(new File(localFile)));
             return true;
         } catch (TransformerConfigurationException ex) {
-            log.warning(ERROR_WRITING + " " + localFile + " exception: " + ex.getMessage());
+            LOG.warning(ERROR_WRITING + " " + localFile + " exception: " + ex.getMessage());
             return false;
         } catch (TransformerException ex) {
-        	log.warning(ERROR_WRITING + " " + localFile + " exception: " + ex.getMessage());
+        	LOG.warning(ERROR_WRITING + " " + localFile + " exception: " + ex.getMessage());
             return false;
         }
     }

@@ -22,7 +22,7 @@ package io.askcloud.pvr.omdb.model;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
 
 import java.util.logging.Logger;
 
@@ -31,7 +31,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public abstract class AbstractJsonMapping {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = AbstractJsonMapping.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
     private boolean response = Boolean.FALSE;
     @JsonProperty("Error")
     private String error = "";
@@ -69,7 +70,7 @@ public abstract class AbstractJsonMapping {
         unknown.append(": Unknown property='").append(key);
         unknown.append("' value='").append(value).append("'");
 
-        log.info(unknown.toString());
+        LOG.info(unknown.toString());
     }
 
     @Override

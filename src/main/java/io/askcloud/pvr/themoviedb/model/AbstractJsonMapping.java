@@ -21,7 +21,7 @@ package io.askcloud.pvr.themoviedb.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
 
 import java.io.Serializable;
 import java.util.logging.Logger;
@@ -37,7 +37,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public abstract class AbstractJsonMapping implements Serializable {
 
     private static final long serialVersionUID = 100L;
-    private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = AbstractJsonMapping.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
     /**
      * Handle unknown properties and print a message
@@ -51,7 +52,7 @@ public abstract class AbstractJsonMapping implements Serializable {
         unknown.append(": Unknown property='").append(key)
                .append("' value='").append(value).append("'");
 
-        log.info(unknown.toString());
+        LOG.info(unknown.toString());
     }
 
     @Override

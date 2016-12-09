@@ -1,4 +1,4 @@
-package io.askcloud.pvr.api.pvr;
+package io.askcloud.pvr.api;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -32,6 +33,10 @@ import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
+import io.askcloud.pvr.api.kodi.KodiManager;
+import io.askcloud.pvr.api.kodi.KodiDownloader;
+import io.askcloud.pvr.api.kodi.KodiMovieDownloader;
+import io.askcloud.pvr.api.kodi.KodiTVShowDownloader;
 import io.askcloud.pvr.themoviedb.MovieDbException;
 import io.askcloud.pvr.themoviedb.TheMovieDbApi;
 import io.askcloud.pvr.tvdb.TheTVDBApi;
@@ -43,6 +48,14 @@ import io.askcloud.pvr.tvdb.TheTVDBApi;
  */
 public class HTPC implements IHTPC{
 	private static HTPC eINSTANCE = null;
+	
+	
+	private static final String CLASS_NAME = HTPC.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
+	
+	public static final Logger LOG_DOWNLOAD = Logger.getLogger(LOG_DOWNLOAD_TR);
+	public static final Logger LOG_LOAD_KODI_STATUS = Logger.getLogger(LOG_LOAD_KODI_STATUS_TR);
+	public static final Logger LOG_DOWNLOAD_KODI_MONITOR_THREAD = Logger.getLogger(LOG_DOWNLOAD_KODI_MONITOR_THREAD_TR);
 	
 	//TV and Movie DB API
 	public TheTVDBApi tvdbAPI=null;
@@ -132,14 +145,14 @@ public class HTPC implements IHTPC{
 		
 		@Override
 		public void onProcessComplete(int exitValue) {
-			log.entering(CLASS_NAME, "onProcessComplete");
-			log.exiting(CLASS_NAME, "onProcessComplete");
+			LOG.entering(CLASS_NAME, "onProcessComplete");
+			LOG.exiting(CLASS_NAME, "onProcessComplete");
 			super.onProcessComplete(exitValue);
 		}
 		@Override
 		public void onProcessFailed(ExecuteException e) {
-			log.entering(CLASS_NAME, "onProcessFailed",e);
-			log.exiting(CLASS_NAME, "onProcessFailed");
+			LOG.entering(CLASS_NAME, "onProcessFailed",e);
+			LOG.exiting(CLASS_NAME, "onProcessFailed");
 			super.onProcessFailed(e);
 		}
 		
@@ -155,33 +168,33 @@ public class HTPC implements IHTPC{
 	}
 
 	private void init() {
-		log.entering(CLASS_NAME, "init");
+		LOG.entering(CLASS_NAME, "init");
 		
 		initLogger();
 		
-		log.exiting(CLASS_NAME, "init");
+		LOG.exiting(CLASS_NAME, "init");
 	}
 	
 	public void recreateDirectory(String directory)
 	{
-		log.entering(CLASS_NAME, "recreateDirectory", new Object[] {directory});
+		LOG.entering(CLASS_NAME, "recreateDirectory", new Object[] {directory});
 		
 		try {
 			
 			File targetDirectoryFile = new File(directory);
-			log.info("Deleting Old Directory and Files: " + directory);
+			LOG.info("Deleting Old Directory and Files: " + directory);
 			printFilesAndDirs(targetDirectoryFile);
 			FileUtils.deleteQuietly(targetDirectoryFile);
 			
 			FileUtils.forceMkdir(targetDirectoryFile);
 			
-			log.info("Old Files Should Be Gone: " + directory);
+			LOG.info("Old Files Should Be Gone: " + directory);
 			printFilesAndDirs(targetDirectoryFile);			
 		}
 		catch (Exception e) {
-			log.severe("Unable to recreate directory: " + directory + " exception: " + e.getMessage());
+			LOG.severe("Unable to recreate directory: " + directory + " exception: " + e.getMessage());
 		}
-		log.exiting(CLASS_NAME, "recreateDirectory");
+		LOG.exiting(CLASS_NAME, "recreateDirectory");
 	}
 	
 	private void printFilesAndDirs(File directory) {
@@ -193,10 +206,10 @@ public class HTPC implements IHTPC{
 		for (Iterator iterator = files.iterator(); iterator.hasNext();) {
 			File file = (File) iterator.next();
 			if (file.isDirectory()) {
-				log.info("Directory Found: " + file.toString());
+				LOG.info("Directory Found: " + file.toString());
 			}
 			else {
-				log.info("     File Found: " + file.toString());
+				LOG.info("     File Found: " + file.toString());
 			}
 		}
 	}	
@@ -211,10 +224,10 @@ public class HTPC implements IHTPC{
 		for (Iterator iterator = files.iterator(); iterator.hasNext();) {
 			File file = (File) iterator.next();
 			if (file.isDirectory()) {
-				//log.finest("Directory Found: " + file.toString());
+				//LOG.finest("Directory Found: " + file.toString());
 			}
 			else {
-				log.info("Size: " + file.length() + "  File Found: " + file.toString());
+				LOG.info("Size: " + file.length() + "  File Found: " + file.toString());
 			}
 		}
 	}
@@ -226,9 +239,9 @@ public class HTPC implements IHTPC{
 		//  
 		//  Handler handler = new StreamHandler(System.out,formatter);
 		//  handler.setLevel(LOG_LEVEL);
-		//  log.setLevel(LOG_LEVEL);
-		//  //log.addHandler(new StreamHandler(System.out, new SimpleFormatter()));
-		//  log.addHandler(handler);
+		//  LOG.setLevel(LOG_LEVEL);
+		//  //LOG.addHandler(new StreamHandler(System.out, new SimpleFormatter()));
+		//  LOG.addHandler(handler);
 
 		//get the top Logger
 		Logger system = Logger.getLogger("");
@@ -250,7 +263,8 @@ public class HTPC implements IHTPC{
 		}
 		OneLineFormatter formatter = new OneLineFormatter();
 		consoleHandler.setFormatter(formatter);
-		log.setLevel(LOG_LEVEL);
+		consoleHandler.setFilter(new HTPCLogFilter());
+		LOG.setLevel(LOG_LEVEL);
 
 		//Logger.getLogger("").setLevel( Level.OFF ); // Solution 2
 
@@ -269,15 +283,35 @@ public class HTPC implements IHTPC{
 	 * 
 	 * @return
 	 */
-	public KodiDownloadManager getKodiManager() {
-		return KodiDownloadManager.getInstance();
+	public KodiManager getKodiManager() {
+		return KodiManager.getInstance();
 	}
 	
 	
 	public String getSeason(String season) {
 		return (season.length() == 1) ? "0" + season : season;
 	}
+	
+	public String getSeason(int season) {
+		try {
+			return getSeason(Integer.valueOf(season).toString());
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		return "";
+	}
 
+	
+	public String getEpisode(int episode) {
+		try {
+			return getEpisode(Integer.valueOf(episode).toString());
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		return "";
+	}
 	public String getEpisode(String episode) {
 		return (episode.length() == 1) ? "0" + episode : episode;
 	}
@@ -354,14 +388,14 @@ public class HTPC implements IHTPC{
 	 * @return
 	 */
 	public void findTVShowEpisodesHave(String directory) {
-		log.entering(CLASS_NAME, "findTVShowEpisodesHave", new Object[] {directory});
+		LOG.entering(CLASS_NAME, "findTVShowEpisodesHave", new Object[] {directory});
 		File missingEpisodeFile = new File(HTPC.FILEBOT_SERIES_EPISODES_HAVE_FILE);
 		try {
-			log.info("Deleting old missing episode file: " + missingEpisodeFile);
+			LOG.info("Deleting old missing episode file: " + missingEpisodeFile);
 			FileUtils.deleteQuietly(missingEpisodeFile);
 		}
 		catch (Exception e) {
-			log.severe("ERROR deleting file: " + missingEpisodeFile);
+			LOG.severe("ERROR deleting file: " + missingEpisodeFile);
 		}
 		
 		try {		
@@ -370,28 +404,28 @@ public class HTPC implements IHTPC{
 		}
 		catch(SecurityException e)
 		{
-			log.severe("Error getting missing episodes: " + e.getMessage());			
+			LOG.severe("Error getting missing episodes: " + e.getMessage());			
 			e.printStackTrace();
 		}
 		finally {
 			
 		}
 		
-		log.exiting(CLASS_NAME, "findTVShowEpisodesHave");
+		LOG.exiting(CLASS_NAME, "findTVShowEpisodesHave");
 	}
 	
 	/**
 	 * @param directory
 	 */
 	public void findMissingTVShowEpisodes(String directory) {
-		log.entering(CLASS_NAME, "findMissingEpisodes", new Object[] {directory});
+		LOG.entering(CLASS_NAME, "findMissingEpisodes", new Object[] {directory});
 		File missingEpisodeFile = new File(HTPC.FILEBOT_SERIES_EPISODES_MISSING_FILE);
 		try {
-			log.info("Deleting old missing episode file: " + missingEpisodeFile);
+			LOG.info("Deleting old missing episode file: " + missingEpisodeFile);
 			FileUtils.deleteQuietly(missingEpisodeFile);
 		}
 		catch (Exception e) {
-			log.severe("ERROR deleting file: " + missingEpisodeFile);
+			LOG.severe("ERROR deleting file: " + missingEpisodeFile);
 		}
 		
 		try {		
@@ -403,14 +437,14 @@ public class HTPC implements IHTPC{
 		}
 		catch(SecurityException e)
 		{
-			log.severe("Error getting missing episodes: " + e.getMessage());			
+			LOG.severe("Error getting missing episodes: " + e.getMessage());			
 			e.printStackTrace();
 		}
 		finally {
 			
 		}
 		
-		log.exiting(CLASS_NAME, "findMissingEpisodes");
+		LOG.exiting(CLASS_NAME, "findMissingEpisodes");
 	}
 	
 	/**
@@ -418,14 +452,14 @@ public class HTPC implements IHTPC{
 	 * @return
 	 */
 	public void findCompletedEpisodes(String directory) {
-		log.entering(CLASS_NAME, "findCompletedEpisodes", new Object[] {directory});
+		LOG.entering(CLASS_NAME, "findCompletedEpisodes", new Object[] {directory});
 		File seriesEndedFile = new File(HTPC.FILEBOT_SERIES_ENDED_EPISODES_FILE);
 		try {
-			log.info("Deleting old missing episode file: " + seriesEndedFile);
+			LOG.info("Deleting old missing episode file: " + seriesEndedFile);
 			FileUtils.deleteQuietly(seriesEndedFile);
 		}
 		catch (Exception e) {
-			log.severe("ERROR deleting file: " + seriesEndedFile);
+			LOG.severe("ERROR deleting file: " + seriesEndedFile);
 		}
 		
 		try {			
@@ -434,20 +468,20 @@ public class HTPC implements IHTPC{
 		}
 		catch(SecurityException e)
 		{
-			log.severe("Error getting missing episodes: " + e.getMessage());			
+			LOG.severe("Error getting missing episodes: " + e.getMessage());			
 			e.printStackTrace();
 		}
 		finally {
 			
 		}
 		
-		log.exiting(CLASS_NAME, "findCompletedEpisodes");
+		LOG.exiting(CLASS_NAME, "findCompletedEpisodes");
 	}	
 	
 	/**
 	 * @return
 	 */
-	public List<KodiExodusDownloader> loadMovieQueue(int numberOfDownloadsToHandle)
+	public List<KodiDownloader> loadMovieQueue(int numberOfDownloadsToHandle)
 	{
 		return loadMovieRequests(HTPC.FILEBOT_MOVIE_MISSING_QUEUE_FILE,numberOfDownloadsToHandle);
 	}
@@ -456,26 +490,35 @@ public class HTPC implements IHTPC{
 	 * @param numberOfDownloadsToHandle
 	 * @return
 	 */
-	public List<KodiExodusDownloader> loadTVShowQueue(int numberOfDownloadsToHandle)
+	public List<KodiDownloader> loadTVShowQueue(int numberOfDownloadsToHandle)
 	{
-		return loadTVShowRequests(HTPC.FILEBOT_SERIES_EPISODES_MISSING_QUEUE_FILE,numberOfDownloadsToHandle);
+		return loadAndUpdateTVShowRequests(HTPC.FILEBOT_SERIES_EPISODES_MISSING_QUEUE_FILE,Collections.emptyList(),numberOfDownloadsToHandle);
 	}
 	
 	/**
 	 * @param numberOfDownloadsToHandle
 	 * @return
 	 */
-	public List<KodiExodusDownloader> loadTVShowEpisodesMissing(int numberOfDownloadsToHandle)
+	public List<KodiDownloader> loadTVShowEpisodesMissing(int numberOfDownloadsToHandle)
 	{
-		return loadTVShowRequests(HTPC.FILEBOT_SERIES_EPISODES_MISSING_FILE,numberOfDownloadsToHandle);
+		return loadAndUpdateTVShowRequests(HTPC.FILEBOT_SERIES_EPISODES_MISSING_FILE,Collections.emptyList(),numberOfDownloadsToHandle);
 	}
+	
+	/**
+	 * @param numberOfDownloadsToHandle
+	 * @return
+	 */
+	public List<KodiDownloader> loadTVShowEpisodesMissingAndUpdateProgress(List<KodiDownloader> downloaders)
+	{
+		return loadAndUpdateTVShowRequests(HTPC.FILEBOT_SERIES_EPISODES_MISSING_FILE,downloaders,-1);
+	}	
 	
 	/**
 	 * @param sourceDirectory
 	 * @param targetDirectory
 	 */
 	public void automatedMediaCenter(String sourceDirectory, String targetDirectory) {
-		log.entering(CLASS_NAME, "findMissingEpisodes", new Object[] {sourceDirectory,targetDirectory});
+		LOG.entering(CLASS_NAME, "findMissingEpisodes", new Object[] {sourceDirectory,targetDirectory});
 				
 		String fileBotDestForwardSlashes=targetDirectory.replace("\\\\", "/");
 		try {
@@ -484,14 +527,14 @@ public class HTPC implements IHTPC{
 		}
 		catch(SecurityException e)
 		{
-			log.severe("Error Handling Filebot AMC: " + e.getMessage());			
+			LOG.severe("Error Handling Filebot AMC: " + e.getMessage());			
 			e.printStackTrace();
 		}
 		finally {
 			
 		}
 		
-		log.exiting(CLASS_NAME, "findMissingEpisodes");		
+		LOG.exiting(CLASS_NAME, "findMissingEpisodes");		
 	}
 
 	/**
@@ -510,8 +553,8 @@ public class HTPC implements IHTPC{
 	 * @param missingEpisodeFile
 	 * @return
 	 */
-	synchronized private List<KodiExodusDownloader> loadMovieRequests(String movieQueueFileString,int numberOfDownloadsToHandle) {
-		List<KodiExodusDownloader> movies = new ArrayList<KodiExodusDownloader>();
+	synchronized private List<KodiDownloader> loadMovieRequests(String movieQueueFileString,int numberOfDownloadsToHandle) {
+		List<KodiDownloader> movies = new ArrayList<KodiDownloader>();
 		if(movieQueueFileString == null)
 		{
 			return movies;
@@ -549,7 +592,7 @@ public class HTPC implements IHTPC{
 	            	//if includeMissingEpisodes is not empty then only include these ones
 	            	if(!excludeMovies.contains(imdbid))
 	            	{
-	                	KodiExodusDownloader movie = createMissingMovie(imdbid,movieName);
+	                	KodiDownloader movie = createMissingMovie(imdbid,movieName);
 	                	movies.add(movie);
 	            	}
 		        }					
@@ -580,40 +623,40 @@ public class HTPC implements IHTPC{
             	parser.close();	
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + movieQueueFileString + " Parser: " + e.getMessage());
+				LOG.severe("Unable to close " + movieQueueFileString + " Parser: " + e.getMessage());
 			}
             try {
             	reader.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + movieQueueFileString + " Reader: " + e.getMessage());
+				LOG.severe("Unable to close " + movieQueueFileString + " Reader: " + e.getMessage());
 			}
             try {
             	inputStream.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + movieQueueFileString + " InputStream: " + e.getMessage());
+				LOG.severe("Unable to close " + movieQueueFileString + " InputStream: " + e.getMessage());
 			}   
             
             try {
             	csvFileWriter.flush();
 			}
 			catch (Exception e) {
-				log.severe("Unable to flush " + movieQueueFileString + " csvFileWriter: " + e.getMessage());
+				LOG.severe("Unable to flush " + movieQueueFileString + " csvFileWriter: " + e.getMessage());
 			}   
             
             try {
             	csvFileWriter.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + movieQueueFileString + " csvFileWriter: " + e.getMessage());
+				LOG.severe("Unable to close " + movieQueueFileString + " csvFileWriter: " + e.getMessage());
 			}   
             
             try {
             	cvsPrinter.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + movieQueueFileString + " cvsPrinter: " + e.getMessage());
+				LOG.severe("Unable to close " + movieQueueFileString + " cvsPrinter: " + e.getMessage());
 			}
             
             //delete the lock file
@@ -624,7 +667,7 @@ public class HTPC implements IHTPC{
             	}
 			}
 			catch (Exception e) {
-				log.severe("ERROR: Unable to close " + missingMoviesLock + " InputStream: " + e.getMessage());
+				LOG.severe("ERROR: Unable to close " + missingMoviesLock + " InputStream: " + e.getMessage());
 			}            
         }
         
@@ -633,14 +676,15 @@ public class HTPC implements IHTPC{
 	
 
 	/**
-	 * FIXME DSP When loading the TVShowRequests we should put a lock in place so we can have multiple applications to handle the 
+	 * When loading the TVShowRequests we should put a lock in place so we can have multiple applications to handle the 
 	 * tv show requests
 	 * @param missingEpisodeFileString
 	 * @param numberOfDownloadsToHandle (if this is <= 0 then we will download them all.
 	 * @return
 	 */
-	synchronized private List<KodiExodusDownloader> loadTVShowRequests(String missingEpisodeFileString,int numberOfDownloadsToHandle) {
-		List<KodiExodusDownloader> missingEpisodes = new ArrayList<KodiExodusDownloader>();
+	synchronized private List<KodiDownloader> loadAndUpdateTVShowRequests(String missingEpisodeFileString,List<KodiDownloader> currentRequestProgress,int numberOfDownloadsToHandle) {
+		LOG.entering(CLASS_NAME, "loadTVShowRequests",new Object[]{missingEpisodeFileString,numberOfDownloadsToHandle});
+		List<KodiDownloader> missingEpisodes = new ArrayList<KodiDownloader>();
 		if(missingEpisodeFileString == null)
 		{
 			return missingEpisodes;
@@ -652,7 +696,7 @@ public class HTPC implements IHTPC{
         FileWriter csvFileWriter=null;
         CSVPrinter cvsPrinter=null;
         File missingEpisodeLockFile = null;
-        List<CSVRecord> prunedRecords = new ArrayList<CSVRecord>();
+        List<String[]> updatedRecords = new ArrayList<String[]>();
         
         try {
         	missingEpisodeLockFile = waitForLockFile(missingEpisodeFileString);
@@ -664,43 +708,90 @@ public class HTPC implements IHTPC{
             List<CSVRecord> records = parser.getRecords();
             
         	//"TVDB_ID,SERIES_NAME,SEASON,EPISODE"
-            String[] header = {"TVDB_ID","IMDB_ID","SERIES_NAME","SEASON","EPISODE","ENDED"};
+            String[] header = {"TVDB_ID","IMDB_ID","SERIES_NAME","SEASON","EPISODE","ENDED","STATUS","DOWNLOAD_PERCENT"};
             
             for (int i = 0; i < records.size(); i++) {
 				CSVRecord record = records.get(i);
 				
-				//purge the numberOfDownloadsToHandle
-				if((numberOfDownloadsToHandle <= 0) || (i < numberOfDownloadsToHandle))
-				{
-	            	String tvdbid = record.get("TVDB_ID");
-	            	String imdbid = record.get("IMDB_ID");
-	            	String seriesName = record.get("SERIES_NAME");
-	            	String season = record.get("SEASON");
-	            	String episode = record.get("EPISODE");
-	            	String ended = record.get("ENDED");
-	            	
-	            	boolean seriesEnded=((ended != null) && ("true".equals(ended)))?true: false;
-	            	
-	            	//if includeMissingEpisodes is not empty then only include these ones
-	            	if(!includeMissingEpisodes.isEmpty())
-	            	{
-	            		if(includeMissingEpisodes.contains(tvdbid))
-	            		{
-	            			KodiExodusTVShowDownloader missingEpisode = createMissingEpisode(tvdbid,imdbid,seriesName,season,episode,seriesEnded);
-	                    	missingEpisodes.add(missingEpisode);      
-	            		}
-	            	}
-	            	else if(!excludeMissingEpisodes.contains(tvdbid))
-	            	{
-	            		KodiExodusTVShowDownloader missingEpisode = createMissingEpisode(tvdbid,imdbid,seriesName,season,episode,seriesEnded);
-	                	missingEpisodes.add(missingEpisode);
-	            	}
-		        }					
-				//else we are over so print the rest back to the master file
-				else
-				{
-					prunedRecords.add(record);
-				}
+            	String tvdbid = record.get("TVDB_ID");
+            	String imdbid = record.get("IMDB_ID");
+            	String seriesName = record.get("SERIES_NAME");
+            	String season = record.get("SEASON");
+            	String episode = record.get("EPISODE");
+            	String ended = record.get("ENDED");
+            	String status = record.get("STATUS");
+            	String downloadPercent = record.get("DOWNLOAD_PERCENT");
+            	
+				String seasonNumber = HTPC.getInstance().getSeason(season);
+				String episodeNumber = HTPC.getInstance().getSeason(episode);
+				
+            	boolean seriesEnded=((ended != null) && ("true".equals(ended)))?true: false;
+            	
+            	String[] originalRecord = {tvdbid,imdbid,seriesName,season,episode,ended,status,downloadPercent};
+            	
+            	
+                //If the list is not empty then we just want to update the progress
+                if(!currentRequestProgress.isEmpty())
+                {
+                	boolean addedRecord=false;
+                	for (KodiDownloader downloader : currentRequestProgress) {
+						if(downloader instanceof KodiTVShowDownloader)
+						{
+							KodiTVShowDownloader kodi=(KodiTVShowDownloader)downloader;
+							String kodiSeasonNumber = HTPC.getInstance().getSeason(kodi.getSeason());
+							String kodiEpisodeNumber = HTPC.getInstance().getSeason(kodi.getEpisode());
+							
+							//find the record
+							if((kodi.getShowName().equals(seriesName)) && (seasonNumber.equals(kodiSeasonNumber)) && (episodeNumber.equals(kodiEpisodeNumber)))
+							{
+								String[] updatedRecord = {tvdbid,imdbid,seriesName,season,episode,ended,status,kodi.getLastDownloadStatus().getPercent()};
+								LOG.fine("DOWNLOAD_PERCENT UPDATE: " +updatedRecord);
+								addedRecord=true;
+								updatedRecords.add(updatedRecord);
+								break;
+							}
+						}
+					}
+					
+					//we did not find it so just put the same record back
+                	if(!addedRecord)
+                	{
+                		updatedRecords.add(originalRecord);                	
+                	}
+                }
+                else
+                {
+                	String[] snatchedRecord=new String[]{tvdbid,imdbid,seriesName,season,episode,ended,"SNATCHED",downloadPercent};
+                	
+    				//purge the numberOfDownloadsToHandle
+    				if((numberOfDownloadsToHandle <= 0) || (i < numberOfDownloadsToHandle))
+    				{
+    	            	//check if the status is queued.  If it is then we can grab it, otherwise we have to just skip it
+    					if(!"QUEUED".equals(status))
+    					{
+    						updatedRecords.add(originalRecord);
+    						continue;
+    					}
+    	            	
+    	            	//if includeMissingEpisodes is not empty then only include these ones
+    	            	if(((!includeMissingEpisodes.isEmpty()) && (includeMissingEpisodes.contains(tvdbid))) 
+    	            			|| (!excludeMissingEpisodes.contains(tvdbid)))
+    	            	{
+    	            		KodiTVShowDownloader missingEpisode = createMissingEpisode(tvdbid,imdbid,seriesName,season,episode,seriesEnded);
+    	                    missingEpisodes.add(missingEpisode);      
+    	                    
+    	                    //we need to update the record
+    	                    
+    	                    LOG.info("SNATCHED: " + snatchedRecord);
+    	                    updatedRecords.add(snatchedRecord);
+    	            	}
+    		        }					
+    				//else we are over so print the rest back to the master file
+    				else
+    				{
+    					updatedRecords.add(originalRecord);
+    				}
+                }
 			}
             
             //if we got this far then we must have the new list of pruned download videos
@@ -710,52 +801,52 @@ public class HTPC implements IHTPC{
             cvsPrinter = new CSVPrinter(csvFileWriter, csvFileFormat);
             
             //print the records
-            cvsPrinter.printRecords(prunedRecords);         
+            cvsPrinter.printRecords(updatedRecords);         
 
 		}
 		catch (Exception e) {
 			// FIXME: handle exception
-			log.severe("Error loading TVShow Requests: " + missingEpisodeLockFile);
+			LOG.severe("Error loading TVShow Requests: " + missingEpisodeLockFile);
 		}
         finally {
             try {  
             	parser.close();	
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + missingEpisodeLockFile + " Parser: " + e.getMessage());
+				LOG.severe("Unable to close " + missingEpisodeLockFile + " Parser: " + e.getMessage());
 			}
             try {
             	reader.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + missingEpisodeLockFile + " Reader: " + e.getMessage());
+				LOG.severe("Unable to close " + missingEpisodeLockFile + " Reader: " + e.getMessage());
 			}
             try {
             	inputStream.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + missingEpisodeLockFile + " InputStream: " + e.getMessage());
+				LOG.severe("Unable to close " + missingEpisodeLockFile + " InputStream: " + e.getMessage());
 			}   
             
             try {
             	csvFileWriter.flush();
 			}
 			catch (Exception e) {
-				log.severe("Unable to flush " + missingEpisodeFileString + " csvFileWriter: " + e.getMessage());
+				LOG.severe("Unable to flush " + missingEpisodeFileString + " csvFileWriter: " + e.getMessage());
 			}   
             
             try {
             	csvFileWriter.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + missingEpisodeFileString + " csvFileWriter: " + e.getMessage());
+				LOG.severe("Unable to close " + missingEpisodeFileString + " csvFileWriter: " + e.getMessage());
 			}   
             
             try {
             	cvsPrinter.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + missingEpisodeFileString + " cvsPrinter: " + e.getMessage());
+				LOG.severe("Unable to close " + missingEpisodeFileString + " cvsPrinter: " + e.getMessage());
 			}
             
             //delete the lock file
@@ -766,10 +857,11 @@ public class HTPC implements IHTPC{
             	}
 			}
 			catch (Exception e) {
-				log.severe("ERROR: Unable to close " + missingEpisodeFileString + " InputStream: " + e.getMessage());
+				LOG.severe("ERROR: Unable to close " + missingEpisodeFileString + " InputStream: " + e.getMessage());
 			}
         }
         
+        LOG.exiting(CLASS_NAME, "loadTVShowRequests",missingEpisodes);
     	return missingEpisodes;        
 	}		
 	
@@ -780,10 +872,10 @@ public class HTPC implements IHTPC{
 	 * @return
 	 */
 	synchronized private File waitForLockFile(String masterFileString) {
-		log.entering(CLASS_NAME, "waitForLockFile", new Object[] { masterFileString });
+		LOG.entering(CLASS_NAME, "waitForLockFile", new Object[] { masterFileString });
 		if(masterFileString == null)
 		{
-			log.severe("Error with the inpurt masterFile: " + masterFileString);
+			LOG.severe("Error with the inpurt masterFile: " + masterFileString);
 			return null;
 		}
 		
@@ -797,11 +889,12 @@ public class HTPC implements IHTPC{
             if(masterFileLock.exists())
             {
             	try {
+            		LOG.info("Wating for file lock to be removed.");
                 	//FIXME we need to pause the thread and check again
                 	Thread.sleep(HTPC.QUEUE_LOCK_FILE_WAIT_TIME);
 				}
 				catch (Exception e) {
-					log.severe("ERROR waiting while sleeping while polling for lock file.");
+					LOG.severe("ERROR waiting while sleeping while polling for lock file.");
 				}
             }
             else
@@ -814,7 +907,7 @@ public class HTPC implements IHTPC{
             		}
     			}
     			catch (Exception e) {
-    				log.severe("Could not create lock file for: " + masterFileString + " lock file: " + masterFileLockString);
+    				LOG.severe("Could not create lock file for: " + masterFileString + " lock file: " + masterFileLockString);
     			}
             }
         }
@@ -829,9 +922,9 @@ public class HTPC implements IHTPC{
 	 * @param episode
 	 * @return
 	 */
-	public KodiExodusTVShowDownloader createMissingEpisode(String tvdbid, String imdbid, String seriesName, String season, String episode,boolean ended)
+	public KodiTVShowDownloader createMissingEpisode(String tvdbid, String imdbid, String seriesName, String season, String episode,boolean ended)
 	{
-		return new KodiExodusTVShowDownloader(seriesName,imdbid,tvdbid,HTPC.getInstance().getSeasonInt(season),HTPC.getInstance().getEpisodeInt(episode),ended);
+		return new KodiTVShowDownloader(seriesName,imdbid,tvdbid,HTPC.getInstance().getSeasonInt(season),HTPC.getInstance().getEpisodeInt(episode),ended);
 	}
 	
 	/**
@@ -839,9 +932,9 @@ public class HTPC implements IHTPC{
 	 * @param movieName
 	 * @return
 	 */
-	public KodiExodusDownloader createMissingMovie(String imdbid, String movieName)
+	public KodiDownloader createMissingMovie(String imdbid, String movieName)
 	{
-		return new KodiExodusMovieDownloader(movieName,imdbid);
+		return new KodiMovieDownloader(movieName,imdbid);
 	}
 	
 	/**
@@ -867,16 +960,9 @@ public class HTPC implements IHTPC{
 				moviedbAPI = new TheMovieDbApi("db6327125f93ae90aa51493f1586713f");
 			}
 			catch (MovieDbException e) {
-				log.severe("Error trying to get the movie db api: " + e.getMessage());
+				LOG.severe("Error trying to get the movie db api: " + e.getMessage());
 			}
 		}
 		return moviedbAPI;
-	}
-	
-	/**
-	 * @return
-	 */
-	public Logger getLogger() {
-		return log;
 	}
 }

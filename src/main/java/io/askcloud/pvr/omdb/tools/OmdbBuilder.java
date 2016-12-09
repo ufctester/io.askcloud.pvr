@@ -19,8 +19,9 @@
  */
 package io.askcloud.pvr.omdb.tools;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
 import io.askcloud.pvr.omdb.OMDBException;
+import io.askcloud.pvr.omdb.OmdbApi;
 import io.askcloud.pvr.omdb.emumerations.PlotType;
 import io.askcloud.pvr.omdb.emumerations.ResultType;
 
@@ -38,7 +39,9 @@ import org.yamj.api.common.exception.ApiExceptionType;
  */
 public final class OmdbBuilder {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = OmdbBuilder.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
+
     private final OmdbParameters params = new OmdbParameters();
     // Default values (if required)
     private static final boolean DEFAULT_TOMATOES = Boolean.FALSE;
@@ -243,7 +246,7 @@ public final class OmdbBuilder {
      * @return
      */
     public OmdbParameters build() {
-    	log.info(toString());
+    	LOG.info(toString());
         return params;
     }
 

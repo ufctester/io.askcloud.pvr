@@ -17,7 +17,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
+import io.askcloud.pvr.omdb.tools.OmdbUrlBuilder;
 import io.askcloud.pvr.tvdb.TvDbException;
 import io.askcloud.pvr.tvdb.model.Actor;
 import io.askcloud.pvr.tvdb.model.Banner;
@@ -35,7 +36,9 @@ import io.askcloud.pvr.tvdb.model.TVDBUpdates;
 
 public class TvdbParser {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = TvdbParser.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
+
     private static final String URL_BANNER = "http://thetvdb.com/banners/";
     private static final String TYPE_BANNER = "banner";
     private static final String TYPE_FANART = "fanart";
@@ -94,7 +97,7 @@ public class TvdbParser {
                 return results;
             }
         } catch (WebServiceException ex) {
-            log.severe(ERROR_GET_XML + " exception: " + ex.getMessage());
+            LOG.severe(ERROR_GET_XML + " exception: " + ex.getMessage());
             return results;
         }
 
@@ -300,7 +303,7 @@ public class TvdbParser {
                         }
                         break;
                     default:
-                    	log.severe("Unknown update type " + updateNode.getNodeName());
+                    	LOG.severe("Unknown update type " + updateNode.getNodeName());
                 }
             }
 
@@ -453,7 +456,7 @@ public class TvdbParser {
         try {
             banner.setSeriesName(Boolean.parseBoolean(DOMHelper.getValueFromElement(eBanner, SERIES_NAME)));
         } catch (WebServiceException ex) {
-        	log.severe("Failed to transform SeriesName to boolean.  exception: " + ex.getMessage());
+        	LOG.severe("Failed to transform SeriesName to boolean.  exception: " + ex.getMessage());
             banner.setSeriesName(false);
         }
 
@@ -521,7 +524,7 @@ public class TvdbParser {
             String value = DOMHelper.getValueFromElement(eEpisode, key);
             episodeValue = NumberUtils.toInt(value, 0);
         } catch (WebServiceException ex) {
-        	log.severe("Failed to read episode value exception: " + ex.getMessage());
+        	LOG.severe("Failed to read episode value exception: " + ex.getMessage());
             episodeValue = 0;
         }
 

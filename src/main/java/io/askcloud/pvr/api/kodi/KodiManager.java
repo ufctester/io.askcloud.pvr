@@ -1,4 +1,4 @@
-package io.askcloud.pvr.api.pvr;
+package io.askcloud.pvr.api.kodi;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +22,7 @@ import org.apache.commons.csv.QuoteMode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
+import io.askcloud.pvr.api.HTPC;
 import io.askcloud.pvr.kodi.jsonrpc.api.AbstractCall;
 import io.askcloud.pvr.kodi.jsonrpc.api.call.Addons;
 import io.askcloud.pvr.kodi.jsonrpc.config.HostConfig;
@@ -39,19 +40,20 @@ import io.askcloud.pvr.kodi.jsonrpc.notification.AbstractEvent;
  *
  */
 /**
- * @author apps
+ * @author ufctester
  *
  */
-public class KodiDownloadManager {
-	private static KodiDownloadManager eINSTANCE;
+public class KodiManager {
+	private static KodiManager eINSTANCE;
 	private JavaConnectionManager conMgr;
 
-	private static String CLASS_NAME = KodiDownloadManager.class.getName();
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = KodiManager.class.getName();
+	private static final Logger LOG = HTPC.LOG_DOWNLOAD;	
+	
 	private boolean monitorDownload=true;
 	private Set<DownloadStatus> downloadStatus = new LinkedHashSet<DownloadStatus>();
-	
-	private List<KodiExodusDownloader> downloaders = new ArrayList<KodiExodusDownloader>();
+		
+	private List<KodiDownloader> downloaders = new ArrayList<KodiDownloader>();
 
 	public class DownloadStatus{
 		private String percent;
@@ -59,10 +61,11 @@ public class KodiDownloadManager {
 		private String downloaded;
 		private String total;
 		private String threadPrefix="";
+				
 		public DownloadStatus(String percent, String file, String downloaded, String total) {
 			super();
-			this.percent=percent;
-			this.threadPrefix=(percent != null)?percent : "";
+			this.percent=(percent != null)?percent : "-1";
+			this.threadPrefix=percent;
 			this.file=file;
 			this.downloaded=downloaded;
 			this.total = total;
@@ -92,7 +95,11 @@ public class KodiDownloadManager {
 		public int getPercentInt()
 		{
 			try {
-				return Integer.valueOf(getPercent()).intValue();
+				int value =Integer.valueOf(getPercent()).intValue();
+				if(value > -1)
+				{
+					return value;
+				}
 			}
 			catch (Exception e) {
 				// TODO BASE_CODE: handle exception
@@ -131,9 +138,9 @@ public class KodiDownloadManager {
 		}		
 	}
 	
-	public static KodiDownloadManager getInstance() {
+	public static KodiManager getInstance() {
 		if (eINSTANCE == null) {
-			eINSTANCE = new KodiDownloadManager();
+			eINSTANCE = new KodiManager();
 			eINSTANCE.clearCacheAndSources();
 			eINSTANCE.monitorDownload();
 		}
@@ -141,7 +148,7 @@ public class KodiDownloadManager {
 	}
 	
 	
-	private KodiDownloadManager() {
+	private KodiManager() {
 		super();
 		
 		//copy master kodi-downloader.csv download file 
@@ -151,7 +158,7 @@ public class KodiDownloadManager {
 			FileUtils.copyFile(sourceFile, targetFile);
 		}
 		catch (Exception e) {
-			log.severe("ERROR copying file: " + HTPC.KDOI_PVR_DOWNLOAD_TRACKER_MASTER + " to file: " + HTPC.KDOI_PVR_DOWNLOAD_TRACKER);
+			LOG.severe("ERROR copying file: " + HTPC.KDOI_PVR_DOWNLOAD_TRACKER_MASTER + " to file: " + HTPC.KDOI_PVR_DOWNLOAD_TRACKER);
 		}
 
 		if(HTPC.CLEAN_KODI_DOWNLOAD)
@@ -172,22 +179,22 @@ public class KodiDownloadManager {
 
 				@Override
 				public void notificationReceived(AbstractEvent event) {
-					log.info("Event received: " + event.getClass().getCanonicalName());
+					LOG.fine("Event received: " + event.getClass().getCanonicalName());
 				}
 
 				@Override
 				public void disconnected() {
-					log.info("Event: Disconnected");
+					LOG.fine("Event: Disconnected");
 
 				}
 
 				@Override
 				public void connected() {
-					log.info("Event: Connected");
+					LOG.fine("Event: Connected");
 
 				}
 			});
-			log.info("Connecting...");
+			LOG.info("Connecting...");
 			conMgr.connect(config);
 		}
 		return conMgr;
@@ -197,10 +204,10 @@ public class KodiDownloadManager {
 	 * plugin://plugin.video.exodus/?action=clearCacheAndSources
 	 */
 	public void clearCacheAndSources() {
-		log.entering(CLASS_NAME, "clearCacheAndSources");
+		LOG.entering(CLASS_NAME, "clearCacheAndSources");
 		String clearCacheAndSourcesCacheURL="?action=clearCacheAndSources";
 
-		log.info("url: " + clearCacheAndSourcesCacheURL);
+		LOG.info("url: " + clearCacheAndSourcesCacheURL);
 		
 		Addons.ExecuteAddon exodus = new Addons.ExecuteAddon("plugin.video.exodus",clearCacheAndSourcesCacheURL);
 
@@ -209,12 +216,12 @@ public class KodiDownloadManager {
 
 				@Override
 				public void onResponse(AbstractCall<String> call) {
-					log.entering(CLASS_NAME, "clearCacheAndSources::onResponse", new Object[] { call });
+					LOG.entering(CLASS_NAME, "clearCacheAndSources::onResponse", new Object[] { call });
 				}
 
 				@Override
 				public void onError(int code, String message, String hint) {
-					log.severe("ERROR " + code + ": " + message);
+					LOG.severe("ERROR " + code + ": " + message);
 				}
 			});
 		}
@@ -227,13 +234,13 @@ public class KodiDownloadManager {
 			Thread.sleep(HTPC.CLEAR_CACHE_THREAD_WAIT_TIME);
 		}
 		catch (Exception e) {
-			log.severe("ERROR waiting while sleeping when clearing the Kodi Exodus cache.");
+			LOG.severe("ERROR SLEEPING (" + HTPC.CLEAR_CACHE_THREAD_WAIT_TIME/1000 + "s) while waiting on for kodi cache to be cleard. Thread: " + Thread.currentThread().getName() + " exception: " + e.getMessage());
 		}			
-		log.exiting(CLASS_NAME, "clearCacheAndSources");
+		LOG.exiting(CLASS_NAME, "clearCacheAndSources");
 	}
 	
 	public void downloadMovieFromKodiExodus(final String movieName,String imdbID) {		
-		KodiExodusMovieDownloader downloader = new KodiExodusMovieDownloader(movieName,imdbID);
+		KodiMovieDownloader downloader = new KodiMovieDownloader(movieName,imdbID);
 		downloader.requestDownload();
 	}
 	
@@ -280,12 +287,16 @@ public class KodiDownloadManager {
 	}
 	
 	private void monitorDownload() {
+		
+		LOG.entering(CLASS_NAME,"monitorDownload");
+		HTPC.LOG_DOWNLOAD_KODI_MONITOR_THREAD.entering(CLASS_NAME,"monitorDownload");
+		
 		if(!monitorDownload)
 		{
 			return;
 		}
 		
-		final Thread thread = new Thread("Kodi-Exodus-Downloader-PoolMonitor") {
+		final Thread thread = new Thread("Kodi-Progress-Indicator Status Loader") {
 			public void run() {
 				Thread thisThread = Thread.currentThread();
 				while (true) {
@@ -299,55 +310,43 @@ public class KodiDownloadManager {
 					}
 					catch (Exception e) {
 						e.printStackTrace();
-						log.exiting(CLASS_NAME, "Kodi-Exodus-Downloader-PoolMonitor");
+						LOG.severe("ERROR SLEEPING (" + HTPC.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME/1000 + "s) while waiting on the kodi file monitoring. Thread: " + Thread.currentThread().getName() + " exception: " + e.getMessage());
+						HTPC.LOG_DOWNLOAD_KODI_MONITOR_THREAD.severe("ERROR SLEEPING (" + HTPC.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME/1000 + "s) while waiting on the kodi file monitoring. Thread: " + Thread.currentThread().getName() + " exception: " + e.getMessage());
 					}
 				}
 			}
 		};
+		
+		LOG.info("Starting Thread: " + thread.getName());
+		HTPC.LOG_DOWNLOAD_KODI_MONITOR_THREAD.info("Starting Thread: " + thread.getName());
 		thread.start();		
 	}		
 	
 	synchronized public Set<DownloadStatus> loadKodiDownloadStatusUpdates() {
+		LOG.entering(CLASS_NAME, "loadKodiDownloadStatusUpdates");
+		
 		Set<DownloadStatus> loadDownloadedStatus = new LinkedHashSet<DownloadStatus>();
 		
         InputStream inputStream = null;
         Reader reader = null;
         CSVParser parser = null;
+        
         try {
         	inputStream = new FileInputStream(HTPC.KDOI_PVR_DOWNLOAD_TRACKER);
             reader = new InputStreamReader(inputStream, "UTF-8");
             CSVFormat format = CSVFormat.EXCEL.withHeader().withQuoteMode(QuoteMode.MINIMAL);
             parser = new CSVParser(reader, format);
-            try {
-                for (final CSVRecord record : parser) {
-                	final String percent = record.get("PERCENT").replaceAll("%","");
-                	final String file = record.get("FILE");
-                	final String downloadsize = record.get("DOWNLOADSIZE");
-                	final String totalsize = record.get("TOTALSIZE");
-                	DownloadStatus status = new DownloadStatus(percent, file, downloadsize, totalsize);
-                	loadDownloadedStatus.add(status);
-                }
-            }catch (Exception e) {
-    			log.severe("Unable to read " + HTPC.KODI_PVR_DOWNLOAD_FILE + ". This might be because it is missing the header: " + e.getMessage());
-    			e.printStackTrace();
-    		}
-            finally {
-                try {
-                	parser.close();	
-				}
-				catch (Exception e) {
-					log.severe("Unable to close " + HTPC.KODI_PVR_DOWNLOAD_FILE + " Parser: " + e.getMessage());
-				}
-                try {
-                	reader.close();
-				}
-				catch (Exception e) {
-					log.severe("Unable to close " + HTPC.KODI_PVR_DOWNLOAD_FILE + " Reader: " + e.getMessage());
-				}
-            }	
-		}
-		catch (Exception e) {
-			log.severe("Unable to parse " + HTPC.KODI_PVR_DOWNLOAD_FILE + " Parser: " + e.getMessage());
+            
+            for (final CSVRecord record : parser) {
+            	final String percent = record.get("PERCENT").replaceAll("%","");
+            	final String file = record.get("FILE");
+            	final String downloadsize = record.get("DOWNLOADSIZE");
+            	final String totalsize = record.get("TOTALSIZE");
+            	DownloadStatus status = new DownloadStatus(percent, file, downloadsize, totalsize);
+            	loadDownloadedStatus.add(status);
+            }
+        }catch (Exception e) {
+			LOG.warning("Unable to read " + HTPC.KODI_PVR_DOWNLOAD_FILE + ". This might be because it is missing the header: " + e.getMessage());
 			e.printStackTrace();
 		}
         finally {
@@ -355,23 +354,25 @@ public class KodiDownloadManager {
             	parser.close();	
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + HTPC.KODI_PVR_DOWNLOAD_FILE + " Parser: " + e.getMessage());
+				LOG.warning("Unable to close " + HTPC.KODI_PVR_DOWNLOAD_FILE + " Parser: " + e.getMessage());
 			}
             try {
             	reader.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + HTPC.KODI_PVR_DOWNLOAD_FILE + " Reader: " + e.getMessage());
+				LOG.warning("Unable to close " + HTPC.KODI_PVR_DOWNLOAD_FILE + " Reader: " + e.getMessage());
 			}
             try {
             	inputStream.close();
 			}
 			catch (Exception e) {
-				log.severe("Unable to close " + HTPC.KODI_PVR_DOWNLOAD_FILE + " InputStream: " + e.getMessage());
+				LOG.warning("Unable to close " + HTPC.KODI_PVR_DOWNLOAD_FILE + " InputStream: " + e.getMessage());
 			}            
         }
         
-    	return loadDownloadedStatus;        
+        
+        LOG.exiting(CLASS_NAME, "loadKodiDownloadStatusUpdates",loadDownloadedStatus);
+        return loadDownloadedStatus;        
 	}
 	
 	/**
@@ -379,19 +380,19 @@ public class KodiDownloadManager {
 	 */
 	public void downloadSeriesEpisodeMissing()
 	{
-		log.entering(CLASS_NAME, "downloadSeriesEpisodeMissing");
+		LOG.entering(CLASS_NAME, "downloadSeriesEpisodeMissing");
 		
 		while(true)
 		{			
-			log.info("Calling: PlexPVRManager.getInstance().loadTVShowEpisodesMissing()");
-			List<KodiExodusDownloader> downloadItems = HTPC.getInstance().loadTVShowEpisodesMissing(2);
+			LOG.info("Calling: PlexPVRManager.getInstance().loadTVShowEpisodesMissing()");
+			List<KodiDownloader> downloadItems = HTPC.getInstance().loadTVShowEpisodesMissing(2);
 			if(!downloadItems.isEmpty())
 			{
 				download(downloadItems);
 				
-				log.info("Completd: downloadSeriesEpisodeMissing");
-				for (KodiExodusDownloader item : downloadItems) {
-					log.info("Completd items: " + item.toString());
+				LOG.info("Completd: downloadSeriesEpisodeMissing");
+				for (KodiDownloader item : downloadItems) {
+					LOG.info("Completd items: " + item.toString());
 				}
 				
 			}
@@ -404,18 +405,18 @@ public class KodiDownloadManager {
 		        		Thread.sleep(HTPC.KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME);
 					}
 					catch (Exception e) {
-						log.severe("ERROR waiting while sleeping while polling for lock file.");
+						LOG.severe("ERROR SLEEPING (" + HTPC.KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME/1000 + ") seconds while waiting on new requests to come to the QUEUE. Thread: " + Thread.currentThread().getName() + " exception: " + e.getMessage());
 					}	
 				}
 				else
 				{
-					log.info("There are no more shows to process.");
+					LOG.info("There are no more shows to process.");
 					break;
 				}
 			}
 		}
 
-		log.entering(CLASS_NAME, "downloadSeriesEpisodeMissing");
+		LOG.entering(CLASS_NAME, "downloadSeriesEpisodeMissing");
 	}
 	
 	
@@ -425,37 +426,37 @@ public class KodiDownloadManager {
 	 */
 	public void downloadSeriesEpisodeQueue()
 	{
-		log.entering(CLASS_NAME, "downloadSeriesEpisodeQueue");
+		LOG.entering(CLASS_NAME, "downloadSeriesEpisodeQueue");
 		
 		while(true)
 		{
-			log.info("Calling: PlexPVRManager.getInstance().loadTVShowQueue()");			
-			List<KodiExodusDownloader> downloadItems = HTPC.getInstance().loadTVShowQueue(2);
+			LOG.info("Calling: PlexPVRManager.getInstance().loadTVShowQueue()");			
+			List<KodiDownloader> downloadItems = HTPC.getInstance().loadTVShowQueue(2);
 			if(!downloadItems.isEmpty())
 			{
 				download(downloadItems);
 				
-				log.info("Completd: downloadSeriesEpisodeQueue");
-				for (KodiExodusDownloader item : downloadItems) {
-					log.info("Completd items: " + item.toString());
+				LOG.info("Completd: downloadSeriesEpisodeQueue");
+				for (KodiDownloader item : downloadItems) {
+					LOG.info("Completd items: " + item.toString());
 				}
 				
 			}
 			else
 			{
-				log.info("There are no more shows to process.");
+				LOG.info("There are no more shows to process.");
 				break;
 //	        	try {
 //	            	//FIXME we need to pause the thread and check again
 //	        		Thread.sleep(PlexPVRManager.KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME);
 //				}
 //				catch (Exception e) {
-//					log.severe("ERROR waiting while sleeping while polling for lock file.");
+//					LOG.severe("ERROR waiting while sleeping while polling for lock file.");
 //				}			
 			}
 		}
 
-		log.entering(CLASS_NAME, "downloadSeriesEpisodeQueue");
+		LOG.entering(CLASS_NAME, "downloadSeriesEpisodeQueue");
 	}
 	
 	/**
@@ -463,44 +464,47 @@ public class KodiDownloadManager {
 	 */
 	public void downloadMoviesQueue()
 	{
-		log.entering(CLASS_NAME, "downloadMoviesQueue");
+		LOG.entering(CLASS_NAME, "downloadMoviesQueue");
 		
 		while(true)
 		{
-			log.info("Calling: PlexPVRManager.getInstance().loadMovieQueue()");
-			List<KodiExodusDownloader> downloadItems = HTPC.getInstance().loadMovieQueue(2);
+			LOG.info("Calling: PlexPVRManager.getInstance().loadMovieQueue()");
+			List<KodiDownloader> downloadItems = HTPC.getInstance().loadMovieQueue(2);
 			if(!downloadItems.isEmpty())
 			{
 				download(downloadItems);
 				
-				log.info("Completd: downloadMoviesQueue");
-				for (KodiExodusDownloader item : downloadItems) {
-					log.info("Completd items: " + item.toString());
+				LOG.info("Completd: downloadMoviesQueue");
+				for (KodiDownloader item : downloadItems) {
+					LOG.info("Completd items: " + item.toString());
 				}
 				
 			}
 			else
 			{
-				log.info("There are no more shows to process.");
+				LOG.info("There are no more shows to process.");
 				break;
 //	        	try {
 //	            	//FIXME we need to pause the thread and check again
 //	        		Thread.sleep(PlexPVRManager.KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME);
+				
 //				}
 //				catch (Exception e) {
-//					log.severe("ERROR waiting while sleeping while polling for lock file.");
+//					LOG.severe("ERROR waiting while sleeping while polling for lock file.");
+//				LOG.severe("ERROR SLEEPING (" + HTPC.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME/1000 + "s) while monitoring the download thread. Thread: " + Thread.currentThread().getName() + " exception: " + e.getMessage());
+//				HTPC.LOG_DOWNLOAD_THREADS.severe("ERROR SLEEPING (" + HTPC.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME/1000 + "s) while monitoring the download thread. Thread: " + Thread.currentThread().getName() + " exception: " + e.getMessage());				
 //				}			
 			}
 		}
 
-		log.entering(CLASS_NAME, "downloadMoviesQueue");
+		LOG.entering(CLASS_NAME, "downloadMoviesQueue");
 	}	
 		
 	
 	/**
 	 * 
 	 */
-	private void download(List<KodiExodusDownloader> downloadItems)
+	private void download(List<KodiDownloader> downloadItems)
 	{
 		downloaders.addAll(downloadItems);
 		ExecutorService executor = Executors.newFixedThreadPool(HTPC.KODI_DOWNLOAD_THREADS);
@@ -511,26 +515,31 @@ public class KodiDownloadManager {
 			downloadItems.get(0).setReadyToRun();
 		}
 		
-		for (Iterator iterator = downloadItems.iterator(); iterator.hasNext();) {
-			KodiExodusDownloader downloadItem = (KodiExodusDownloader) iterator.next();
+		for (KodiDownloader downloadItem : downloadItems) {
 	        executor.submit(downloadItem);
 		}
 		
 		executor.shutdown();
         while (!executor.isTerminated()) {
         	try {
-        		Thread.currentThread().sleep(5000);
+        		Thread.currentThread().sleep(20000);
+        		
+        		HTPC.getInstance().loadTVShowEpisodesMissingAndUpdateProgress(downloadItems);
+        		
 			}
 			catch (Exception e) {
 				// TODO BASE_CODE: handle exception
 			}
         }
         
+        //serailize one more time
+        HTPC.getInstance().loadTVShowEpisodesMissingAndUpdateProgress(downloadItems);
+        
         //notify the that the threads have completed so downloading is done and we need to notify the kodi pooling monitor
         System.out.println("Finished all download threads for batch download");
 	}
 	
-	synchronized public void readyToProcessNextRequest(KodiExodusDownloader downloader) {
+	synchronized public void readyToProcessNextRequest(KodiDownloader downloader) {
 		int index = downloaders.indexOf(downloader);
 		index++;
 		if(index < downloaders.size())

@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import io.askcloud.pvr.api.pvr.HTPC;
 import io.askcloud.pvr.imdb.ImdbException;
 import io.askcloud.pvr.imdb.model.AbstractJsonMapping;
 import io.askcloud.pvr.imdb.model.ImdbError;
@@ -36,7 +35,8 @@ import io.askcloud.pvr.imdb.wrapper.WrapperSearch;
 
 public final class ApiBuilder {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = ApiBuilder.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
     private static final int MILLIS_PER_SECOND = 1000;
     private static final String DEFAULT_CHARSET = "UTF-8";
     private static final Charset CHARSET = Charset.forName(DEFAULT_CHARSET);
@@ -73,7 +73,7 @@ public final class ApiBuilder {
 
     public static void setLocale(Locale locale) {
         ApiBuilder.imdbLocale = locale;
-        log.fine("Setting locale to " + imdbLocale.toString());
+        LOG.fine("Setting locale to " + imdbLocale.toString());
     }
 
     public static URL buildUrl(String function, Map<String, String> arguments) {
@@ -92,11 +92,11 @@ public final class ApiBuilder {
 
         sbURL.append("&sig=").append(SIG);
 
-        log.fine("URL " + sbURL.toString());
+        LOG.fine("URL " + sbURL.toString());
         try {
             return new URL(sbURL.toString());
         } catch (MalformedURLException ex) {
-            log.severe("Failed to convert string to URL: " +  ex.getMessage());
+            LOG.severe("Failed to convert string to URL: " +  ex.getMessage());
             return null;
         }
     }
@@ -108,7 +108,7 @@ public final class ApiBuilder {
         try {
             result = clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException ex) {
-            log.severe("Failed to instantiate class " + clazz.getSimpleName()+ " exception: " + ex.getMessage());
+            LOG.severe("Failed to instantiate class " + clazz.getSimpleName()+ " exception: " + ex.getMessage());
             return null;
         }
 
@@ -117,16 +117,16 @@ public final class ApiBuilder {
             Object response = MAPPER.readValue(webPage, clazz);
             result = clazz.cast(response);
         } catch (JsonParseException ex) {
-        	log.severe("JsonParseException " + " exception: " + ex.getMessage());
+        	LOG.severe("JsonParseException " + " exception: " + ex.getMessage());
             result.setStatusMessage("JsonParseException: " + ex.getMessage(), ex);
         } catch (JsonMappingException ex) {
-        	log.severe("JsonMappingException " + " exception: " + ex.getMessage());
+        	LOG.severe("JsonMappingException " + " exception: " + ex.getMessage());
             result.setStatusMessage("JsonMappingException: " + ex.getMessage(), ex);
         } catch (IOException ex) {
-        	log.severe("IOException " + " exception: " + ex.getMessage());
+        	LOG.severe("IOException " + " exception: " + ex.getMessage());
             result.setStatusMessage("IOException: " + ex.getMessage(), ex);
         } catch (ImdbException ex) {
-        	log.severe("ImbdException " + " exception: " + ex.getMessage());
+        	LOG.severe("ImbdException " + " exception: " + ex.getMessage());
             result.setStatusMessage("ImdbExceptio2n: " + ex.getResponse(), ex);
         }
 

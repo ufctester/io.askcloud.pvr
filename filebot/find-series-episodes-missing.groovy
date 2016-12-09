@@ -120,7 +120,7 @@ episodeList.removeAll(episodes)
 //Create the header in the csv
 //tvdbid,seriesName,season,episode
 println "tvdbid,seriesName,season,episode" 
-missingEpisodes.append("TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED")
+missingEpisodes.append("TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED,STATUS,DOWNLOAD_PERCENT")
 
 def format=new ExpressionFormat("{n} {S00E00}")
 episodeList.each{ e ->
@@ -130,11 +130,11 @@ episodeList.each{ e ->
         if(e[1]==i.season && e[2]==i.episode && i.special==null && i.airdate!=null && i.airdate < simpleNow) {
         
             if(i.seriesInfo.status == 'Ended'){
-            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",true")
+            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",true" + ",QUEUED,-1")
             } 
             else
             {
-            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",false")
+            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",false" + ",QUEUED,-1")
             }
         }
     }

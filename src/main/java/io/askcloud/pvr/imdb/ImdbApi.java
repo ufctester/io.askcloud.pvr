@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import org.apache.http.client.HttpClient;
 import org.yamj.api.common.http.SimpleHttpClientBuilder;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
 import io.askcloud.pvr.imdb.model.ImdbBoxOffice;
 import io.askcloud.pvr.imdb.model.ImdbChartMoviemeter;
 import io.askcloud.pvr.imdb.model.ImdbChartStarmeter;
@@ -45,6 +45,7 @@ import io.askcloud.pvr.imdb.wrapper.WrapperMovieDetails;
 import io.askcloud.pvr.imdb.wrapper.WrapperQuotes;
 import io.askcloud.pvr.imdb.wrapper.WrapperSearch;
 import io.askcloud.pvr.imdb.wrapper.WrapperSynopsis;
+import io.askcloud.pvr.themoviedb.tools.ApiUrl;
 
 /**
  * Java API class for the IMDB JSON API
@@ -53,7 +54,8 @@ import io.askcloud.pvr.imdb.wrapper.WrapperSynopsis;
  */
 public final class ImdbApi {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = ImdbApi.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
     private static final String TCONST = "tconst";
     private static final String NCONST = "nconst";
 
@@ -423,7 +425,7 @@ public final class ImdbApi {
         try {
             encodedQuery = URLEncoder.encode(query, "UTF-8");
         } catch (UnsupportedEncodingException ex) {
-        	log.severe("Failed to encode " + query + " exception: " + ex.getMessage());
+        	LOG.severe("Failed to encode " + query + " exception: " + ex.getMessage());
             encodedQuery = query;
         }
         args.put("q", encodedQuery);

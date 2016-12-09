@@ -21,7 +21,8 @@ package io.askcloud.pvr.omdb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
+import io.askcloud.pvr.imdb.ImdbApi;
 import io.askcloud.pvr.omdb.model.OmdbVideoFull;
 import io.askcloud.pvr.omdb.model.SearchResults;
 import io.askcloud.pvr.omdb.tools.OmdbBuilder;
@@ -50,7 +51,9 @@ import org.yamj.api.common.http.UserAgentSelector;
  */
 public class OmdbApi {
 
-	private static Logger log = HTPC.getInstance().getLogger();
+	private static final String CLASS_NAME = OmdbApi.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
+
     private final HttpClient httpClient;
     // Jackson JSON configuration
     private static ObjectMapper mapper = new ObjectMapper();
@@ -78,7 +81,7 @@ public class OmdbApi {
     }
 
     private String requestWebPage(URL url) throws OMDBException {
-    	log.info("Requesting: "+  url.toString());
+    	LOG.info("Requesting: "+  url.toString());
         try {
             final HttpGet httpGet = new HttpGet(url.toURI());
             httpGet.addHeader("accept", "application/json");
@@ -115,7 +118,7 @@ public class OmdbApi {
         SearchResults resultList;
 
         String url = OmdbUrlBuilder.create(searchParams);
-        log.info("URL: " +  url);
+        LOG.info("URL: " +  url);
 
         // Get the JSON
         String jsonData = requestWebPage(OmdbUrlBuilder.generateUrl(url));

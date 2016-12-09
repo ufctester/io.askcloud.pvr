@@ -1,6 +1,6 @@
-package io.askcloud.pvr.api;
+package io.askcloud.pvr.api.main;
 
-import io.askcloud.pvr.api.pvr.HTPC;
+import io.askcloud.pvr.api.HTPC;
 
 /**
  * @author ufctester
@@ -27,6 +27,9 @@ public class FindCompletedTVShowEpisodesRequest extends PlexRequest {
 	void run() {
 
 		HTPC.getInstance().findCompletedEpisodes(HTPC.PLEX_TVSHOWS_DIR);		
+		
+		//exit the java program
+		System.exit(0);
 	}
 
 }
