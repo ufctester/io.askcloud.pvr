@@ -1,0 +1,107 @@
+Run script [fn:amc] at [Fri Dec 09 06:45:30 EST 2016]
+Parameter: movieFormat = C:\tmp\CompletedDownloads/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\downloads\tvshows
+Argument[1]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\en
+Argument[3]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\music
+Argument[4]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\y
+Argument[5]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\n
+Use excludes: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\filebot\amc-exclude.txt (0)
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Conviction\Season 1\Conviction S01E05.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Man With A Plan\Season 1\Man With A Plan S01E03.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Secrets and Lies\Season 2\Secrets and Lies S02E06.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Shameless\Season 7\Shameless S07E06.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E04.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E09.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E11.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E12.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E13.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E14.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E15.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E18.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E19.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E20.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 2\Tosh.0 S02E23.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 3\Tosh.0 S03E24.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 3\Tosh.0 S03E30.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E04.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E05.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E06.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E10.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E24.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Westworld\Season 1\Westworld S01E06.mp4
+Group: [tvs:conviction] => [Conviction S01E05.mp4]
+Group: [tvs:man with a plan] => [Man With A Plan S01E03.mp4]
+Group: [tvs:secrets and lies] => [Secrets and Lies S02E06.mp4]
+Group: [tvs:shameless] => [Shameless S07E06.mp4]
+Group: [tvs:the flash] => [The Flash S02E04.mp4, The Flash S02E09.mp4, The Flash S02E11.mp4, The Flash S02E12.mp4, The Flash S02E13.mp4, The Flash S02E14.mp4, The Flash S02E15.mp4, The Flash S02E18.mp4, The Flash S02E19.mp4, The Flash S02E20.mp4]
+Group: [tvs:tosh 0] => [Tosh.0 S02E23.mp4, Tosh.0 S03E24.mp4, Tosh.0 S03E30.mp4, Tosh.0 S07E04.mp4, Tosh.0 S07E05.mp4, Tosh.0 S07E06.mp4, Tosh.0 S07E10.mp4, Tosh.0 S07E24.mp4]
+Group: [tvs:westworld] => [Westworld S01E06.mp4]
+Dec 09, 2016 6:45:34 AM java.util.prefs.WindowsPreferences <init>
+WARNING: Could not open/create prefs root node Software\JavaSoft\Prefs at root 0x80000002. Windows RegCreateKeyEx(...) returned error code 5.
+Rename episodes using [TheTVDB]
+Auto-detected query: [Conviction]
+Fetching episode data for [Conviction (2016)]
+Fetching episode data for [Conviction]
+Fetching episode data for [Conviction (UK)]
+Fetching episode data for [Conviction Kitchen]
+Fetching episode data for [Conviction Kitchen (Australia)]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Conviction\Season 1\Conviction S01E05.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Conviction\Season 01\Conviction - S01E05 - Savasana.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [man with a plan]
+Fetching episode data for [Man With A Plan]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Man With A Plan\Season 1\Man With A Plan S01E03.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Man With A Plan\Season 01\Man With A Plan - S01E03 - The Puppet Theater.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Secrets and Lies]
+Fetching episode data for [Secrets and Lies (2015)]
+Fetching episode data for [Secrets & Lies]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Secrets and Lies\Season 2\Secrets and Lies S02E06.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Secrets and Lies (2015)\Season 02\Secrets and Lies (2015) - S02E06 - The Parent.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Shameless]
+Fetching episode data for [Shameless (US)]
+Fetching episode data for [Shameless]
+Fetching episode data for [Fameless]
+Fetching episode data for [Timeless (2016)]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Shameless\Season 7\Shameless S07E06.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Shameless\Season 07\Shameless - S07E06 - Episode 6.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [The Flash]
+Fetching episode data for [The Flash (2014)]
+Fetching episode data for [The Flash]
+Fetching episode data for [The Flash (1967)]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E04.mp4] to [C:\tmp\CompletedDownloads\TV Shows\The Flash (2014)\Season 02\The Flash (2014) - S02E04 - The Fury of Firestorm.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E09.mp4] to [C:\tmp\CompletedDownloads\TV Shows\The Flash (2014)\Season 02\The Flash (2014) - S02E09 - Running to Stand Still.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E11.mp4] to [C:\tmp\CompletedDownloads\TV Shows\The Flash (2014)\Season 02\The Flash (2014) - S02E11 - The Reverse-Flash Returns.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E12.mp4] to [C:\tmp\CompletedDownloads\TV Shows\The Flash (2014)\Season 02\The Flash (2014) - S02E12 - Fast Lane.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E13.mp4] to [C:\tmp\CompletedDownloads\TV Shows\The Flash (2014)\Season 02\The Flash (2014) - S02E13 - Welcome to Earth-2.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E14.mp4] to [C:\tmp\CompletedDownloads\TV Shows\The Flash (2014)\Season 02\The Flash (2014) - S02E14 - Escape from Earth-2.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E15.mp4] to [C:\tmp\CompletedDownloads\TV Shows\The Flash (2014)\Season 02\The Flash (2014) - S02E15 - King Shark.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E18.mp4] to [C:\tmp\CompletedDownloads\TV Shows\The Flash (2014)\Season 02\The Flash (2014) - S02E18 - Versus Zoom.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E19.mp4] to [C:\tmp\CompletedDownloads\TV Shows\The Flash (2014)\Season 02\The Flash (2014) - S02E19 - Back to Normal.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E20.mp4] to [C:\tmp\CompletedDownloads\TV Shows\The Flash (2014)\Season 02\The Flash (2014) - S02E20 - Rupture.mp4]
+Processed 10 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Tosh 0]
+Fetching episode data for [Tosh.0]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 2\Tosh.0 S02E23.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Tosh.0\Season 02\Tosh.0 - S02E23 - I Like Turtles Kid.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 3\Tosh.0 S03E24.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Tosh.0\Season 03\Tosh.0 - S03E24 - Redneck Stuntman.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 3\Tosh.0 S03E30.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Tosh.0\Season 03\Tosh.0 - S03E30 - Web Reflection.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E04.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Tosh.0\Season 07\Tosh.0 - S07E04 - Shoenice.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E05.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Tosh.0\Season 07\Tosh.0 - S07E05 - Jackie B.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E06.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Tosh.0\Season 07\Tosh.0 - S07E06 - Sting Wrestling Fan.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E10.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Tosh.0\Season 07\Tosh.0 - S07E10 - Girl Dunks.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E24.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Tosh.0\Season 07\Tosh.0 - S07E24 - Sword Nose.mp4]
+Processed 8 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Westworld]
+Fetching episode data for [Westworld]
+Fetching episode data for [Beyond Westworld]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Westworld\Season 1\Westworld S01E06.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Westworld\Season 01\Westworld - S01E06 - The Adversary.mp4]
+Processed 1 files
+Done ヾ(＠⌒ー⌒＠)ノ
+

@@ -385,7 +385,7 @@ public class KodiManager {
 		while(true)
 		{			
 			LOG.info("Calling: PlexPVRManager.getInstance().loadTVShowEpisodesMissing()");
-			List<KodiDownloader> downloadItems = HTPC.getInstance().loadTVShowEpisodesMissing(2);
+			List<KodiDownloader> downloadItems = HTPC.getInstance().loadTVShowEpisodesMissing(-1);
 			if(!downloadItems.isEmpty())
 			{
 				download(downloadItems);
@@ -431,7 +431,7 @@ public class KodiManager {
 		while(true)
 		{
 			LOG.info("Calling: PlexPVRManager.getInstance().loadTVShowQueue()");			
-			List<KodiDownloader> downloadItems = HTPC.getInstance().loadTVShowQueue(2);
+			List<KodiDownloader> downloadItems = HTPC.getInstance().loadTVShowQueue(-1);
 			if(!downloadItems.isEmpty())
 			{
 				download(downloadItems);
@@ -469,7 +469,7 @@ public class KodiManager {
 		while(true)
 		{
 			LOG.info("Calling: PlexPVRManager.getInstance().loadMovieQueue()");
-			List<KodiDownloader> downloadItems = HTPC.getInstance().loadMovieQueue(2);
+			List<KodiDownloader> downloadItems = HTPC.getInstance().loadMovieQueue(-1);
 			if(!downloadItems.isEmpty())
 			{
 				download(downloadItems);

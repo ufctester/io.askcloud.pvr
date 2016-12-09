@@ -343,20 +343,19 @@ public class HTPC implements IHTPC{
 	
 	private void callFileBot(String[] args)
 	{
-		//args.add(0, FILE_BOT_EXE);
-		//String[] cmd = args.toArray(new String[args.size()]);
-		StringBuffer commandArgs = new StringBuffer();
-        for (String arg : args)
-        	commandArgs.append(" " + arg);
-        
-//        try {
-//            Process p = Runtime.getRuntime().exec(cmd);
-//            p.waitFor();
+//		LOG.entering(CLASS_NAME, "callFileBot",args);
+//		try {
+//			net.filebot.Main.main(args);
 //		}
 //		catch (Exception e) {
 //			e.printStackTrace();
+//			LOG.severe("Error calling Filebot with args: "  + args);
 //		}
-        
+
+		StringBuffer commandArgs = new StringBuffer();
+        for (String arg : args)
+        	commandArgs.append(" " + arg);
+                
         try {
         	DefaultExecuteResultHandler rh = new CmdDefaultExecuteResultHandler();
             String line = FILE_BOT_EXE + commandArgs;
@@ -367,6 +366,8 @@ public class HTPC implements IHTPC{
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		LOG.exiting(CLASS_NAME, "callFileBot");
 	}
 	/**
 	 * @param showName
@@ -523,7 +524,13 @@ public class HTPC implements IHTPC{
 		String fileBotDestForwardSlashes=targetDirectory.replace("\\\\", "/");
 		try {
 			//Main.main(new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "copy", "-non-strict", sourceDirectory, "--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
-			//		"subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "ecludeList", "amc-exclude.txt", "--def", "--log", "all" });			
+			//		"subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "ecludeList", "amc-exclude.txt", "--def", "--log", "all" });
+			
+			String[] args = new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "copy", "-non-strict", sourceDirectory, 
+					"--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
+					"subtitles", "en", "music", "y", "artwork", "n", "--log-file", FILEBOT_AMC_LOG, "--def", "excludeList=" + FILEBOT_AMC_EXCLUDE_LIST, "--log", "all" };					
+					
+			callFileBot(args);
 		}
 		catch(SecurityException e)
 		{
@@ -545,8 +552,24 @@ public class HTPC implements IHTPC{
 		
 		
 		String fileBotDestForwardSlashes=targetDirectory.replace("\\\\", "/");
-		//Main.main(new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "test", "-non-strict", sourceDirectory, "--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
-		//		"subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "--log", "all" });
+		try {
+			//Main.main(new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "test", "-non-strict", sourceDirectory, "--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
+			//		"subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "ecludeList", "amc-exclude.txt", "--def", "--log", "all" });
+			
+			String[] args = new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "test", "-non-strict", sourceDirectory, 
+					"--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
+					"subtitles", "en", "music", "y", "artwork", "n", "--log-file", FILEBOT_AMC_LOG, "--def", "excludeList=" + FILEBOT_AMC_EXCLUDE_LIST, "--log", "all" };					
+					
+			callFileBot(args);
+		}
+		catch(SecurityException e)
+		{
+			LOG.severe("Error Handling Filebot AMC: " + e.getMessage());			
+			e.printStackTrace();
+		}
+		finally {
+			
+		}					
 	}
 	
 	/**

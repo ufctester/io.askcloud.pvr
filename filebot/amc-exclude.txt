@@ -1,0 +1,23 @@
+C:\gitbash\opt\kodi\downloads\tvshows\Conviction\Season 1\Conviction S01E05.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Man With A Plan\Season 1\Man With A Plan S01E03.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Secrets and Lies\Season 2\Secrets and Lies S02E06.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Shameless\Season 7\Shameless S07E06.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E04.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E09.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E11.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E12.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E13.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E14.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E15.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E18.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E19.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\The Flash\Season 2\The Flash S02E20.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 2\Tosh.0 S02E23.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 3\Tosh.0 S03E24.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 3\Tosh.0 S03E30.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E04.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E05.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E06.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E10.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E24.mp4
+C:\gitbash\opt\kodi\downloads\tvshows\Westworld\Season 1\Westworld S01E06.mp4
