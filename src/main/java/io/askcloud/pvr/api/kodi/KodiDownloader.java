@@ -189,6 +189,9 @@ abstract public class KodiDownloader implements Runnable {
 
 			//If it is complete then we can return
 			if (status.isComplete()) {
+				downloadStatusStack.push(status);
+				setThreadName();
+				
 				downloadCompleted(status);
 				LOG.exiting(CLASS_NAME, "monitor");
 				return;

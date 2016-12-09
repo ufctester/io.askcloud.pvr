@@ -64,7 +64,7 @@ public class KodiManager {
 				
 		public DownloadStatus(String percent, String file, String downloaded, String total) {
 			super();
-			this.percent=(percent != null)?percent : "-1";
+			this.percent=((percent != null) && (!"".equals(percent)))?percent : "-1";
 			this.threadPrefix=percent;
 			this.file=file;
 			this.downloaded=downloaded;
