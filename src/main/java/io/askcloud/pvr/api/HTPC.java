@@ -862,7 +862,7 @@ public class HTPC implements IHTPC{
     						continue;
     					}
     	            	
-    	            	//if includeMissingEpisodes is not empty then only include these ones
+    	            	//Extra Filtering if includeMissingEpisodes is not empty then only include these ones
     	            	if(((!includeMissingEpisodes.isEmpty()) && (includeMissingEpisodes.contains(tvdbid))) 
     	            			|| (!excludeMissingEpisodes.contains(tvdbid)))
     	            	{
