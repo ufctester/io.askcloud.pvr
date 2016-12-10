@@ -55,7 +55,20 @@ csv.iterator().each { record ->
     
 //for (ignore in ignoreShows) {
 //    log.info "tvdbid: " + ignore.tvdbid + " seriesName: " + ignore.seriesName + " season: " + ignore.season + " episode: " + ignore.episode
-//}    
+//}   
+
+def removePunctuation(text){
+	if(text != null)
+	{
+		results = text.replaceAll("\\p{Punct}+", "")
+		results = results.replaceAll("  ", " ")
+		return results
+	}
+	else
+	{
+		return text
+	}
+} 
   
 //NOTE: This will determine if an entire series should be skipped which will ensure no metadata is retreived
 def acceptSeries(f,excludeSet) {
@@ -83,7 +96,7 @@ def acceptSeries(f,excludeSet) {
 		return false
 	}
 	
-	series=series.toLowerCase()
+	series=removePunctuation(series).toLowerCase()
 	def season = String.valueOf(sXe.season).toLowerCase()
 	def episode = String.valueOf(sXe.episode).toLowerCase()
 	log.fine "seriesName: $series Season: $season Episode: $episode"
@@ -100,6 +113,7 @@ def acceptSeries(f,excludeSet) {
 	    log.fine "tvdbid: " + tvdbidExclude + " seriesName: " + seriesExclude + " season: " + seasonExclude + " episode: " + episodeExclude
 	     
 	    //Series Matches
+	    log.fine "Checking if series: $series contains seriesExclude: $seriesExclude"
 		if(series.contains(seriesExclude))
 		{
 			//Check to see if the entire show should be ignored
@@ -126,7 +140,7 @@ def acceptMissingEpisode(episodeDetails,excludeSet) {
 	}
 		
 	seriesId=String.valueOf(episodeDetails.seriesInfo.id) 
-	series=episodeDetails.seriesName.toLowerCase()
+	series=removePunctuation(episodeDetails.seriesName).toLowerCase()
 	season=String.valueOf(episodeDetails.season)
 	episode=String.valueOf(episodeDetails.episode)
 	log.fine "acceptMissingEpisode() seriesId: $seriesId seriesName: $series Season: $season Episode: $episode"
