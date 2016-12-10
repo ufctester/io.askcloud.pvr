@@ -129,7 +129,7 @@ def acceptMissingEpisode(episodeDetails,excludeSet) {
 	series=episodeDetails.seriesName.toLowerCase()
 	season=String.valueOf(episodeDetails.season)
 	episode=String.valueOf(episodeDetails.episode)
-	log.fine "acceptMissingEpisode() seriesId: $seriesId seriesName: $series Season: $season Episode: $episode"
+	log.info "acceptMissingEpisode() seriesId: $seriesId seriesName: $series Season: $season Episode: $episode"
 	
 
 	// ignore archives that are on the exclude path list
@@ -142,7 +142,7 @@ def acceptMissingEpisode(episodeDetails,excludeSet) {
 	    log.fine "Exclude: tvdbid: " + tvdbidExclude + " seriesName: " + seriesExclude + " season: " + seasonExclude + " episode: " + episodeExclude
 	     
 	    //Check if the tvdb id matches
-	    log.fine "Checking tvdbidExclude: $tvdbidExclude to seriesId: $seriesId"
+	    log.info "Checking tvdbidExclude: $tvdbid to seriesId: $seriesId"
 	    if(tvdbidExclude.equals(seriesId))
 	    {
 	    	log.fine "seriesId: $seriesId Matched: $tvdbidExclude"

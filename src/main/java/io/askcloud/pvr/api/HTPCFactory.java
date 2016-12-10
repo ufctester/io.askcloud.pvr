@@ -1,15 +1,21 @@
 /**
  * 
  */
-package io.askcloud.pvr.api.main;
+package io.askcloud.pvr.api;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import io.askcloud.pvr.api.HTPC;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 import io.askcloud.pvr.api.kodi.KodiMovieDownloader;
 import io.askcloud.pvr.api.kodi.KodiTVShowDownloader;
 import io.askcloud.pvr.themoviedb.TheMovieDbApi;
@@ -19,17 +25,17 @@ import io.askcloud.pvr.themoviedb.interfaces.AppendToResponseMethod;
 import io.askcloud.pvr.themoviedb.model.movie.MovieInfo;
 import io.askcloud.pvr.themoviedb.results.ResultList;
 import io.askcloud.pvr.tvdb.TheTVDBApi;
-import io.askcloud.pvr.tvdb.model.Banner;
-import io.askcloud.pvr.tvdb.model.Banners;
-import io.askcloud.pvr.tvdb.model.Episode;
 import io.askcloud.pvr.tvdb.model.Series;
 
 /**
  * @author ufctester
  *
  */
-public class FindTVShowOrMovieRequest extends PlexRequest {
+public class HTPCFactory {
 
+	private static final String CLASS_NAME = HTPCFactory.class.getName();
+	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
+	
 	private static Set<String> findMovies = new LinkedHashSet<String>();
 	
 	private static Set<String> findTVShows = new LinkedHashSet<String>();
@@ -65,35 +71,166 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
     	findTVShows.add("Lethal Weapon");
     	findTVShows.add("Bull");
     }
-    	
+   
+    
+    public static void main(String[] args) {
+    	 Options options = new Options();
+    	 options.addOption("h", "help", false, "show help.");
+         options.addOption("a", "amc", false, "Run Filebot AMC");
+         options.addOption("t", "tvqueue", false, "Download TV Shows from TV Queue");
+         options.addOption("e", "tvmissing", false, "Download TV Shows from Series Episode Missing");
+         options.addOption("m", "moviequeue", false, "Download Movie from Movie Queue");
+         options.addOption("f", "find", false, "Find TV Shows or Movies from TVDB and TMDB");
+         options.addOption("s", "findmissingepisodes", false, "Find searies episodes which are missing with Filebot");
+
+         CommandLineParser parser = new DefaultParser();
+         CommandLine cmd = null;
+
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("h"))
+				help(options);
+			if (cmd.hasOption("v")) {
+				LOG.info("Using cli argument -v=" + cmd.getOptionValue("v"));
+
+				// Whatever you want to do with the setting goes here
+			}
+			else {
+				LOG.severe("MIssing v option");
+				help(options);
+			}
+		}
+		catch (ParseException e) {
+			LOG.severe("Failed to parse comand line properties: exception: " + e.getMessage());
+			help(options);
+		}
+         
+	}
+    
+	 private static void help(Options options) {
+		 // This prints out some help
+
+	}
+	 
+
+	private static HTPCFactory eINSTANCE;
+	
+	public static HTPCFactory getInstance() {
+		if (eINSTANCE == null) {
+			eINSTANCE = new HTPCFactory();
+		}
+		return eINSTANCE;
+	}
+	
 	/**
 	 * 
 	 */
-	public FindTVShowOrMovieRequest() {
-		super();
+	private HTPCFactory() {
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @param args
+	 * Start the TVShow Download Queue Request
 	 */
-	public static void main(String[] args) {
-		FindTVShowOrMovieRequest request = new FindTVShowOrMovieRequest();
-		request.run();
+	public void runDonwloadTVShowQueueMonitorRequest()
+	{		
+		HTPC.CLEAN_KODI_DOWNLOAD=true;
+		HTPC.getInstance().getKodiManager().downloadSeriesEpisodeQueue();
+		
+		//exit the java program
+		System.exit(0);		
 	}
 	
-	@Override
-	void run() {
-		findTVShows();
+	/**
+	 * Start the Movie Download Queue Request
+	 */
+	public void runDownloadMovieQueueMonitorRequest()
+	{
+		HTPC.CLEAN_KODI_DOWNLOAD=true;
+		HTPC.getInstance().getKodiManager().downloadMoviesQueue();
 		
 		//exit the java program
 		System.exit(0);
 	}
 	
+	/**
+	 * Start the TVShow Download for Missing Episodes
+	 */
+	public void runDownloadTVShowEpisodesMissingRequest()
+	{
+		HTPC.getInstance();
+		LOG.entering(CLASS_NAME, "run");
+		HTPC.CLEAN_KODI_DOWNLOAD=true;
+		LOG.info("Calling: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
+		HTPC.getInstance().getKodiManager().downloadSeriesEpisodeMissing();
+		LOG.info("Completd: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
+		LOG.entering(CLASS_NAME, "run");
+		
+		//exit the java program
+		System.exit(0);	
+	}
+	
+	
+	/**
+	 * Start Filebot AMC Request
+	 */
+	public void runFilebotAMCRequest()
+	{
+		//re-create the target directory
+		HTPC.getInstance().recreateDirectory(HTPC.FILEBOT_AMC_DESTINATION);
+		HTPC.getInstance().automatedMediaCenter(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR,HTPC.FILEBOT_AMC_DESTINATION);
+		//HTPC.getInstance().automatedMediaCenter(HTPC.KODI_DOWNLOAD_MOVIES_DIR,HTPC.FILEBOT_AMC_DESTINATION);
+		
+		//Don't exit becuase file bot goes on another thread
+		//System.exit(0);
+	}
+	
+	/**
+	 * Find Complete TVShow Episode Request
+	 */
+	public void runFindCompletedTVShowEpisodesRequest()
+	{
+		HTPC.getInstance().findCompletedEpisodes(HTPC.PLEX_TVSHOWS_DIR);		
+		
+		//exit the java program
+		System.exit(0);
+	}
+	
+	/**
+	 * 
+	 */
+	public void runFindHaveTVShowEpisodesRequest()
+	{
+		HTPC.getInstance().findTVShowEpisodesHave(HTPC.PLEX_TVSHOWS_DIR);		
+		
+		//exit the java program
+		System.exit(0);	
+	}
+	
+	/**
+	 * Find missing TVShow Episode Request
+	 */
+	public void runFindMissingTVShowEpisodesRequest()
+	{
+		HTPC.getInstance().findMissingTVShowEpisodes(HTPC.PLEX_TVSHOWS_DIR);	
+	}
+	
+	/**
+	 * Search for TVShow or Movie Request
+	 */
+	public void runFindTVShowOrMovieRequest()
+	{
+		findTVShows();
+		
+		//exit the java program
+		System.exit(0);	
+	}
+
 	
 	/**
 	 * @param args
 	 */
-	public List<KodiTVShowDownloader> findTVShows() {
+	private List<KodiTVShowDownloader> findTVShows() {
 		
 		List<KodiTVShowDownloader> downloads = new ArrayList<KodiTVShowDownloader>();
 		
@@ -119,7 +256,6 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
 		
 
 	}	
-	
 	
 	private Series findTVShow(String name)
 	{
@@ -234,7 +370,7 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
      * @param methodClass
      * @return
      */
-    protected static <T extends AppendToResponseMethod> String movieDBAppendToResponseBuilder(Class<T> methodClass) {
+    private <T extends AppendToResponseMethod> String movieDBAppendToResponseBuilder(Class<T> methodClass) {
         boolean first = true;
         StringBuilder atr = new StringBuilder();
         for (AppendToResponseMethod method : methodClass.getEnumConstants()) {
@@ -246,6 +382,5 @@ public class FindTVShowOrMovieRequest extends PlexRequest {
             atr.append(method.getPropertyString());
         }
         return atr.toString();
-    }		
-
+    }			
 }

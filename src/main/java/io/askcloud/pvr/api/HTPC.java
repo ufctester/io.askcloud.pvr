@@ -22,6 +22,11 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
@@ -99,6 +104,66 @@ public class HTPC implements IHTPC{
 //		excludeMissingEpisodes.add("230121"); //The X Factor (US)
 //		excludeMissingEpisodes.add("97731"); //Tosh.0
     }
+    
+    public static void main(String[] args) {
+   	 Options options = new Options();
+   	 options.addOption("h", "help", false, "show help.");
+        options.addOption("a", "amc", false, "Run Filebot AMC");
+        options.addOption("t", "tvqueue", false, "Download TV Shows from TV Queue");
+        options.addOption("e", "tvmissing", false, "Download TV Shows from Series Episode Missing");
+        options.addOption("m", "moviequeue", false, "Download Movie from Movie Queue");
+        options.addOption("f", "find", false, "Find TV Shows or Movies from TVDB and TMDB");
+        options.addOption("s", "findmissingepisodes", false, "Find series missing episodes which Filebot");
+
+        CommandLineParser parser = new DefaultParser();
+        org.apache.commons.cli.CommandLine cmd = null;
+
+		try {
+			cmd = parser.parse(options, args);
+			if (cmd.hasOption("h"))
+			{
+				 HelpFormatter formater = new HelpFormatter();
+				 formater.printHelp("Main", options);
+				 System.exit(0);
+			}
+			else if (cmd.hasOption("a")) {
+				 HTPCFactory.getInstance().runFilebotAMCRequest();
+				 System.exit(0);
+			}
+			else if (cmd.hasOption("t")) {
+				 HTPCFactory.getInstance().runDonwloadTVShowQueueMonitorRequest();
+				 System.exit(0);
+			}
+			else if (cmd.hasOption("e")) {
+				 HTPCFactory.getInstance().runDownloadTVShowEpisodesMissingRequest();
+				 System.exit(0);
+			}
+			else if (cmd.hasOption("m")) {
+				 HTPCFactory.getInstance().runDownloadMovieQueueMonitorRequest();
+				 System.exit(0);
+			}
+			else if (cmd.hasOption("f")) {
+				 HTPCFactory.getInstance().runFindTVShowOrMovieRequest();
+				 System.exit(0);
+			}
+			else if (cmd.hasOption("s")) {
+				 HTPCFactory.getInstance().runFindMissingTVShowEpisodesRequest();
+				 //filebot runs different threads so we need to wait to ensure it is complete
+				 //System.exit(0);
+			}			
+			else {
+				 HelpFormatter formater = new HelpFormatter();
+				 formater.printHelp("Main", options);
+				 System.exit(0);
+			}
+		}
+		catch (ParseException e) {
+			LOG.severe("Failed to parse comand line properties: exception: " + e.getMessage());
+			 HelpFormatter formater = new HelpFormatter();
+			 formater.printHelp("Main", options);
+			 System.exit(0);
+		}
+	}    
 
 	protected class OneLineFormatter extends SimpleFormatter {
 
@@ -430,10 +495,11 @@ public class HTPC implements IHTPC{
 		}
 		
 		try {		
-			directory="\"" + directory + "\"";
+			
 			//Main.main(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory,"--output",PlexPVRManager.FILEBOT_SERIES_EPISODES_MISSING_FILE , "--def", "excludeList=" + FILE_BOT_FIND_MISSING_EPISODES_EXCLUDES,"--log", "all"});
 			//callFileBot(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory,"--output",PlexPVRManager.FILEBOT_SERIES_EPISODES_MISSING_FILE , "--def", "excludeList=" + FILE_BOT_FIND_MISSING_EPISODES_EXCLUDES,"--log", "info"});
 			//Main.main(new String[] { "-list", "--db", "thetvdb", "--q", "Dexter", "--format", "{plex}" });
+			directory="\"" + directory + "\"";
 			callFileBot(new String[] { "-script", HTPC.FILEBOT_FIND_SERIES_MISSING_EPISODES, directory,"--output",HTPC.FILEBOT_SERIES_EPISODES_MISSING_FILE , "--def", "excludeList=" + FILEBOT_FIND_SERIES_EPISODES_MISSING_EXCLUDES,"--log", "info"});
 		}
 		catch(SecurityException e)
