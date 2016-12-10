@@ -61,6 +61,8 @@ public class HTPC implements IHTPC{
 	public static final Logger LOG_DOWNLOAD = Logger.getLogger(LOG_DOWNLOAD_TR);
 	public static final Logger LOG_LOAD_KODI_STATUS = Logger.getLogger(LOG_LOAD_KODI_STATUS_TR);
 	public static final Logger LOG_DOWNLOAD_KODI_MONITOR_THREAD = Logger.getLogger(LOG_DOWNLOAD_KODI_MONITOR_THREAD_TR);
+	public static final Logger LOG_FILE_BOT = Logger.getLogger(LOG_FILE_BOT_TR);
+	
 	
 	//TV and Movie DB API
 	public TheTVDBApi tvdbAPI=null;
@@ -201,29 +203,6 @@ public class HTPC implements IHTPC{
 			return String.format(format, dat, source, record.getLoggerName(), record.getLevel().getName(), message, throwable);
 		}
 	}
-	
-	public class CmdDefaultExecuteResultHandler extends DefaultExecuteResultHandler
-	{
-		public CmdDefaultExecuteResultHandler() {
-			// TODO Auto-generated constructor stub
-		}
-		
-		@Override
-		public void onProcessComplete(int exitValue) {
-			LOG.entering(CLASS_NAME, "onProcessComplete");
-			LOG.exiting(CLASS_NAME, "onProcessComplete");
-			super.onProcessComplete(exitValue);
-		}
-		@Override
-		public void onProcessFailed(ExecuteException e) {
-			LOG.entering(CLASS_NAME, "onProcessFailed",e);
-			LOG.exiting(CLASS_NAME, "onProcessFailed");
-			super.onProcessFailed(e);
-		}
-		
-		
-		
-	}	
 
 	private HTPC() {
 
@@ -422,7 +401,7 @@ public class HTPC implements IHTPC{
         	commandArgs.append(" " + arg);
                 
         try {
-        	DefaultExecuteResultHandler rh = new CmdDefaultExecuteResultHandler();
+        	DefaultExecuteResultHandler rh = new FileBotExecuteResultHandler();
             String line = FILE_BOT_EXE + commandArgs;
             CommandLine cmdLine = CommandLine.parse(line);
             DefaultExecutor executor = new DefaultExecutor();

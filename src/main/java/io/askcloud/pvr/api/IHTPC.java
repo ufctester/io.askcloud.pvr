@@ -20,7 +20,7 @@ public interface IHTPC {
 	public String LOG_DOWNLOAD_TR = "io.askcloud.pvr.api.kodi.status";
 	public String LOG_LOAD_KODI_STATUS_TR = "io.askcloud.pvr.api.kodi.loadstatus";
 	public String LOG_DOWNLOAD_KODI_MONITOR_THREAD_TR = "io.askcloud.pvr.api.kodi.monitor";
-	
+	public String LOG_FILE_BOT_TR = "io.askcloud.pvr.api.filebot";
 	
 	public static String PLEX_TVSHOWS_DIR =  "C:\\Entertainment\\TVShows";
 	//public static String PLEX_TVSHOWS_DIR =  "C:\\tmp\\TVShows";

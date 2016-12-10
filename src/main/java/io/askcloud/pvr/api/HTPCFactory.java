@@ -181,7 +181,7 @@ public class HTPCFactory {
 		HTPC.getInstance().automatedMediaCenter(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR,HTPC.FILEBOT_AMC_DESTINATION);
 		//HTPC.getInstance().automatedMediaCenter(HTPC.KODI_DOWNLOAD_MOVIES_DIR,HTPC.FILEBOT_AMC_DESTINATION);
 		
-		//Don't exit becuase file bot goes on another thread
+		//Don't exit because Filebot runs on another thread FileBotExecuteResultHandler which will exit when it is done
 		//System.exit(0);
 	}
 	
@@ -192,8 +192,8 @@ public class HTPCFactory {
 	{
 		HTPC.getInstance().findCompletedEpisodes(HTPC.PLEX_TVSHOWS_DIR);		
 		
-		//exit the java program
-		System.exit(0);
+		//Don't exit because Filebot runs on another thread FileBotExecuteResultHandler which will exit when it is done
+		//System.exit(0);
 	}
 	
 	/**
@@ -203,8 +203,8 @@ public class HTPCFactory {
 	{
 		HTPC.getInstance().findTVShowEpisodesHave(HTPC.PLEX_TVSHOWS_DIR);		
 		
-		//exit the java program
-		System.exit(0);	
+		//Don't exit because Filebot runs on another thread FileBotExecuteResultHandler which will exit when it is done
+		//System.exit(0);
 	}
 	
 	/**
@@ -213,6 +213,8 @@ public class HTPCFactory {
 	public void runFindMissingTVShowEpisodesRequest()
 	{
 		HTPC.getInstance().findMissingTVShowEpisodes(HTPC.PLEX_TVSHOWS_DIR);	
+		//Don't exit because Filebot runs on another thread FileBotExecuteResultHandler which will exit when it is done
+		//System.exit(0);
 	}
 	
 	/**

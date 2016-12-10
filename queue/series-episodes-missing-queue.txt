@@ -1,5 +1,8 @@
-TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED
-311875,,Speechless,1,1,false
-311876,,Designated Survivor,1,1,false
-311790,,Lethal Weapon,1,1,false
-75821,,Bull,1,1,false
+TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED,STATUS,DOWNLOAD_PERCENT
+311968,,Doubt,1,1,false,QUEUED,-1
+311958,,Frequency,1,1,false,QUEUED,-1
+311905,,Downward Dog,1,1,false,QUEUED,-1
+311711,,The Good Place,1,1,false,QUEUED,-1
+311948,,The Great Indoors,1,1,false,QUEUED,-1
+311902,,MacGyver,1,1,false,QUEUED,-1
+311957,,No Tomorrow,1,1,false,QUEUED,-1

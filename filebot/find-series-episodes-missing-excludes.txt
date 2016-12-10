@@ -8,7 +8,7 @@ TVDB_ID,SERIES_NAME,SEASON,EPISODE
 74709,cops,ALL,ALL
 261190,descending,ALL,ALL
 183831,hardcore pawn,ALL,ALL
-109621,hoarders,4,15
+109621,hoarders,ALL,ALL
 75692,law order special victims unit,ALL,ALL
 75897,south park,ALL,ALL
 267570,the amazing race canada,ALL,ALL

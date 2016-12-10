@@ -1,13 +1,16 @@
 TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED,STATUS,DOWNLOAD_PERCENT
-109621,,Hoarders,4,16,false,QUEUED,-1
-109621,,Hoarders,7,0,false,QUEUED,-1
-109621,,Hoarders,7,1,false,QUEUED,-1
-109621,,Hoarders,7,3,false,QUEUED,-1
-109621,,Hoarders,7,4,false,QUEUED,-1
-109621,,Hoarders,7,5,false,QUEUED,-1
-109621,,Hoarders,7,6,false,QUEUED,-1
-109621,,Hoarders,7,7,false,QUEUED,-1
-109621,,Hoarders,7,8,false,QUEUED,-1
-109621,,Hoarders,7,9,false,QUEUED,-1
+311958,,Frequency,1,2,false,QUEUED,-1
+311958,,Frequency,1,3,false,QUEUED,-1
+311958,,Frequency,1,4,false,QUEUED,-1
+311958,,Frequency,1,5,false,QUEUED,-1
+311711,,The Good Place,1,2,false,QUEUED,-1
+311711,,The Good Place,1,3,false,QUEUED,-1
+311711,,The Good Place,1,4,false,QUEUED,-1
+311711,,The Good Place,1,5,false,QUEUED,-1
+311711,,The Good Place,1,6,false,QUEUED,-1
+311711,,The Good Place,1,7,false,QUEUED,-1
+311711,,The Good Place,1,8,false,QUEUED,-1
+311711,,The Good Place,1,9,false,QUEUED,-1
+311948,,The Great Indoors,1,2,false,QUEUED,-1
 97731,,Tosh.0,7,7,false,QUEUED,-1
 97731,,Tosh.0,8,27,false,QUEUED,-1
