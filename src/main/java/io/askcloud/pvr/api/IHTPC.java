@@ -34,6 +34,10 @@ public interface IHTPC {
 	//This means the program will never end
 	public boolean WAIT_FOR_NEW_REQUESTS_NO_EXIT = false;
 	
+	
+	/*
+	 * Kodi Download Constants
+	 */
 	public static String KODI_DOWNLOAD_BASE_DIR = "C:\\gitbash\\opt\\kodi\\downloads";
 	public static String KODI_DOWNLOAD_TVSHOWS_DIR = KODI_DOWNLOAD_BASE_DIR + "\\tvshows";
 	public static String KODI_DOWNLOAD_MOVIES_DIR = KODI_DOWNLOAD_BASE_DIR + "\\movies";
@@ -42,7 +46,13 @@ public interface IHTPC {
 	public static String KDOI_PVR_DOWNLOAD_TRACKER = "C:/gitbash/opt/kodi/" + KODI_PVR_DOWNLOAD_FILE;
 	public static String KDOI_PVR_DOWNLOAD_TRACKER_MASTER = "C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/kodi/plugin.video.exodus.updates/" + KODI_PVR_DOWNLOAD_FILE;
 
-	//FileBot Groovy Scripts
+	//This controls the number of shows to pick up per queue.  -1 is All of them
+	public static int KODI_TVSHOW_QUEUE_BATCH = -1;
+	public static int KODI_MOVIE_QUEUE_BATCH = -1;
+	
+	/*
+	 * FileBot Groovy Scripts
+	 */
 	public static String FILEBOT_FIND_SERIES_MISSING_EPISODES="C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/find-series-episodes-missing.groovy";
 	public static String FILEBOT_FIND_SERIES_EPISODES_MISSING_EXCLUDES="C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/find-series-episodes-missing-excludes.txt";
 	public static String FILEBOT_AMC_LOG="C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc.log";

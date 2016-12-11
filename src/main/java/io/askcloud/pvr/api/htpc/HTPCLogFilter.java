@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.askcloud.pvr.api;
+package io.askcloud.pvr.api.htpc;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.logging.Filter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+
+import io.askcloud.pvr.api.HTPC;
 
 /**
  * @author ufctester

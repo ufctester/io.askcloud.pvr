@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.askcloud.pvr.api;
+package io.askcloud.pvr.api.htpc;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,6 +16,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import io.askcloud.pvr.api.HTPC;
 import io.askcloud.pvr.api.kodi.KodiMovieDownloader;
 import io.askcloud.pvr.api.kodi.KodiTVShowDownloader;
 import io.askcloud.pvr.themoviedb.TheMovieDbApi;
@@ -178,8 +179,7 @@ public class HTPCFactory {
 	{
 		//re-create the target directory
 		HTPC.getInstance().recreateDirectory(HTPC.FILEBOT_AMC_DESTINATION);
-		HTPC.getInstance().automatedMediaCenter(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR,HTPC.FILEBOT_AMC_DESTINATION);
-		//HTPC.getInstance().automatedMediaCenter(HTPC.KODI_DOWNLOAD_MOVIES_DIR,HTPC.FILEBOT_AMC_DESTINATION);
+		HTPC.getInstance().automatedMediaCenter(HTPC.KODI_DOWNLOAD_BASE_DIR,HTPC.FILEBOT_AMC_DESTINATION);
 		
 		//Don't exit because Filebot runs on another thread FileBotExecuteResultHandler which will exit when it is done
 		//System.exit(0);
@@ -216,6 +216,21 @@ public class HTPCFactory {
 		//Don't exit because Filebot runs on another thread FileBotExecuteResultHandler which will exit when it is done
 		//System.exit(0);
 	}
+	
+	/**
+	 * Find missing TVShow Episode Request
+	 */
+	public void runTestRequest()
+	{
+		HTPC.getInstance();
+		LOG.entering(CLASS_NAME, "runTestRequest");
+		HTPC.CLEAN_KODI_DOWNLOAD=true;
+		LOG.info("Calling: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
+		HTPC.getInstance().getKodiManager().downloadSeriesEpisodeMissing();
+		LOG.info("Completd: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
+		LOG.exiting(CLASS_NAME, "runTestRequest");
+		System.exit(0);
+	}	
 	
 	/**
 	 * Search for TVShow or Movie Request

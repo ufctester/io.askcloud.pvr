@@ -39,6 +39,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import io.askcloud.pvr.api.kodi.KodiManager;
+import io.askcloud.pvr.api.htpc.HTPCFactory;
+import io.askcloud.pvr.api.htpc.HTPCLogFilter;
 import io.askcloud.pvr.api.kodi.KodiDownloader;
 import io.askcloud.pvr.api.kodi.KodiMovieDownloader;
 import io.askcloud.pvr.api.kodi.KodiTVShowDownloader;
@@ -56,6 +58,7 @@ public class HTPC implements IHTPC{
 	
 	
 	private static final String CLASS_NAME = HTPC.class.getName();
+	private static final String CLASS_NAME_RESULT_HANDLER_FILE_BOT = FileBotExecuteResultHandler.class.getName();
 	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 	
 	public static final Logger LOG_DOWNLOAD = Logger.getLogger(LOG_DOWNLOAD_TR);
@@ -116,6 +119,7 @@ public class HTPC implements IHTPC{
         options.addOption("m", "moviequeue", false, "Download Movie from Movie Queue");
         options.addOption("f", "find", false, "Find TV Shows or Movies from TVDB and TMDB");
         options.addOption("s", "findmissingepisodes", false, "Find series missing episodes which Filebot");
+        options.addOption("test", false, "Test Method");
 
         CommandLineParser parser = new DefaultParser();
         org.apache.commons.cli.CommandLine cmd = null;
@@ -130,29 +134,25 @@ public class HTPC implements IHTPC{
 			}
 			else if (cmd.hasOption("a")) {
 				 HTPCFactory.getInstance().runFilebotAMCRequest();
-				 System.exit(0);
 			}
 			else if (cmd.hasOption("t")) {
 				 HTPCFactory.getInstance().runDonwloadTVShowQueueMonitorRequest();
-				 System.exit(0);
 			}
 			else if (cmd.hasOption("e")) {
 				 HTPCFactory.getInstance().runDownloadTVShowEpisodesMissingRequest();
-				 System.exit(0);
 			}
 			else if (cmd.hasOption("m")) {
 				 HTPCFactory.getInstance().runDownloadMovieQueueMonitorRequest();
-				 System.exit(0);
 			}
 			else if (cmd.hasOption("f")) {
 				 HTPCFactory.getInstance().runFindTVShowOrMovieRequest();
-				 System.exit(0);
 			}
 			else if (cmd.hasOption("s")) {
 				 HTPCFactory.getInstance().runFindMissingTVShowEpisodesRequest();
-				 //filebot runs different threads so we need to wait to ensure it is complete
-				 //System.exit(0);
-			}			
+			}
+			else if (cmd.hasOption("test")) {
+				 HTPCFactory.getInstance().runTestRequest();
+			}				
 			else {
 				 HelpFormatter formater = new HelpFormatter();
 				 formater.printHelp("Main", options);
@@ -166,6 +166,40 @@ public class HTPC implements IHTPC{
 			 System.exit(0);
 		}
 	}    
+    
+    /**
+     * @author ufctester
+     *
+     */
+    public class FileBotExecuteResultHandler extends DefaultExecuteResultHandler {
+
+    	
+    	
+    	/**
+    	 * 
+    	 */
+    	public FileBotExecuteResultHandler() {
+    		// TODO Auto-generated constructor stub
+    	}
+    	
+    	@Override
+    	public void onProcessComplete(int exitValue) {
+    		LOG.entering(CLASS_NAME_RESULT_HANDLER_FILE_BOT, "onProcessComplete");
+    		LOG.exiting(CLASS_NAME_RESULT_HANDLER_FILE_BOT, "onProcessComplete");
+    		super.onProcessComplete(exitValue);
+    		System.exit(0);
+    	}
+    	
+    	@Override
+    	public void onProcessFailed(ExecuteException e) {
+    		LOG.entering(CLASS_NAME_RESULT_HANDLER_FILE_BOT, "onProcessFailed",e);
+    		LOG.exiting(CLASS_NAME_RESULT_HANDLER_FILE_BOT, "onProcessFailed");
+    		super.onProcessFailed(e);
+    		System.exit(1);
+    	}
+
+    }
+    
 
 	protected class OneLineFormatter extends SimpleFormatter {
 
@@ -207,7 +241,6 @@ public class HTPC implements IHTPC{
 	private HTPC() {
 
 		super();
-
 		init();
 	}
 
@@ -527,27 +560,27 @@ public class HTPC implements IHTPC{
 	/**
 	 * @return
 	 */
-	public List<KodiDownloader> loadMovieQueue(int numberOfDownloadsToHandle)
+	public List<KodiDownloader> loadMovieQueue()
 	{
-		return loadMovieRequests(HTPC.FILEBOT_MOVIE_MISSING_QUEUE_FILE,numberOfDownloadsToHandle);
+		return loadAndUpdateMovieRequests(HTPC.FILEBOT_MOVIE_MISSING_QUEUE_FILE);
 	}
 
 	/**
 	 * @param numberOfDownloadsToHandle
 	 * @return
 	 */
-	public List<KodiDownloader> loadTVShowQueue(int numberOfDownloadsToHandle)
+	public List<KodiDownloader> loadTVShowQueue()
 	{
-		return loadAndUpdateTVShowRequests(HTPC.FILEBOT_SERIES_EPISODES_MISSING_QUEUE_FILE,Collections.emptyList(),numberOfDownloadsToHandle);
+		return loadAndUpdateTVShowRequests(HTPC.FILEBOT_SERIES_EPISODES_MISSING_QUEUE_FILE,Collections.emptyList());
 	}
 	
 	/**
 	 * @param numberOfDownloadsToHandle
 	 * @return
 	 */
-	public List<KodiDownloader> loadTVShowEpisodesMissing(int numberOfDownloadsToHandle)
+	public List<KodiDownloader> loadTVShowEpisodesMissing()
 	{
-		return loadAndUpdateTVShowRequests(HTPC.FILEBOT_SERIES_EPISODES_MISSING_FILE,Collections.emptyList(),numberOfDownloadsToHandle);
+		return loadAndUpdateTVShowRequests(HTPC.FILEBOT_SERIES_EPISODES_MISSING_FILE,Collections.emptyList());
 	}
 	
 	/**
@@ -556,7 +589,7 @@ public class HTPC implements IHTPC{
 	 */
 	public List<KodiDownloader> loadTVShowEpisodesMissingAndUpdateProgress(List<KodiDownloader> downloaders)
 	{
-		return loadAndUpdateTVShowRequests(HTPC.FILEBOT_SERIES_EPISODES_MISSING_FILE,downloaders,-1);
+		return loadAndUpdateTVShowRequests(HTPC.FILEBOT_SERIES_EPISODES_MISSING_FILE,downloaders);
 	}	
 	
 	/**
@@ -621,7 +654,7 @@ public class HTPC implements IHTPC{
 	 * @param missingEpisodeFile
 	 * @return
 	 */
-	synchronized private List<KodiDownloader> loadMovieRequests(String movieQueueFileString,int numberOfDownloadsToHandle) {
+	synchronized private List<KodiDownloader> loadAndUpdateMovieRequests(String movieQueueFileString) {
 		List<KodiDownloader> movies = new ArrayList<KodiDownloader>();
 		if(movieQueueFileString == null)
 		{
@@ -646,16 +679,18 @@ public class HTPC implements IHTPC{
             List<CSVRecord> records = parser.getRecords();
             
         	//"TVDB_ID,SERIES_NAME,SEASON,EPISODE"
-            String[] header = {"IMDB_ID","MOVIE_NAME"};
+            String[] header = {"IMDB_ID","MOVIE_NAME","STATUS","DOWNLOAD_PERCENT"};
             
             for (int i = 0; i < records.size(); i++) {
 				CSVRecord record = records.get(i);
 				
 				//purge the numberOfDownloadsToHandle
-				if((numberOfDownloadsToHandle <= 0) || (i < numberOfDownloadsToHandle))
+				if((HTPC.KODI_MOVIE_QUEUE_BATCH <= 0) || (i < HTPC.KODI_MOVIE_QUEUE_BATCH))
 				{
 	            	final String imdbid = record.get("IMDB_ID");
 	            	final String movieName = record.get("MOVIE_NAME");
+	            	final String status = record.get("STATUS");
+	            	final String percent = record.get("DOWNLOAD_PERCENT");
 	
 	            	//if includeMissingEpisodes is not empty then only include these ones
 	            	if(!excludeMovies.contains(imdbid))
@@ -750,8 +785,9 @@ public class HTPC implements IHTPC{
 	 * @param numberOfDownloadsToHandle (if this is <= 0 then we will download them all.
 	 * @return
 	 */
-	synchronized private List<KodiDownloader> loadAndUpdateTVShowRequests(String missingEpisodeFileString,List<KodiDownloader> currentRequestProgress,int numberOfDownloadsToHandle) {
-		LOG.entering(CLASS_NAME, "loadTVShowRequests",new Object[]{missingEpisodeFileString,numberOfDownloadsToHandle});
+	@SuppressWarnings("unused")
+	synchronized private List<KodiDownloader> loadAndUpdateTVShowRequests(String missingEpisodeFileString,List<KodiDownloader> currentRequestProgress) {
+		LOG.entering(CLASS_NAME, "loadAndUpdateTVShowRequests",new Object[]{missingEpisodeFileString});
 		List<KodiDownloader> missingEpisodes = new ArrayList<KodiDownloader>();
 		if(missingEpisodeFileString == null)
 		{
@@ -832,7 +868,7 @@ public class HTPC implements IHTPC{
                 	String[] snatchedRecord=new String[]{tvdbid,imdbid,seriesName,season,episode,ended,"SNATCHED",downloadPercent};
                 	
     				//purge the numberOfDownloadsToHandle
-    				if((numberOfDownloadsToHandle <= 0) || (i < numberOfDownloadsToHandle))
+    				if((HTPC.KODI_TVSHOW_QUEUE_BATCH <= 0) || (i < HTPC.KODI_TVSHOW_QUEUE_BATCH))
     				{
     	            	//check if the status is queued.  If it is then we can grab it, otherwise we have to just skip it
     					if(!"QUEUED".equals(status))
@@ -929,7 +965,7 @@ public class HTPC implements IHTPC{
 			}
         }
         
-        LOG.exiting(CLASS_NAME, "loadTVShowRequests",missingEpisodes);
+        LOG.exiting(CLASS_NAME, "loadAndUpdateTVShowRequests",missingEpisodes);
     	return missingEpisodes;        
 	}		
 	
