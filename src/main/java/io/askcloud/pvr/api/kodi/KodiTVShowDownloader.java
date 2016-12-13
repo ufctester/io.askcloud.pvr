@@ -8,10 +8,12 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import io.askcloud.pvr.api.HTPC;
-import io.askcloud.pvr.api.kodi.KodiManager.DownloadStatus;
+import io.askcloud.pvr.api.kodi.KodiDownloader.KodiDownloaderDetails;
 import io.askcloud.pvr.kodi.jsonrpc.api.AbstractCall;
 import io.askcloud.pvr.kodi.jsonrpc.api.call.Addons;
 import io.askcloud.pvr.kodi.jsonrpc.api.call.Files.GetDirectory;
@@ -25,9 +27,6 @@ import io.askcloud.pvr.kodi.jsonrpc.model.ListModel;
  */
 public class KodiTVShowDownloader extends KodiDownloader {
 
-	//i.e. 24 or Person of Interest
-	private String SHOW_NAME = null;
-	
 	private int SEASON = -1;
 	
 	private int EPISODE = -1;
@@ -37,22 +36,24 @@ public class KodiTVShowDownloader extends KodiDownloader {
 	private static final String CLASS_NAME = KodiTVShowDownloader.class.getName();
 	private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
-	public KodiTVShowDownloader(String searchName, String imdbid, String tvdbid,int season, int episode,boolean seriesEnded) {
-
-		super();
+	/**
+	 * @param name
+	 * @param imdbid
+	 * @param tvdbid
+	 * @param season
+	 * @param episode
+	 * @param seriesEnded
+	 * @param status
+	 * @param percentDownloaded
+	 */
+	public KodiTVShowDownloader(String name, String imdbid, String tvdbid,int season, int episode,boolean seriesEnded,String status,int percentDownloaded,String file,int totalDownloadSize,int totalSize) {
+		super(imdbid,tvdbid,name,status,percentDownloaded,file,totalDownloadSize,totalSize);
 		LOG.entering(CLASS_NAME, "KodiExodusDownloader");
 		LOG.exiting(CLASS_NAME, "KodiExodusDownloader");
-		imdbid=(StringUtils.isNotBlank(imdbid))?imdbid:null;
-		setImdbID(imdbid);
-		setTVDBID(tvdbid);
-		SHOW_NAME = normailizeSearchName(searchName);
+		setName(normailizeSearchName(name));
 		SEASON = season;
 		EPISODE = episode;
 		this.seriesEnded=seriesEnded;
-	}
-	
-	public String getShowName() {
-		return SHOW_NAME;
 	}
 	
 	public int getSeason() {
@@ -69,25 +70,9 @@ public class KodiTVShowDownloader extends KodiDownloader {
 		return seriesEnded;
 	}
 
-	
 	@Override
-	protected void setThreadName() {
-		String threadName = null;
-		threadName = "KodiDownloader [" + getLastDownloadStatus().getThreadPrefix() + "% " + SHOW_NAME + " " + "S" + HTPC.getInstance().getSeason(SEASON) + "E" + HTPC.getInstance().getEpisode(EPISODE) + "]";
-		final Thread currentThread = Thread.currentThread();
-        currentThread.setName(threadName);	
-	}
-	
-	
-	@Override
-	protected DownloadStatus getUpdatedDownloadStatus() {
-		String name = createTVEpisodeName(SHOW_NAME, SEASON, EPISODE);
-		return HTPC.getInstance().getKodiManager().getDownloadStatus(name);
-	}
-	
-	public static String createTVEpisodeName(String showName, int season,int episode)
-	{
-		return showName + " S" + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode);
+	public String getDownloadStatusIdentifier() {
+		return createEpisodeName();
 	}
 
 	@Override
@@ -95,13 +80,13 @@ public class KodiTVShowDownloader extends KodiDownloader {
 		LOG.entering(CLASS_NAME, "requestDownload");
 
 		//Exodus calls urllib.quote_plus() on the show name before it makes the rest call
-		String tvShow = URLEncoder.encode(SHOW_NAME);
+		String tvShow = URLEncoder.encode(getName());
 		tvShow = URLEncoder.encode(tvShow);
 		GetDirectory exodus = new GetDirectory(
 				"plugin://plugin.video.exodus/?action=tvshowPage&url=http%3A%2F%2Fapi-v2launch.trakt.tv%2Fsearch%3Ftype%3Dshow%26limit%3D3020%26page%3D1%26query%3D" + tvShow);
 
 		LOG.info("Season URL: " + "plugin://plugin.video.exodus/?action=tvshowPage&url=http%3A%2F%2Fapi-v2launch.trakt.tv%2Fsearch%3Ftype%3Dshow%26limit%3D30%26page%3D1%26query%3D" + tvShow);
-		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
+		HTPC.getInstance().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			/*
 			 * plugin://plugin.video.exodus/?action=seasons&tvshowtitle=Person of Interest&year=2011&imdb=tt1839578&tvdb=248742
@@ -148,7 +133,7 @@ public class KodiTVShowDownloader extends KodiDownloader {
 							}
 						}
 						//if IMDB_ID is not provided then use the tv show name (not as good as the id)
-						else if (SHOW_NAME.equals(tvshowtitle)) {
+						else if (getName().equals(tvshowtitle)) {
 							tvShowURL = pluginURL;
 							break;
 						}
@@ -162,7 +147,7 @@ public class KodiTVShowDownloader extends KodiDownloader {
 					downloadTVShowSeasons(tvShowURL);
 				}
 				else {
-					LOG.severe("ERROR: Unable to find TV Show named: " + SHOW_NAME);
+					LOG.severe("ERROR: Unable to find TV Show named: " + getName());
 				}
 			}
 
@@ -183,7 +168,7 @@ public class KodiTVShowDownloader extends KodiDownloader {
 		LOG.fine("donwloadTVShowSeasonURL: " + decode);
 		GetDirectory exodus = new GetDirectory(tvShowURL);
 
-		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
+		HTPC.getInstance().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			@Override
 			public void onResponse(AbstractCall<ListModel.FileItem> call) {
@@ -232,14 +217,14 @@ public class KodiTVShowDownloader extends KodiDownloader {
 		}
 
 		//ensure the season we want is the one we are querying
-		if(Integer.valueOf(season).intValue() != SEASON) {
+		if(NumberUtils.toInt(season) != SEASON) {
 			return;
 		}
 		
 		LOG.entering(CLASS_NAME, "downloadTVShowSeasonEpisode", new Object[] { tvshowtitle, season, tvShowSeasonURL });
 		GetDirectory exodus = new GetDirectory(tvShowSeasonURL);
 
-		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
+		HTPC.getInstance().getConMgr().call(exodus, new ApiCallback<ListModel.FileItem>() {
 
 			@Override
 			public void onResponse(AbstractCall<ListModel.FileItem> call) {
@@ -272,7 +257,8 @@ public class KodiTVShowDownloader extends KodiDownloader {
 
 						//info("action: " + action + " tvshow: " + tvshowtitle + " Season " + season + " Episode " + episode + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
 						//info("title: " + title + " S" + seasonStr + "E" + episodeStr + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
-						LOG.fine("Season " + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode) + " title: " + title + " premiered: " + premiered + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
+						String fullShowName=createEpisodeName(tvshowtitle, NumberUtils.toInt(season),NumberUtils.toInt(episode));
+						LOG.fine(fullShowName + " title: " + title + " premiered: " + premiered + " year: " + year + " imdb: " + imdb + " tvdb: " + tvdb);
 						downloadTVShowBySeasonEpisodeFromURL(tvshowtitle, season, episode, res.file);
 					}
 					catch (Exception e) {
@@ -294,7 +280,7 @@ public class KodiTVShowDownloader extends KodiDownloader {
 	 */
 	private void downloadTVShowBySeasonEpisodeFromURL(String tvshowtitle, String season, String episode, String tvShowSeasonEpisodeURL) {
 		LOG.entering(CLASS_NAME, "downloadTVShowBySeasonEpisodeFromURL", new Object[] { tvshowtitle, season, episode, tvShowSeasonEpisodeURL });
-		if(Integer.valueOf(season).intValue() != SEASON) {
+		if(!seasonsMatch(season)){
 			return;
 		}
 
@@ -304,7 +290,7 @@ public class KodiTVShowDownloader extends KodiDownloader {
 		if (EPISODE == -1) {
 			shouldDownloadEpisode = false;
 		}
-		else if (EPISODE == Integer.valueOf(episode).intValue()) {
+		else if (EPISODE == NumberUtils.toInt(episode)) {
 			shouldDownloadEpisode = true;
 		}
 
@@ -329,9 +315,9 @@ public class KodiTVShowDownloader extends KodiDownloader {
 		Addons.ExecuteAddon exodus = new Addons.ExecuteAddon("plugin.video.exodus", tvShowSeasonEpisodeURL);
 		//GetDirectory exodus = new GetDirectory(tvShowSeasonEpisodeURL);
 
-		LOG.info("Calling Kodi: Download " + tvshowtitle + " S" + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode));
+		LOG.info("Calling Kodi: Download " + createEpisodeName());
 		//KodiDownloadManager.getInstance().getConMgr().call(exodus, null);
-		HTPC.getInstance().getKodiManager().getConMgr().call(exodus, new ApiCallback<String>() {
+		HTPC.getInstance().getConMgr().call(exodus, new ApiCallback<String>() {
 
 			@Override
 			public void onResponse(AbstractCall<String> call) {
@@ -349,7 +335,8 @@ public class KodiTVShowDownloader extends KodiDownloader {
 
 
 	private boolean episodeExists(String tvShowName, String season, String episode) {
-		String showFileName = tvShowName + " " + "S" + HTPC.getInstance().getSeason(season) + "E" + HTPC.getInstance().getEpisode(episode);
+		String showFileName = createEpisodeName(tvShowName, NumberUtils.toInt(season), NumberUtils.toInt(episode));
+		
 
 		LOG.fine("Checking if episode exists.  tvShowName: " + tvShowName + " season: " + season + " episode: " + episode);
 
@@ -381,10 +368,93 @@ public class KodiTVShowDownloader extends KodiDownloader {
 		return false;
 	}
 	
+	private String createEpisodeName()
+	{
+		return createEpisodeName(getName(),getSeason(),getEpisode());
+	}
+	
+	private String createEpisodeName(String showName,int season, int episode)
+	{
+		return showName + " S" + getSeason(season) + "E" + getEpisode(episode);
+	}
+	
+	private boolean seasonsMatch(String season)
+	{
+		return NumberUtils.toInt(season) == getSeason();
+	}
+	
+	private boolean episodesMatch(String episode)
+	{
+		return NumberUtils.toInt(episode) == getEpisode();
+	}
+	
+	/**
+	 * 
+	 * @param season
+	 * @return
+	 */
+	public static String getSeason(int season) {
+		try {
+			return getSeason(String.valueOf(season));
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		return getSeason("0");
+	}
+
+	public static String getEpisode(int episode) {
+		try {
+			return getEpisode(String.valueOf(episode));
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		return getEpisode("0");
+	}	
+	
+	public static String getSeason(String season) {
+		return (season.length() == 1) ? "0" + season : season;
+	}
+
+	public static String getEpisode(String episode) {
+		return (episode.length() == 1) ? "0" + episode : episode;
+	}
+	
+	/**
+	 * @param seriesName
+	 * @param season
+	 * @param episode
+	 * @return
+	 */
+	public boolean isEqual(String seriesName, String season,String episode)
+	{
+		return (getName().equals(seriesName)) 
+				&& (NumberUtils.toInt(season) == getSeason()) 
+				&& (NumberUtils.toInt(episode) == getEpisode());
+	}
+	
+	@Override
+	public String[] toCSV() {
+    	KodiDownloaderDetails latestStatus = getLatestKodiDownloadDetails();
+    	return new String[] {getTVDBID(),getImdbID(),getName(),String.valueOf(getSeason()),String.valueOf(getEpisode()),Boolean.valueOf(seriesEnded).toString(),HTPC.DOWNLOAD_STATUS_SNATCHED,String.valueOf(latestStatus.getPercent()),latestStatus.getFile(),String.valueOf(latestStatus.getTotalDownloadedMB()),String.valueOf(latestStatus.getTotalMB())};
+	}
+	
 	@Override
 	public String toString() {
-		StringBuffer sBuffer = new StringBuffer();
-		sBuffer.append("TVDB_ID: " + getTVDBID() + " SeriesName: " + SHOW_NAME + " S" + HTPC.getInstance().getSeason(SEASON) + "E" + HTPC.getInstance().getEpisode(EPISODE));
-		return sBuffer.toString();
+		KodiDownloaderDetails latestStatus = getLatestKodiDownloadDetails();
+		return new ToStringBuilder(this).
+		   append(HTPC.CSV_TVDB_ID, getTVDBID()).
+		   append(HTPC.CSV_IMDB_ID, getImdbID()).
+	       append(HTPC.CSV_NAME, getName()).
+	       append(HTPC.CSV_SEASON, getSeason(SEASON)).
+	       append(HTPC.CSV_EPISODE, getEpisode(EPISODE)).
+	       append(HTPC.CSV_ENDED, seriesEnded).
+	       append(HTPC.CSV_STATUS, getStatus()).
+	       append(HTPC.CSV_DOWNLOAD_PERCENT, latestStatus.getPercent()).
+	       append(HTPC.CSV_FILE, latestStatus.getFile()).
+	       append(HTPC.CSV_DOWNLOADSIZE, latestStatus.getTotalDownloadedMB()).
+	       append(HTPC.CSV_TOTALSIZE, latestStatus.getTotalMB()).
+	       toString();
 	}	
 }

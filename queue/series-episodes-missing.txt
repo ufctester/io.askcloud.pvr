@@ -1,7 +1,0 @@
-TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED,STATUS,DOWNLOAD_PERCENT
-311876,,Designated Survivor,1,6,false,QUEUED,-1
-311958,,Frequency,1,6,false,QUEUED,-1
-311790,,Lethal Weapon,1,6,false,QUEUED,-1
-311875,,Speechless,1,6,false,QUEUED,-1
-97731,,Tosh.0,7,7,false,QUEUED,-1
-97731,,Tosh.0,8,27,false,QUEUED,-1

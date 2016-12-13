@@ -61,8 +61,13 @@ class plexpvr:
         url = None
 
         control.moderator()
- 
+
         xbmc.log('*** ALERT *** Getting Sources %s Season: %s Episode: %s' % (tvshowtitle,season,episode), xbmc.LOGDEBUG)
+
+        #This forces the sources() is done on a background tread
+        xbmc.log('Setting Exodus setting progress.dialog: 1', xbmc.LOGDEBUG)
+        control.setSetting(id='progress.dialog', value='1')
+
         items = sources().getSources(title, year, imdb, tvdb, season, episode, tvshowtitle, premiered)
         #labels = [i['label'] for i in items]
         xbmc.log('*** tvDownloader *** tvshowtitle %s item size %s' % (tvshowtitle,len(items)), xbmc.LOGWARNING)       

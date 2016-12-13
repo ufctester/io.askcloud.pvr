@@ -1,4 +1,4 @@
-TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED
+TVDB_ID,IMDB_ID,NAME,SEASON,EPISODE,ENDED
 c:\entertainment\tvshows\american dad\season 01\american dad.s01e01.pilot.mp4
 c:\entertainment\tvshows\american dad\season 01\american dad.s01e02.threat levels.mp4
 c:\entertainment\tvshows\american dad\season 01\american dad.s01e03.stan knows best.mp4

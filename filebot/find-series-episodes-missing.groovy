@@ -1,7 +1,7 @@
 //
 // Read files in disk and find missing episodes and then put the missing 
 // episodes into the following format and into a csv file 
-// "TVDB_ID,SERIES_NAME,SEASON,EPISODE"
+// "TVDB_ID,NAME,SEASON,EPISODE"
 //
 //
 
@@ -48,7 +48,7 @@ CSVFormat format = CSVFormat.EXCEL.withHeader().withQuoteMode(QuoteMode.MINIMAL)
 CSVParser csv = CSVParser.parse(excludeList,Charset.forName("UTF-8"),format)
 csv.iterator().each { record ->
     ignoreShows << ([tvdbid: record.TVDB_ID,
-         seriesName: record.SERIES_NAME,
+         seriesName: record.NAME,
          season: record.SEASON,
          episode: record.EPISODE] as IgnoreShow)
 }
@@ -225,7 +225,7 @@ episodeList.removeAll(episodes)
 
 //Create the header in the csv
 //tvdbid,seriesName,season,episode
-missingEpisodes.append("TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED,STATUS,DOWNLOAD_PERCENT")
+missingEpisodes.append("TVDB_ID,IMDB_ID,NAME,SEASON,EPISODE,ENDED,STATUS,DOWNLOAD_PERCENT,DOWNLOADSIZE,TOTALSIZE")
 
 episodeList.each{ e ->
     def info=showInfo.get(e[0])
@@ -238,11 +238,11 @@ episodeList.each{ e ->
 		    	log.fine "TV Show Episode is missing but is in the IGNORE list: " + i.seriesName + " " + i.season + "E" + i.episode;
 		    }                	
             else if(i.seriesInfo.status == 'Ended'){
-            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",true" + ",QUEUED,-1")
+            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",true" + ",QUEUED,-1,0,0")
             } 
             else
             {
-            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",false" + ",QUEUED,-1")
+            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",false" + ",QUEUED,-1,0,0")
             }
         }
     }

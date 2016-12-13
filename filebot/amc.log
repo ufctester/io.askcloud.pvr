@@ -105,3 +105,261 @@ Fetching episode data for [Beyond Westworld]
 Processed 1 files
 Done ヾ(＠⌒ー⌒＠)ノ
 
+Failed to create application folder: AppData => C:\Users\apps\AppData\Roaming\FileBot
+java.nio.file.FileAlreadyExistsException: C:\Users\apps\AppData\Roaming\FileBot
+	at net.filebot.util.FileUtilities.createFolders(FileUtilities.java:183)
+	at net.filebot.ApplicationFolder.getCanonicalFile(ApplicationFolder.java:41)
+	at net.filebot.ApplicationFolder.resolve(ApplicationFolder.java:36)
+	at net.filebot.HistorySpooler.<init>(HistorySpooler.java:34)
+	at net.filebot.HistorySpooler.<clinit>(HistorySpooler.java:24)
+	at net.filebot.Main.main(Main.java:118)
+
+Run script [fn:amc] at [Sat Dec 10 10:52:00 EST 2016]
+Parameter: movieFormat = C:\tmp\CompletedDownloads/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\downloads\tvshows
+Argument[1]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\en
+Argument[3]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\music
+Argument[4]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\y
+Argument[5]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\n
+Use excludes: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\filebot\amc-exclude.txt (23)
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Designated Survivor\Season 1\Designated Survivor S01E06.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Frequency\Season 1\Frequency S01E06.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Lethal Weapon\Season 1\Lethal Weapon S01E06.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Speechless\Season 1\Speechless S01E06.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E07.mp4
+Input: C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 8\Tosh.0 S08E27.mp4
+Group: [tvs:designated survivor] => [Designated Survivor S01E06.mp4]
+Group: [tvs:frequency] => [Frequency S01E06.mp4]
+Group: [tvs:lethal weapon] => [Lethal Weapon S01E06.mp4]
+Group: [tvs:speechless] => [Speechless S01E06.mp4]
+Group: [tvs:tosh 0] => [Tosh.0 S07E07.mp4, Tosh.0 S08E27.mp4]
+Rename episodes using [TheTVDB]
+Auto-detected query: [Designated Survivor]
+Fetching episode data for [Designated Survivor]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Designated Survivor\Season 1\Designated Survivor S01E06.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Designated Survivor\Season 01\Designated Survivor - S01E06 - The Interrogation.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Frequency]
+Fetching episode data for [Frequency]
+Fetching episode data for [Global Frequency]
+Fetching episode data for [Strange Frequency]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Frequency\Season 1\Frequency S01E06.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Frequency\Season 01\Frequency - S01E06 - Deviation.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Lethal Weapon]
+Fetching episode data for [Lethal Weapon]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Lethal Weapon\Season 1\Lethal Weapon S01E06.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Lethal Weapon\Season 01\Lethal Weapon - S01E06 - Ties That Bind.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Speechless]
+Fetching episode data for [Speechless]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Speechless\Season 1\Speechless S01E06.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Speechless\Season 01\Speechless - S01E06 - D-A-T-E-- DATE.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Tosh 0]
+Fetching episode data for [Tosh.0]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 7\Tosh.0 S07E07.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Tosh.0\Season 07\Tosh.0 - S07E07 - Atheist in a Foxhole.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 8\Tosh.0 S08E27.mp4] to [C:\tmp\CompletedDownloads\TV Shows\Tosh.0\Season 08\Tosh.0 - S08E27 - Tosh.0lection Special.mp4]
+Processed 2 files
+Done ヾ(＠⌒ー⌒＠)ノ
+Failed to create application folder: AppData => C:\Users\apps\AppData\Roaming\FileBot
+java.nio.file.FileAlreadyExistsException: C:\Users\apps\AppData\Roaming\FileBot
+	at net.filebot.util.FileUtilities.createFolders(FileUtilities.java:183)
+	at net.filebot.ApplicationFolder.getCanonicalFile(ApplicationFolder.java:41)
+	at net.filebot.ApplicationFolder.resolve(ApplicationFolder.java:36)
+	at net.filebot.HistorySpooler.<init>(HistorySpooler.java:34)
+	at net.filebot.HistorySpooler.<clinit>(HistorySpooler.java:24)
+	at net.filebot.Main.main(Main.java:118)
+
+Run script [fn:amc] at [Mon Dec 12 13:04:07 EST 2016]
+Parameter: movieFormat = C:\gitbash\opt\kodi\completedamc/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\completed
+Argument[1]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\en
+Argument[3]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\music
+Argument[4]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\y
+Argument[5]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\n
+Illegal usage: output folder must exist and must be a directory: C:\gitbash\opt\kodi\completedamc
+Failure (°_°)
+Failed to create application folder: AppData => C:\Users\apps\AppData\Roaming\FileBot
+java.nio.file.FileAlreadyExistsException: C:\Users\apps\AppData\Roaming\FileBot
+	at net.filebot.util.FileUtilities.createFolders(FileUtilities.java:183)
+	at net.filebot.ApplicationFolder.getCanonicalFile(ApplicationFolder.java:41)
+	at net.filebot.ApplicationFolder.resolve(ApplicationFolder.java:36)
+	at net.filebot.HistorySpooler.<init>(HistorySpooler.java:34)
+	at net.filebot.HistorySpooler.<clinit>(HistorySpooler.java:24)
+	at net.filebot.Main.main(Main.java:118)
+
+Run script [fn:amc] at [Mon Dec 12 13:09:00 EST 2016]
+Parameter: movieFormat = C:\gitbash\opt\kodi\completedamc/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\completed
+Argument[1]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\en
+Argument[3]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\music
+Argument[4]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\y
+Argument[5]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\n
+Illegal usage: output folder [C:\gitbash\opt\kodi\completedamc] must be separate from input arguments [C:\gitbash\opt\kodi\completed, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\subtitles, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\en, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\music, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\y, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\artwork, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\n]
+Failure (°_°)
+Failed to create application folder: AppData => C:\Users\apps\AppData\Roaming\FileBot
+java.nio.file.FileAlreadyExistsException: C:\Users\apps\AppData\Roaming\FileBot
+	at net.filebot.util.FileUtilities.createFolders(FileUtilities.java:183)
+	at net.filebot.ApplicationFolder.getCanonicalFile(ApplicationFolder.java:41)
+	at net.filebot.ApplicationFolder.resolve(ApplicationFolder.java:36)
+	at net.filebot.HistorySpooler.<init>(HistorySpooler.java:34)
+	at net.filebot.HistorySpooler.<clinit>(HistorySpooler.java:24)
+	at net.filebot.Main.main(Main.java:118)
+
+Run script [fn:amc] at [Mon Dec 12 13:10:55 EST 2016]
+Parameter: movieFormat = C:\gitbash\opt\kodi\completedamc/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\completed
+Argument[1]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\en
+Argument[3]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\music
+Argument[4]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\y
+Argument[5]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\n
+Illegal usage: output folder [C:\gitbash\opt\kodi\completedamc] must be separate from input arguments [C:\gitbash\opt\kodi\completed, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\subtitles, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\en, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\music, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\y, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\artwork, C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\n]
+Failure (°_°)
+Failed to create application folder: AppData => C:\Users\apps\AppData\Roaming\FileBot
+java.nio.file.FileAlreadyExistsException: C:\Users\apps\AppData\Roaming\FileBot
+	at net.filebot.util.FileUtilities.createFolders(FileUtilities.java:183)
+	at net.filebot.ApplicationFolder.getCanonicalFile(ApplicationFolder.java:41)
+	at net.filebot.ApplicationFolder.resolve(ApplicationFolder.java:36)
+	at net.filebot.HistorySpooler.<init>(HistorySpooler.java:34)
+	at net.filebot.HistorySpooler.<clinit>(HistorySpooler.java:24)
+	at net.filebot.Main.main(Main.java:118)
+
+Run script [fn:amc] at [Mon Dec 12 13:14:06 EST 2016]
+Parameter: movieFormat = C:\gitbash\opt\kodi\completedamc/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\completed
+Argument[1]: File does not exist: C:\gitbash\opt\filebot\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\filebot\en
+Argument[3]: File does not exist: C:\gitbash\opt\filebot\music
+Argument[4]: File does not exist: C:\gitbash\opt\filebot\y
+Argument[5]: File does not exist: C:\gitbash\opt\filebot\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\filebot\n
+Illegal usage: output folder [C:\gitbash\opt\kodi\completedamc] must be separate from input arguments [C:\gitbash\opt\kodi\completed, C:\gitbash\opt\filebot\subtitles, C:\gitbash\opt\filebot\en, C:\gitbash\opt\filebot\music, C:\gitbash\opt\filebot\y, C:\gitbash\opt\filebot\artwork, C:\gitbash\opt\filebot\n]
+Failure (°_°)
+Failed to create application folder: AppData => C:\Users\apps\AppData\Roaming\FileBot
+java.nio.file.FileAlreadyExistsException: C:\Users\apps\AppData\Roaming\FileBot
+	at net.filebot.util.FileUtilities.createFolders(FileUtilities.java:183)
+	at net.filebot.ApplicationFolder.getCanonicalFile(ApplicationFolder.java:41)
+	at net.filebot.ApplicationFolder.resolve(ApplicationFolder.java:36)
+	at net.filebot.HistorySpooler.<init>(HistorySpooler.java:34)
+	at net.filebot.HistorySpooler.<clinit>(HistorySpooler.java:24)
+	at net.filebot.Main.main(Main.java:118)
+
+Run script [fn:amc] at [Mon Dec 12 13:14:50 EST 2016]
+Parameter: movieFormat = C:\gitbash\opt\kodi\completedamc/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\completed
+Argument[1]: File does not exist: C:\gitbash\opt\filebot\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\filebot\en
+Argument[3]: File does not exist: C:\gitbash\opt\filebot\music
+Argument[4]: File does not exist: C:\gitbash\opt\filebot\y
+Argument[5]: File does not exist: C:\gitbash\opt\filebot\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\filebot\n
+Illegal usage: output folder [C:\gitbash\opt\kodi\completedamc] must be separate from input arguments [C:\gitbash\opt\kodi\completed, C:\gitbash\opt\filebot\subtitles, C:\gitbash\opt\filebot\en, C:\gitbash\opt\filebot\music, C:\gitbash\opt\filebot\y, C:\gitbash\opt\filebot\artwork, C:\gitbash\opt\filebot\n]
+Failure (°_°)
+Failed to create application folder: AppData => C:\Users\apps\AppData\Roaming\FileBot
+java.nio.file.FileAlreadyExistsException: C:\Users\apps\AppData\Roaming\FileBot
+	at net.filebot.util.FileUtilities.createFolders(FileUtilities.java:183)
+	at net.filebot.ApplicationFolder.getCanonicalFile(ApplicationFolder.java:41)
+	at net.filebot.ApplicationFolder.resolve(ApplicationFolder.java:36)
+	at net.filebot.HistorySpooler.<init>(HistorySpooler.java:34)
+	at net.filebot.HistorySpooler.<clinit>(HistorySpooler.java:24)
+	at net.filebot.Main.main(Main.java:118)
+
+Run script [fn:amc] at [Mon Dec 12 13:17:00 EST 2016]
+Parameter: movieFormat = C:\gitbash\opt\kodi\completedamc/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\completed
+Argument[1]: File does not exist: C:\gitbash\opt\filebot\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\filebot\en
+Argument[3]: File does not exist: C:\gitbash\opt\filebot\music
+Argument[4]: File does not exist: C:\gitbash\opt\filebot\y
+Argument[5]: File does not exist: C:\gitbash\opt\filebot\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\filebot\n
+Illegal usage: output folder [C:\gitbash\opt\kodi\completedamc] must be separate from input arguments [C:\gitbash\opt\kodi\completed, C:\gitbash\opt\filebot\subtitles, C:\gitbash\opt\filebot\en, C:\gitbash\opt\filebot\music, C:\gitbash\opt\filebot\y, C:\gitbash\opt\filebot\artwork, C:\gitbash\opt\filebot\n]
+Failure (°_°)
+Failed to create application folder: AppData => C:\Users\apps\AppData\Roaming\FileBot
+java.nio.file.FileAlreadyExistsException: C:\Users\apps\AppData\Roaming\FileBot
+	at net.filebot.util.FileUtilities.createFolders(FileUtilities.java:183)
+	at net.filebot.ApplicationFolder.getCanonicalFile(ApplicationFolder.java:41)
+	at net.filebot.ApplicationFolder.resolve(ApplicationFolder.java:36)
+	at net.filebot.HistorySpooler.<init>(HistorySpooler.java:34)
+	at net.filebot.HistorySpooler.<clinit>(HistorySpooler.java:24)
+	at net.filebot.Main.main(Main.java:118)
+
+Run script [fn:amc] at [Mon Dec 12 13:20:05 EST 2016]
+Parameter: movieFormat = C:\gitbash\opt\kodi\amccompleted/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\completed
+Argument[1]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\en
+Argument[3]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\music
+Argument[4]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\y
+Argument[5]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\n
+Use excludes: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\filebot\amc-exclude.txt (29)
+Input: C:\gitbash\opt\kodi\completed\movies\The Doors - 1991\The Doors - 1991.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Tosh.0\Season 8\Tosh.0 S08E01.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Tosh.0\Season 8\Tosh.0 S08E02.mp4
+Group: [mov:the doors 1991] => [The Doors - 1991.mp4]
+Group: [tvs:tosh 0] => [Tosh.0 S08E01.mp4, Tosh.0 S08E02.mp4]
+Rename movies using [TheMovieDB]
+Auto-detect movie from context: [C:\gitbash\opt\kodi\completed\movies\The Doors - 1991\The Doors - 1991.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\movies\The Doors - 1991\The Doors - 1991.mp4] to [C:\gitbash\opt\kodi\amccompleted\Movies\The Doors - 1991.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Tosh 0]
+Fetching episode data for [Tosh.0]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Tosh.0\Season 8\Tosh.0 S08E01.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Tosh.0\Season 08\Tosh.0 - S08E01 - Pixee Fox.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Tosh.0\Season 8\Tosh.0 S08E02.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Tosh.0\Season 08\Tosh.0 - S08E02 - Fart Porn.mp4]
+Processed 2 files
+Done ヾ(＠⌒ー⌒＠)ノ
+Failed to create application folder: AppData => C:\Users\apps\AppData\Roaming\FileBot
+java.nio.file.FileAlreadyExistsException: C:\Users\apps\AppData\Roaming\FileBot
+	at net.filebot.util.FileUtilities.createFolders(FileUtilities.java:183)
+	at net.filebot.ApplicationFolder.getCanonicalFile(ApplicationFolder.java:41)
+	at net.filebot.ApplicationFolder.resolve(ApplicationFolder.java:36)
+	at net.filebot.HistorySpooler.<init>(HistorySpooler.java:34)
+	at net.filebot.HistorySpooler.<clinit>(HistorySpooler.java:24)
+	at net.filebot.Main.main(Main.java:118)
+
+Run script [fn:amc] at [Mon Dec 12 15:09:54 EST 2016]
+Parameter: movieFormat = C:\gitbash\opt\kodi\amccompleted/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\completed
+Argument[1]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\en
+Argument[3]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\music
+Argument[4]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\y
+Argument[5]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\n
+Use excludes: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\filebot\amc-exclude.txt (1)
+Input: C:\gitbash\opt\kodi\completed\movies\Following - 1998\Following - 1998.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Tosh.0\Season 8\Tosh.0 S08E01.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Tosh.0\Season 8\Tosh.0 S08E02.mp4
+Group: [mov:following 1998] => [Following - 1998.mp4]
+Group: [tvs:tosh 0] => [Tosh.0 S08E01.mp4, Tosh.0 S08E02.mp4]
+Rename movies using [TheMovieDB]
+Auto-detect movie from context: [C:\gitbash\opt\kodi\completed\movies\Following - 1998\Following - 1998.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\movies\Following - 1998\Following - 1998.mp4] to [C:\gitbash\opt\kodi\amccompleted\Movies\Following - 1998.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Tosh 0]
+Fetching episode data for [Tosh.0]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Tosh.0\Season 8\Tosh.0 S08E01.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Tosh.0\Season 08\Tosh.0 - S08E01 - Pixee Fox.mp4]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Tosh.0\Season 8\Tosh.0 S08E02.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Tosh.0\Season 08\Tosh.0 - S08E02 - Fart Porn.mp4]
+Processed 2 files
+Done ヾ(＠⌒ー⌒＠)ノ

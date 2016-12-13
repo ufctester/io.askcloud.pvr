@@ -1,7 +1,7 @@
 //
 // Read files in disk and find missing episodes and then put the missing 
 // episodes into the following format and into a csv file 
-// "TVDB_ID,SERIES_NAME,SEASON,EPISODE"
+// "TVDB_ID,NAME,SEASON,EPISODE"
 //
 //
 
@@ -59,7 +59,7 @@ episodeList = episodeList as LinkedHashSet
 episodeList.removeAll(episodes)
 
 //Create the header in the csv
-missingEpisodes.append("TVDB_ID,IMDB_ID,SERIES_NAME,ENDED")
+missingEpisodes.append("TVDB_ID,IMDB_ID,NAME,ENDED")
 
 for( Map.Entry<String,Object> entry : showInfo.entrySet()){
 	String key = entry.getKey();

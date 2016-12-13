@@ -1,7 +1,7 @@
 //
 // Read files in disk and find missing episodes and then put the missing 
 // episodes into the following format and into a csv file 
-// "TVDB_ID,SERIES_NAME,SEASON,EPISODE"
+// "TVDB_ID,NAME,SEASON,EPISODE"
 //
 //
 
@@ -22,7 +22,7 @@ log.info "Finding Episodes that are in the directory: " + episodesList.toString(
 //Create the header in the csv
 //tvdbid,seriesName,season,episode
 println "tvdbid,seriesName,season,episode" 
-episodesList.append("TVDB_ID,IMDB_ID,SERIES_NAME,SEASON,EPISODE,ENDED")
+episodesList.append("TVDB_ID,IMDB_ID,NAME,SEASON,EPISODE,ENDED")
 
 args.getFiles().each{ f ->
     // start looping through the video files.   
