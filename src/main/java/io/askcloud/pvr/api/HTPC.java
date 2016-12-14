@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,12 +29,6 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import org.apache.commons.collections4.map.LinkedMap;
-import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.FileBasedConfiguration;
-import org.apache.commons.configuration2.PropertiesConfiguration;
-import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
-import org.apache.commons.configuration2.builder.fluent.Parameters;
-import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
@@ -51,6 +46,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import io.askcloud.pvr.api.kodi.KodiDownloader;
 import io.askcloud.pvr.api.kodi.KodiDownloader.KodiDownloaderDetails;
 import io.askcloud.pvr.api.kodi.KodiTVShowDownloader;
+import io.askcloud.pvr.api.utils.AMCBeyondCompareReportReviewer;
 import io.askcloud.pvr.kodi.jsonrpc.api.AbstractCall;
 import io.askcloud.pvr.kodi.jsonrpc.api.call.Addons;
 import io.askcloud.pvr.kodi.jsonrpc.config.HostConfig;
@@ -70,10 +66,10 @@ import io.askcloud.pvr.tvdb.TheTVDBApi;
 public class HTPC extends HTPCConfig {
 	private static HTPC eINSTANCE = null;
 
+	private String CURRENT_DATE = null;
+	
 	//Kodi connection manager
 	private JavaConnectionManager conMgr;
-	
-	private static final String CLASS_NAME_RESULT_HANDLER_FILE_BOT = FileBotExecuteResultHandler.class.getName();
 		
 	private LinkedMap<String, KodiDownloader> kodiDownloaders = new LinkedMap<String, KodiDownloader>();
 	
@@ -119,8 +115,6 @@ public class HTPC extends HTPCConfig {
 	public TheTVDBApi tvdbAPI=null;
 	public TheMovieDbApi moviedbAPI=null;
 	
-	public static boolean CLEAN_KODI_DOWNLOAD = false;
-	
 	
 	public static void sleep(int milliseconds,String errorMsg)
 	{
@@ -153,34 +147,156 @@ public class HTPC extends HTPCConfig {
      * @author ufctester
      *
      */
-    public class BeyondCompareExecuteResultHandler extends DefaultExecuteResultHandler {
-    	private String CN = BeyondCompareExecuteResultHandler.class.getName();
+    public class BeyondCompareIsReadyToPublishToPlex extends DefaultExecuteResultHandler {
+    	private String CN = BeyondComparePublishTOPlex.class.getName();
+    	
+    	
     	/**
-    	 * 
+    	 * BC_PUSH_AMC_TO_PLEX_BAT
+    	 * BC_VALIDATE_AMC_READY_FOR_PLEX_BAT
     	 */
-    	public BeyondCompareExecuteResultHandler() {
-    		// TODO Auto-generated constructor stub
+    	public BeyondCompareIsReadyToPublishToPlex() {
+    		super();
+    		
+    		LOG.entering(CLASS_NAME, "BeyondCompareIsReadyToPublishToPlex");
+    		
+    		//Backup the previous report before the next one runs
+    		String backupFileString = "";
+    		try {
+    			backupFileString = HTPC.BEYOND_COMPARE_AMC_TV_REPORT_FILE.replace(".xml", "_" + getRunningDateId() + ".xml").replace(LOGS_DIRECTORY, LOGS_ARCHIVES_DIRECTORY);
+    			File sourceFile = new File(HTPC.BEYOND_COMPARE_AMC_TV_REPORT_FILE);
+    			if(sourceFile.exists())
+    			{
+        			File backupFile = new File(backupFileString);
+        			FileUtils.copyFile(sourceFile, backupFile);
+    			}    			
+    		}
+    		catch (Exception e) {
+    			LOG.warning("Unable to backup AMC Beyond Compare Reort file: " + HTPC.BEYOND_COMPARE_AMC_TV_REPORT_FILE + " backupFile: " + backupFileString);
+    		}
+    		
+    		try {
+    			backupFileString = HTPC.BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE.replace(".xml", "_" + getRunningDateId() + ".xml").replace(LOGS_DIRECTORY, LOGS_ARCHIVES_DIRECTORY);
+    			File sourceFile = new File(HTPC.BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE);
+    			if(sourceFile.exists())
+    			{
+        			File backupFile = new File(backupFileString);
+        			FileUtils.copyFile(sourceFile, backupFile);
+    			}
+    		}
+    		catch (Exception e) {
+    			LOG.warning("Unable to backup AMC Beyond Compare Reort file: " + HTPC.BEYOND_COMPARE_AMC_TV_REPORT_FILE + " backupFile: " + backupFileString);
+    		}
+    		    		
+    		LOG.exiting(CLASS_NAME, "BeyondCompareIsReadyToPublishToPlex");    		
     	}
     	
     	@Override
     	public void onProcessComplete(int exitValue) {
     		LOG.entering(CN, "onProcessComplete");
-    		LOG.info("Beyond Compare push AMC to Plex has Completed.");
+    		
+    		LOG.info("Beyond Compare PASSED during Checking Is Ready To Publish To Plex.");
+    		
+    		
+    		//View the Beyond Compare reports
+    		LOG.info("Checking for conflicts with Plex TVShows");
+    		AMCBeyondCompareReportReviewer reviewer = new AMCBeyondCompareReportReviewer(new File(HTPC.BEYOND_COMPARE_AMC_TV_REPORT_FILE));
+    		reviewer.walkDocument();
+    		
+    		//conflicts so stop
+    		if(reviewer.containsConflicts())
+    		{
+    			LOG.severe("AMC Beyond Compare Report contains conflicts with Plex TV Shows.");
+        		LOG.exiting(CN, "onProcessComplete");
+        		super.onProcessComplete(exitValue);
+        		
+        		HTPC.getInstance().exit(true);
+        		return;
+    		}
+    		LOG.info("AMC Beyond Compare Report does not contain conflicts with Plex TV Shows.");
+    		
+
+    		LOG.info("Checking for conflicts with Plex Movies");
+      		reviewer = new AMCBeyondCompareReportReviewer(new File(HTPC.BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE));
+       		reviewer.walkDocument();    	
+    		
+       		//conflicts so stop
+    		if(reviewer.containsConflicts())
+    		{
+    			LOG.severe("AMC Beyond Compare Report contains conflicts with Plex TV Shows.");
+        		LOG.exiting(CN, "onProcessComplete");
+        		super.onProcessComplete(exitValue);
+        		
+        		HTPC.getInstance().exit(true);
+        		return;
+    		}    		
+    		
+    		LOG.info("AMC Beyond Compare Report does not contain conflicts with Plex Movies.");
+    		
+    		//if we got this far we have no conflicts
+   			if(PUBLISH_TO_PLEX)
+   			{
+   				pushDownloadsToPlex();
+   			}    		
+   			
     		LOG.exiting(CN, "onProcessComplete");
     		super.onProcessComplete(exitValue);
-    		System.exit(0);
+    		
+    		HTPC.getInstance().exit(true);
+    	
     	}
     	
     	@Override
     	public void onProcessFailed(ExecuteException e) {
     		LOG.entering(CN, "onProcessFailed",e);
+ 		
+    		LOG.severe("Beyond Compare Failed during Checking Is Ready To Publish To Plex.");
+    		LOG.exiting(CN, "onProcessFailed");
+    		super.onProcessFailed(e);
+    		HTPC.getInstance().exit(false);
+    	}    	
+
+    }
+    
+    /**
+     * @author ufctester
+     *
+     */
+    public class BeyondComparePublishTOPlex extends DefaultExecuteResultHandler {
+    	private String CN = BeyondComparePublishTOPlex.class.getName();
+    	
+    	
+    	/**
+    	 * BC_PUSH_AMC_TO_PLEX_BAT
+    	 * BC_VALIDATE_AMC_READY_FOR_PLEX_BAT
+    	 */
+    	public BeyondComparePublishTOPlex() {
+    		super();
+    	}
+    	
+    	@Override
+    	public void onProcessComplete(int exitValue) {
+    		LOG.entering(CN, "onProcessComplete");
+    		
+    		LOG.info("Beyond Compare push AMC to Plex has Completed.");
+    		
+    		LOG.exiting(CN, "onProcessComplete");
+    		super.onProcessComplete(exitValue);
+    		
+    		HTPC.getInstance().exit(true);
+    	
+    	}
+    	
+    	@Override
+    	public void onProcessFailed(ExecuteException e) {
+    		LOG.entering(CN, "onProcessFailed",e);   		
     		LOG.info("Beyond Compare push AMC to Plex has Failed.");
     		LOG.exiting(CN, "onProcessFailed");
     		super.onProcessFailed(e);
-    		System.exit(1);
-    	}
+    		HTPC.getInstance().exit(false);
+    	}    	
 
-    }
+    }    
     
     /**
      * @author ufctester
@@ -201,7 +317,7 @@ public class HTPC extends HTPCConfig {
     		LOG.info("FileBot has Completed.");
     		LOG.exiting(CL, "onProcessComplete");
     		super.onProcessComplete(exitValue);
-    		System.exit(0);
+    		HTPC.getInstance().exit(true);
     	}
     	
     	@Override
@@ -210,7 +326,7 @@ public class HTPC extends HTPCConfig {
     		LOG.info("FileBot has Failed.");
     		LOG.exiting(CL, "onProcessFailed");
     		super.onProcessFailed(e);
-    		System.exit(1);
+    		HTPC.getInstance().exit(false);
     	}
 
     }
@@ -412,6 +528,27 @@ public class HTPC extends HTPCConfig {
 	}
 
 	/**
+	 * @param passed
+	 */
+	public void exit(boolean passed)
+	{
+		if(EXIT_JAVA_PROGRAM)
+		{
+			System.exit(0);
+		}		
+	}
+
+	
+	public String getRunningDateId() {
+		if(CURRENT_DATE == null)
+		{
+			Date myDate = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmm");
+			CURRENT_DATE = sdf.format(myDate);
+		}
+		return CURRENT_DATE;
+	}
+	/**
 	 * Main.main(new String[]{"-list", "--db", "thetvdb", "--q", "Dexter","--format", "{plex}"});
 	 * @param args
 	 */
@@ -446,15 +583,50 @@ public class HTPC extends HTPCConfig {
 	}
 	
 	/**
+	 * 
+	 */
+	public void publishDownloadsToPlex(LinkedMap<String, KodiDownloader> downloader)
+	{
+		LOG.entering(CLASS_NAME, "publishDownloadsToPlex");
+		
+		LOG.info("Completd: downloadFromDownloadQueue");
+		for (KodiDownloader downloadItem : downloader.values()) {
+			
+			if(downloadItem.isComplete())
+			{
+				LOG.info("Completd items: " + downloadItem.toString());
+				
+				try {
+					//copy the file to the target destination
+					//C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 8\Tosh.0 S08E01.mp4
+					String sourceFile = downloadItem.getLatestKodiDownloadDetails().getFile();
+					String targetFile = sourceFile.replace(HTPC.KODI_DOWNLOAD_BASE_DIR, HTPC.KODI_DOWNLOAD_COMPLETED_DIR);
+					FileUtils.copyFile(new File(sourceFile), new File(targetFile));
+				}
+				catch (Exception e) {
+					LOG.severe("Error occured copying completed download: " + e.getMessage());
+				}
+			}
+		}
+		
+		//next run amc
+		automatedMediaCenter(HTPC.KODI_DOWNLOAD_COMPLETED_DIR, HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
+		
+		isReadyToPublishToPlex();
+		LOG.exiting(CLASS_NAME, "publishDownloadsToPlex");		
+	}
+	
+	/**
 	 * This method used beyond compare and pushes the changes to plex
 	 * @param args
 	 */
-	public void pushDownloadsToPlex()
+	private void pushDownloadsToPlex()
 	{ 
+		LOG.entering(CLASS_NAME, "pushDownloadsToPlex");
         try {
-        	DefaultExecuteResultHandler rh = new BeyondCompareExecuteResultHandler();
-            String line = BEYOND_COMPARE_EXE;
-        	LOG.info("Calling Beyond Compare to Push Changes to Plex");
+        	DefaultExecuteResultHandler rh = new BeyondComparePublishTOPlex();
+            String line = BC_PUSH_AMC_TO_PLEX_BAT;
+        	LOG.info("Calling Beyond Compare to Push AMC Updates to Plex");
             CommandLine cmdLine = CommandLine.parse(line);
             DefaultExecutor executor = new DefaultExecutor();
             executor.execute(cmdLine,rh);   
@@ -463,7 +635,30 @@ public class HTPC extends HTPCConfig {
 			e.printStackTrace();
 		}
 		
-		LOG.exiting(CLASS_NAME, "callFileBot");
+		LOG.exiting(CLASS_NAME, "pushDownloadsToPlex");
+	}	
+	
+	/**
+	 * This method used beyond compare and pushes the changes to plex
+	 * @param args
+	 */
+	private void isReadyToPublishToPlex()
+	{ 
+		LOG.entering(CLASS_NAME, "isReadyToPublishToPlex");
+		//Run the Beyond Compare report generator
+        try {
+        	DefaultExecuteResultHandler rh = new BeyondCompareIsReadyToPublishToPlex();
+            String line = BC_VALIDATE_AMC_READY_FOR_PLEX_BAT;
+        	LOG.info("Calling Beyond Compare ensure what we downloaded does not conflict with anything already on plex");
+            CommandLine cmdLine = CommandLine.parse(line);
+            DefaultExecutor executor = new DefaultExecutor();
+            executor.execute(cmdLine,rh);   
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+        LOG.exiting(CLASS_NAME, "isReadyToPublishToPlex");
 	}	
 	/**
 	 * @param showName
@@ -649,6 +844,7 @@ public class HTPC extends HTPCConfig {
 			
 		}					
 	}
+
 	/**
 	 * @return
 	 */
@@ -892,7 +1088,7 @@ public class HTPC extends HTPCConfig {
 				download();
 				
 				LOG.info("Completd: downloadFromDownloadQueue");
-				copyCompletedKodiDownloads(kodiDownloaders);
+				publishDownloadsToPlex(kodiDownloaders);
 				
 				//FIXME We need to handle the completed downloads and then continue to loop to pick up new requests
 				break;
@@ -912,32 +1108,6 @@ public class HTPC extends HTPCConfig {
 		}
 
 		LOG.entering(CLASS_NAME, "downloadFromDownloadQueue");
-	}
-	
-	public void copyCompletedKodiDownloads(LinkedMap<String, KodiDownloader> downloader)
-	{
-		LOG.info("Completd: downloadFromDownloadQueue");
-		for (KodiDownloader downloadItem : downloader.values()) {
-			
-			if(downloadItem.isComplete())
-			{
-				LOG.info("Completd items: " + downloadItem.toString());
-				
-				try {
-					//copy the file to the target destination
-					//C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 8\Tosh.0 S08E01.mp4
-					String sourceFile = downloadItem.getLatestKodiDownloadDetails().getFile();
-					String targetFile = sourceFile.replace(HTPC.KODI_DOWNLOAD_BASE_DIR, HTPC.KODI_DOWNLOAD_COMPLETED_DIR);
-					FileUtils.copyFile(new File(sourceFile), new File(targetFile));
-				}
-				catch (Exception e) {
-					LOG.severe("Error occured copying completed download: " + e.getMessage());
-				}
-			}
-		}
-		
-		//next run amc
-		automatedMediaCenter(HTPC.KODI_DOWNLOAD_COMPLETED_DIR, HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
 	}
 	
 	/**

@@ -22,6 +22,7 @@ import org.apache.commons.collections4.map.LinkedMap;
 import io.askcloud.pvr.api.kodi.KodiDownloader;
 import io.askcloud.pvr.api.kodi.KodiMovieDownloader;
 import io.askcloud.pvr.api.kodi.KodiTVShowDownloader;
+import io.askcloud.pvr.api.utils.AMCBeyondCompareReportReviewer;
 import io.askcloud.pvr.themoviedb.TheMovieDbApi;
 import io.askcloud.pvr.themoviedb.enumeration.MovieMethod;
 import io.askcloud.pvr.themoviedb.enumeration.SearchType;
@@ -84,7 +85,7 @@ public static void main(String[] args) {
     options.addOption("d", "download", false, "Download From Download Queue");
     options.addOption("f", "find", false, "Find TV Shows or Movies from TVDB and TMDB");
     options.addOption("s", "searchmissingepisode", false, "Find series missing episodes which Filebot");
-    options.addOption("p", "plex", false, "Push AMC to Plex");
+    options.addOption("p", "plex", false, "Push downloads though AMC and over to Plex");
     options.addOption("test", false, "Test Method");
 
     CommandLineParser parser = new DefaultParser();
@@ -96,7 +97,7 @@ public static void main(String[] args) {
 		{
 			 HelpFormatter formater = new HelpFormatter();
 			 formater.printHelp("Main", options);
-			 System.exit(0);
+			 HTPC.getInstance().exit(true);
 		}
 		else if (cmd.hasOption("a")) {
 			 Main.getInstance().filebotAMCRequest();
@@ -107,13 +108,13 @@ public static void main(String[] args) {
 		else if (cmd.hasOption("f")) {
 			 Main.getInstance().findShow(true);
 				//exit the java program
-				System.exit(0);	
+			 HTPC.getInstance().exit(true);
 		}
 		else if (cmd.hasOption("s")) {
 			 Main.getInstance().findMissingTVShowEpisodesRequest();
 		}
 		else if (cmd.hasOption("p")) {
-			 Main.getInstance().pushDownloadsToPlex();
+			 Main.getInstance().publishDownloadsToPlex();
 		}		
 		else if (cmd.hasOption("test")) {
 			 Main.getInstance().runTestRequest();
@@ -121,14 +122,14 @@ public static void main(String[] args) {
 		else {
 			 HelpFormatter formater = new HelpFormatter();
 			 formater.printHelp("Main", options);
-			 System.exit(0);
+			 HTPC.getInstance().exit(true);
 		}
 	}
 	catch (ParseException e) {
 		 LOG.severe("Failed to parse comand line properties: exception: " + e.getMessage());
 		 HelpFormatter formater = new HelpFormatter();
 		 formater.printHelp("Main", options);
-		 System.exit(0);
+		 HTPC.getInstance().exit(true);
 	}
 }    
     
@@ -169,7 +170,7 @@ public static void main(String[] args) {
 		LOG.exiting(CLASS_NAME, "downloadFromDownloadQueue");
 		
 		//exit the java program
-		System.exit(0);	
+		HTPC.getInstance().exit(true);
 	}
 	
 	
@@ -226,11 +227,11 @@ public static void main(String[] args) {
 	/**
 	 * Find missing TVShow Episode Request
 	 */
-	public void pushDownloadsToPlex()
+	public void publishDownloadsToPlex()
 	{	
-		LOG.entering(CLASS_NAME, "pushDownloadsToPlex");		
-		HTPC.getInstance().pushDownloadsToPlex();
-		LOG.exiting(CLASS_NAME, "pushDownloadsToPlex");
+		HTPC.getInstance().LOG.entering(CLASS_NAME, "publishDownloadsToPlex");		
+		HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_FILE,HTPC.DOWNLOAD_QUEUE_LOCK_FILE));
+		LOG.exiting(CLASS_NAME, "publishDownloadsToPlex");
 	}		
 	
 	/**
@@ -238,10 +239,11 @@ public static void main(String[] args) {
 	 */
 	public void runTestRequest()
 	{	
-		LOG.entering(CLASS_NAME, "runTestRequest");
+		HTPC.EXIT_JAVA_PROGRAM=true;
+		HTPC.getInstance().LOG.entering(CLASS_NAME, "runTestRequest");
 		LOG.info("Calling: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
 		
-		HTPC.getInstance().getBG();
+		HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_FILE,HTPC.DOWNLOAD_QUEUE_LOCK_FILE));
 		
 		
 //		//Filebot puts TV Shows under a TV Show directory but we want it under TVShows
@@ -269,7 +271,7 @@ public static void main(String[] args) {
 //			}
 //		}
 		LOG.exiting(CLASS_NAME, "runTestRequest");
-		//System.exit(0);
+		//HTPC.getInstance().exit(true);
 	}	
 	
 	/**

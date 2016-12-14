@@ -23,6 +23,13 @@ abstract public class HTPCConfig {
 	public static String KODI_HOST = "localhost";
 	public static int KODI_HTTP_PORT = 9080;
 	public static int KODI_SOCKET_PORT = 9090;
+	public static boolean CLEAN_KODI_DOWNLOAD = false;
+	
+	/*
+	 * There are places in the multi threaded executions where another thread might be running or there are other tasks going on.  
+	 * Set this to true if you are calling the apis standalone, otherwise for AMC it should be false
+	 */
+	public static boolean EXIT_JAVA_PROGRAM=false;
 	
 	//PVR Configuration Options
 	Configuration options = null;
@@ -128,7 +135,18 @@ abstract public class HTPCConfig {
 	
 	public static String FILE_BOT_EXE="C:\\gitbash\\opt\\filebot\\filebot.exe";
 	
-	public static String BEYOND_COMPARE_EXE="C:\\gitbash\\opt\\beyondcompare\\scripts\\push-amc.bat";
+	public static String BC_PUSH_AMC_TO_PLEX_BAT="C:\\gitbash\\opt\\beyondcompare\\scripts\\push-amc.bat";
+	public static String BC_VALIDATE_AMC_READY_FOR_PLEX_BAT="C:\\gitbash\\opt\\beyondcompare\\scripts\\report-amc.bat";
+	
+	//This will run the entire download job and validate it at the end but not push the downloads to plex
+	public static boolean PUBLISH_TO_PLEX=false;
+	
+	public static String LOGS_DIRECTORY = "C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\logs";
+	public static String LOGS_ARCHIVES_DIRECTORY = LOGS_DIRECTORY + "\\archives";
+	public static String BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE = "C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\logs\\report-amc-movie.xml";
+	//public static String BEYOND_COMPARE_AMC_TV_REPORT_FILE = "C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\logs\\report-amc-tv.xml";
+	public static String BEYOND_COMPARE_AMC_TV_REPORT_FILE = "C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\logs\\report-amc-tv.xml";
+	
 
 	//queue lock file wait time
 	public static int QUEUE_LOCK_FILE_WAIT_TIME=10000; //10 seconds
@@ -147,6 +165,7 @@ abstract public class HTPCConfig {
 	 * i.e. 20 iterations of 20 seconds (KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME)
 	 */
 	public static int KODI_EXODUS_DOWNLOAD_ITERATOR_COUNTER_HUNG=20; 
+	
 	
 	/**
 	 * 
