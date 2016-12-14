@@ -54,7 +54,7 @@ import io.askcloud.pvr.api.HTPC;
  *
  */
 /**
- * @author tattooman
+ * @author ufctester
  *
  */
 public class AMCBeyondCompareReportReviewer extends DOMWalker {

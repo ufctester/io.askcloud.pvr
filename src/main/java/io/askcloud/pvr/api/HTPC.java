@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,6 +28,10 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+
+import java.util.Properties;  
+import javax.mail.*;  
+import javax.mail.internet.*;  
 
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.commons.csv.CSVFormat;
@@ -47,6 +52,7 @@ import io.askcloud.pvr.api.kodi.KodiDownloader;
 import io.askcloud.pvr.api.kodi.KodiDownloader.KodiDownloaderDetails;
 import io.askcloud.pvr.api.kodi.KodiTVShowDownloader;
 import io.askcloud.pvr.api.utils.AMCBeyondCompareReportReviewer;
+import io.askcloud.pvr.api.utils.GmailEmailClient;
 import io.askcloud.pvr.kodi.jsonrpc.api.AbstractCall;
 import io.askcloud.pvr.kodi.jsonrpc.api.call.Addons;
 import io.askcloud.pvr.kodi.jsonrpc.config.HostConfig;
@@ -1434,6 +1440,16 @@ public class HTPC extends HTPCConfig {
         }
         
     	return masterFileLock;        
-	}			
-		
+	}		
+	
+	/**
+	 * @return
+	 */
+	public GmailEmailClient getGmailEmailClient() {
+		LOG.entering(CLASS_NAME, "getGmailEmailClient");
+		GmailEmailClient client = GmailEmailClient.getInstance();
+		LOG.exiting(CLASS_NAME, "getGmailEmailClient",client);
+		return client;
+	}		
 }
+

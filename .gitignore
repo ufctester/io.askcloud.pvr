@@ -2,6 +2,8 @@
 bin/
 *.class
 
+src/main/resources/gmail_client_secret.json.json
+
 #tinyMediaManager
 cache
 jspf.cache

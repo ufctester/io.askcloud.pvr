@@ -14,7 +14,7 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
 /**
- * @author apps
+ * @author ufctester
  *
  */
 abstract public class HTPCConfig {

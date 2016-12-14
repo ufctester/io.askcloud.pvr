@@ -243,7 +243,13 @@ public static void main(String[] args) {
 		HTPC.getInstance().LOG.entering(CLASS_NAME, "runTestRequest");
 		LOG.info("Calling: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
 		
-		HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_FILE,HTPC.DOWNLOAD_QUEUE_LOCK_FILE));
+		//HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_FILE,HTPC.DOWNLOAD_QUEUE_LOCK_FILE));
+		try {
+			HTPC.getInstance().getGmailEmailClient().sendMessage("spriet@ca.ibm.com","Test Message from Gmail Account", "Hi Dave this is from my test gmail.");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		
 //		//Filebot puts TV Shows under a TV Show directory but we want it under TVShows
