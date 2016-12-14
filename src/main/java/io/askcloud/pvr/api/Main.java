@@ -182,7 +182,7 @@ public static void main(String[] args) {
 		LOG.entering(CLASS_NAME, "filebotAMCRequest");
 		//re-create the target directory
 		HTPC.getInstance().recreateDirectory(HTPC.FILEBOT_AMC_DESTINATION);
-		HTPC.getInstance().automatedMediaCenter(HTPC.KODI_DOWNLOAD_BASE_DIR,HTPC.FILEBOT_AMC_DESTINATION);
+		HTPC.getInstance().runAutomatedMediaCenter(false);
 		
 		//File bot runs on a differnt thread and the FileBotExecuteResultHandler will exit the Java Program
 		LOG.exiting(CLASS_NAME, "filebotAMCRequest");		
@@ -230,7 +230,7 @@ public static void main(String[] args) {
 	public void publishDownloadsToPlex()
 	{	
 		HTPC.getInstance().LOG.entering(CLASS_NAME, "publishDownloadsToPlex");		
-		HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_FILE,HTPC.DOWNLOAD_QUEUE_LOCK_FILE));
+		HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE,HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK));
 		LOG.exiting(CLASS_NAME, "publishDownloadsToPlex");
 	}		
 	
@@ -243,13 +243,14 @@ public static void main(String[] args) {
 		HTPC.getInstance().LOG.entering(CLASS_NAME, "runTestRequest");
 		LOG.info("Calling: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
 		
-		//HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_FILE,HTPC.DOWNLOAD_QUEUE_LOCK_FILE));
-		try {
-			HTPC.getInstance().getGmailEmailClient().sendMessage("spriet@ca.ibm.com","Test Message from Gmail Account", "Hi Dave this is from my test gmail.");
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		HTPC.getInstance().isReadyToPublishToPlex();
+//		//HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_FILE,HTPC.DOWNLOAD_QUEUE_LOCK_FILE));
+//		try {
+//			HTPC.getInstance().getGmailEmailClient().sendMessage("spriet@ca.ibm.com","Test Message from Gmail Account", "Hi Dave this is from my test gmail.");
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		
 		
 //		//Filebot puts TV Shows under a TV Show directory but we want it under TVShows

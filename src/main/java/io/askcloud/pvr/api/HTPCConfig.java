@@ -76,8 +76,8 @@ abstract public class HTPCConfig {
 	public static String KODI_DOWNLOAD_BASE_DIR = "C:\\gitbash\\opt\\kodi\\downloads";
 	public static String KODI_DOWNLOAD_COMPLETED_DIR = "C:\\gitbash\\opt\\kodi\\completed";
 	public static String KODI_DOWNLOAD_COMPLETED_AMC_DIR = "C:\\gitbash\\opt\\kodi\\amccompleted";
-	public static String KODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR = "C:\\gitbash\\opt\\kodi\\amccompleted\\TV Shows";
-	public static String KODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR = "C:\\gitbash\\opt\\kodi\\amccompleted\\Movies";
+	public static String KODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR = KODI_DOWNLOAD_COMPLETED_AMC_DIR + "\\TVShows";
+	public static String KODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR = KODI_DOWNLOAD_COMPLETED_AMC_DIR + "\\Movies";
 	
 	public static String KODI_DOWNLOAD_TVSHOWS_DIR = KODI_DOWNLOAD_BASE_DIR + "\\tvshows";
 	public static String KODI_DOWNLOAD_MOVIES_DIR = KODI_DOWNLOAD_BASE_DIR + "\\movies";
@@ -135,7 +135,7 @@ abstract public class HTPCConfig {
 	
 	public static String FILE_BOT_EXE="C:\\gitbash\\opt\\filebot\\filebot.exe";
 	
-	public static String BC_PUSH_AMC_TO_PLEX_BAT="C:\\gitbash\\opt\\beyondcompare\\scripts\\push-amc.bat";
+	public static String BC_PUSH_AMC_TO_PLEX_BAT="C:\\gitbash\\opt\\beyondcompare\\scripts\\push-amc-to-plex.bat";
 	public static String BC_VALIDATE_AMC_READY_FOR_PLEX_BAT="C:\\gitbash\\opt\\beyondcompare\\scripts\\report-amc.bat";
 	
 	//This will run the entire download job and validate it at the end but not push the downloads to plex

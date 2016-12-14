@@ -213,7 +213,7 @@ abstract public class KodiDownloader implements Runnable {
 	 * @param searchString
 	 * @return
 	 */
-	protected String normailizeSearchName(String searchString) {
+	protected String normailizeShowName(String searchString) {
 		LOG.entering(CLASS_NAME, "normailizeSearchName",new Object[]{searchString});
 		String results = searchString;
 		if (results == null) {
@@ -232,6 +232,16 @@ abstract public class KodiDownloader implements Runnable {
 		results = StringUtils.normalizeSpace(results);
 		LOG.exiting(CLASS_NAME, "normailizeSearchName",results);
 		return results;
+	}
+	
+	/**
+	 * @param name
+	 * @return
+	 */
+	public boolean showNameMatches(String name)
+	{
+		name = normailizeShowName(name);
+		return (getName().equals(name));
 	}
 
 	/**

@@ -225,7 +225,7 @@ episodeList.removeAll(episodes)
 
 //Create the header in the csv
 //tvdbid,seriesName,season,episode
-missingEpisodes.append("TVDB_ID,IMDB_ID,NAME,SEASON,EPISODE,ENDED,STATUS,DOWNLOAD_PERCENT,DOWNLOADSIZE,TOTALSIZE")
+missingEpisodes.append("TVDB_ID,IMDB_ID,NAME,SEASON,EPISODE,ENDED,STATUS,DOWNLOAD_PERCENT,FILE,DOWNLOADSIZE,TOTALSIZE")
 
 episodeList.each{ e ->
     def info=showInfo.get(e[0])
@@ -238,11 +238,11 @@ episodeList.each{ e ->
 		    	log.fine "TV Show Episode is missing but is in the IGNORE list: " + i.seriesName + " " + i.season + "E" + i.episode;
 		    }                	
             else if(i.seriesInfo.status == 'Ended'){
-            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",true" + ",QUEUED,-1,0,0")
+            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",true" + ",QUEUED,-1,,0,0")
             } 
             else
             {
-            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",false" + ",QUEUED,-1,0,0")
+            	missingEpisodes.append("\n" + i.seriesInfo.id + "," + "," + i.seriesName + "," + i.season + "," + i.episode + ",false" + ",QUEUED,-1,,0,0")
             }
         }
     }

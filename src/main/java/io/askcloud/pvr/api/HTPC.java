@@ -309,18 +309,27 @@ public class HTPC extends HTPCConfig {
      *
      */
     public class FileBotExecuteResultHandler extends DefaultExecuteResultHandler {
+    	private boolean publishToPlex = false;
     	private String CL = FileBotExecuteResultHandler.class.getName();
     	/**
     	 * 
     	 */
-    	public FileBotExecuteResultHandler() {
-    		// TODO Auto-generated constructor stub
+    	public FileBotExecuteResultHandler(boolean publishToPlex) {
+    		super();
+    		this.publishToPlex=publishToPlex;
     	}
     	
     	@Override
     	public void onProcessComplete(int exitValue) {
     		LOG.entering(CL, "onProcessComplete");
     		LOG.info("FileBot has Completed.");
+    		
+    		//next check if we are ready to publish to plex and if so then publish
+    		if(publishToPlex)
+    		{
+    			isReadyToPublishToPlex();
+    		}
+    		
     		LOG.exiting(CL, "onProcessComplete");
     		super.onProcessComplete(exitValue);
     		HTPC.getInstance().exit(true);
@@ -336,8 +345,11 @@ public class HTPC extends HTPCConfig {
     	}
 
     }
-    
 
+	/**
+	 * @author ufctester
+	 *
+	 */
 	protected class OneLineFormatter extends SimpleFormatter {
 
 		// format string for printing the log record
@@ -554,6 +566,41 @@ public class HTPC extends HTPCConfig {
 		}
 		return CURRENT_DATE;
 	}
+	
+	/**
+	 * Runs AMC and then publishes to plex if the publishToPlex argument is set to true
+	 * @param args
+	 */
+	private void callFileBotAMC(String[] args,boolean publishToPlex)
+	{
+//		LOG.entering(CLASS_NAME, "callFileBot",args);
+//		try {
+//			net.filebot.Main.main(args);
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//			LOG.severe("Error calling Filebot with args: "  + args);
+//		}
+
+		StringBuffer commandArgs = new StringBuffer();
+        for (String arg : args)
+        	commandArgs.append(" " + arg);
+                
+        try {
+        	DefaultExecuteResultHandler rh = new FileBotExecuteResultHandler(publishToPlex);
+            String line = FILE_BOT_EXE + commandArgs;
+        	LOG.info("Calling Filebot: " + line);
+            CommandLine cmdLine = CommandLine.parse(line);
+            DefaultExecutor executor = new DefaultExecutor();
+            executor.execute(cmdLine,rh);   
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		LOG.exiting(CLASS_NAME, "callFileBot");
+	}
+	
 	/**
 	 * Main.main(new String[]{"-list", "--db", "thetvdb", "--q", "Dexter","--format", "{plex}"});
 	 * @param args
@@ -574,7 +621,7 @@ public class HTPC extends HTPCConfig {
         	commandArgs.append(" " + arg);
                 
         try {
-        	DefaultExecuteResultHandler rh = new FileBotExecuteResultHandler();
+        	DefaultExecuteResultHandler rh = new FileBotExecuteResultHandler(false);
             String line = FILE_BOT_EXE + commandArgs;
         	LOG.info("Calling Filebot: " + line);
             CommandLine cmdLine = CommandLine.parse(line);
@@ -595,9 +642,10 @@ public class HTPC extends HTPCConfig {
 	{
 		LOG.entering(CLASS_NAME, "publishDownloadsToPlex");
 		
-		LOG.info("Completd: downloadFromDownloadQueue");
+		LOG.info("Copying Files to the Completed folder: " + HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
 		for (KodiDownloader downloadItem : downloader.values()) {
 			
+			//Copy all of the completed downloads to the completed folder for AMC to pick up
 			if(downloadItem.isComplete())
 			{
 				LOG.info("Completd items: " + downloadItem.toString());
@@ -615,10 +663,8 @@ public class HTPC extends HTPCConfig {
 			}
 		}
 		
-		//next run amc
-		automatedMediaCenter(HTPC.KODI_DOWNLOAD_COMPLETED_DIR, HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
-		
-		isReadyToPublishToPlex();
+		//next run amc with the 
+		runAutomatedMediaCenter(true);
 		LOG.exiting(CLASS_NAME, "publishDownloadsToPlex");		
 	}
 	
@@ -648,9 +694,65 @@ public class HTPC extends HTPCConfig {
 	 * This method used beyond compare and pushes the changes to plex
 	 * @param args
 	 */
-	private void isReadyToPublishToPlex()
+	public void isReadyToPublishToPlex()
 	{ 
 		LOG.entering(CLASS_NAME, "isReadyToPublishToPlex");
+		
+		/*
+		 * we need to ensure that the AMC Completed folder exists and that it contains the 
+		 * right directories.  
+		 * 
+		 * HTPC.KODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR - C:\\gitbash\\opt\\kodi\\amccompleted\\TVShows
+		 * HTPC.KODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR - C:\\gitbash\\opt\\kodi\\amccompleted\\Movies
+		 * 
+		 */
+		
+		//amc folder should exist
+		File amcDirectory = new File(HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
+		
+		File amcMoviesDirectory = new File(HTPC.KODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR);
+		File amcTVShowsDirectory = new File(HTPC.KODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR);
+		File tvShowsIncorrectDirectory=new File(KODI_DOWNLOAD_COMPLETED_AMC_DIR + File.separator + "TV Shows");
+		
+		if(!amcDirectory.exists())
+		{
+			LOG.severe("The Kodi AMC folder does not even exist.  AMC has not run on it yet.");
+			LOG.exiting(CLASS_NAME, "isReadyToPublishToPlex");
+			return;
+		}
+		else
+		{
+			/*
+			 * In here we can have different scenarios
+			 *   1) AMC creates tv show directory <AMC_DIR>/TV Shows and we need it to be TVShows
+			 *   2) Ensure that the Movie and TVShow directory exists and they should have at least 1 file to process it
+			 */
+			//AMC creates a directory <AMC_DIR>/TV Shows but Plex needs it to be TVShows so we need to check and rename
+			//Filebot puts TV Shows under a TV Show directory but we want it under TVShows
+
+			if(tvShowsIncorrectDirectory.exists())
+			{
+				tvShowsIncorrectDirectory.renameTo(amcTVShowsDirectory);				
+			}
+
+			try {
+				/*
+				 * Ensure the directory is created.  In this case if it creates it then there must be no tv shows to process 
+				 * but we need the directory to do the compare as there  might be movies
+				 */
+				FileUtils.forceMkdir(amcTVShowsDirectory);
+				
+				//the directory is already renamed if it gets here.
+				FileUtils.forceMkdir(amcMoviesDirectory);
+			}
+			catch (Exception e) {
+				LOG.severe("Error occured when creating AMC Movies or TVShows directory.  Exception: " + e.getMessage());
+				LOG.exiting(CLASS_NAME, "isReadyToPublishToPlex");
+				return;
+			}
+		}
+		
+
 		//Run the Beyond Compare report generator
         try {
         	DefaultExecuteResultHandler rh = new BeyondCompareIsReadyToPublishToPlex();
@@ -778,33 +880,33 @@ public class HTPC extends HTPCConfig {
 	}	
 	
 	/**
-	 * @param sourceDirectory
-	 * @param targetDirectory
+	 * 
 	 */
-	public void automatedMediaCenter(String sourceDirectory, String targetDirectory) {
-		LOG.entering(CLASS_NAME, "findMissingEpisodes", new Object[] {sourceDirectory,targetDirectory});
-		
-		File targetDirectoryFile = new File(targetDirectory);
+	public void runAutomatedMediaCenter(boolean publishToPlex) {
+		LOG.entering(CLASS_NAME, "automatedMediaCenter");
+		 
+		File targetDirectoryFile = new File(HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
 		if(!targetDirectoryFile.exists())
 		{
 			try {
+				//FIXME Add the mkdir to tvshows and movies
 				FileUtils.forceMkdir(targetDirectoryFile);
 			}
 			catch (Exception e) {
-				LOG.severe("Error trying to create directory: " + targetDirectory);
+				LOG.severe("Error trying to create directory: " + HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
 			}
 		}
 				
-		String fileBotDestForwardSlashes=targetDirectory.replace("\\\\", "/");
+		String fileBotDestForwardSlashes=HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR.replace("\\\\", "/");
 		try {
 			//Main.main(new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "copy", "-non-strict", sourceDirectory, "--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
 			//		"subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "ecludeList", "amc-exclude.txt", "--def", "--log", "all" });
 			
-			String[] args = new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "copy", "-non-strict", sourceDirectory, 
+			String[] args = new String[] { "-script", "fn:amc", "--output", HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR, "--action", "copy", "-non-strict", HTPC.KODI_DOWNLOAD_COMPLETED_DIR, 
 					"--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
 					"subtitles", "en", "music", "y", "artwork", "n", "--log-file", FILEBOT_AMC_LOG, "--def", "excludeList=" + FILEBOT_AMC_EXCLUDE_LIST, "--log", "all" };					
 					
-			callFileBot(args);
+			callFileBotAMC(args,publishToPlex);
 		}
 		catch(SecurityException e)
 		{
@@ -815,12 +917,7 @@ public class HTPC extends HTPCConfig {
 			
 		}
 		
-		//Filebot puts TV Shows under a TV Show directory but we want it under TVShows
-		File amcDirectory=new File(targetDirectory + File.separator + "TVShows");
-		File correctDirectory=new File(targetDirectory + File.separator + "TVShows");
-		amcDirectory.renameTo(correctDirectory);
-		
-		LOG.exiting(CLASS_NAME, "findMissingEpisodes");		
+		LOG.exiting(CLASS_NAME, "automatedMediaCenter");		
 	}
 
 	/**
@@ -1138,7 +1235,7 @@ public class HTPC extends HTPCConfig {
 			HTPC.sleep(HTPC.KODI_UPDATING_PROGRESS_SLEEP_TIME, "Error while waiting on new requests to come to the QUEUE.");
 						
 			//Update the KodiDownloader's
-			updateDownloadQueue(kodiDownloaders);;
+			updateDownloadQueue(kodiDownloaders);
         }
         
         //notify the that the threads have completed so downloading is done and we need to notify the kodi pooling monitor
@@ -1320,7 +1417,7 @@ public class HTPC extends HTPCConfig {
 					}
 					KodiDownloaderDetails downloadDetails = downloader.getLatestKodiDownloadDetails();
 					//find the record
-					if((downloader.getName().equals(name)) && (season.equals(kodiSeasonNumber)) && (episode.equals(kodiEpisodeNumber)))
+					if((downloader.showNameMatches(name)) && (season.equals(kodiSeasonNumber)) && (episode.equals(kodiEpisodeNumber)))
 					{
 						String[] csv = downloader.toCSV();
 						LOG.fine("DOWNLOAD_PERCENT UPDATE: " + csv);

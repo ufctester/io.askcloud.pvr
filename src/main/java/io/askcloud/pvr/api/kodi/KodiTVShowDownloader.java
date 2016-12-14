@@ -50,7 +50,7 @@ public class KodiTVShowDownloader extends KodiDownloader {
 		super(imdbid,tvdbid,name,status,percentDownloaded,file,totalDownloadSize,totalSize);
 		LOG.entering(CLASS_NAME, "KodiExodusDownloader");
 		LOG.exiting(CLASS_NAME, "KodiExodusDownloader");
-		setName(normailizeSearchName(name));
+		setName(normailizeShowName(name));
 		SEASON = season;
 		EPISODE = episode;
 		this.seriesEnded=seriesEnded;
