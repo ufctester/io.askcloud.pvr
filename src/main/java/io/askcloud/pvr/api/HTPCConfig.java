@@ -139,7 +139,7 @@ abstract public class HTPCConfig {
 	public static String BC_VALIDATE_AMC_READY_FOR_PLEX_BAT="C:\\gitbash\\opt\\beyondcompare\\scripts\\report-amc.bat";
 	
 	//This will run the entire download job and validate it at the end but not push the downloads to plex
-	public static boolean PUBLISH_TO_PLEX=false;
+	public static boolean PUBLISH_TO_PLEX=true;
 	
 	public static String LOGS_DIRECTORY = "C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\logs";
 	public static String LOGS_ARCHIVES_DIRECTORY = LOGS_DIRECTORY + "\\archives";

@@ -243,7 +243,7 @@ public static void main(String[] args) {
 		HTPC.getInstance().LOG.entering(CLASS_NAME, "runTestRequest");
 		LOG.info("Calling: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
 		
-		HTPC.getInstance().isReadyToPublishToPlex();
+		HTPC.getInstance().runAutomatedMediaCenter(true);
 //		//HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_FILE,HTPC.DOWNLOAD_QUEUE_LOCK_FILE));
 //		try {
 //			HTPC.getInstance().getGmailEmailClient().sendMessage("spriet@ca.ibm.com","Test Message from Gmail Account", "Hi Dave this is from my test gmail.");

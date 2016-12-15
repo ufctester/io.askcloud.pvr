@@ -454,8 +454,8 @@ public class HTPC extends HTPCConfig {
 		initLogger();
 		
 		//Delete any lock files in case the previous run did not complete and left the lock file behind
-		FileUtils.deleteQuietly(new File(HTPC.DOWNLOAD_QUEUE_LOCK_FILE));
-		FileUtils.deleteQuietly(new File(HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK));
+		deleteQuietly(HTPC.DOWNLOAD_QUEUE_LOCK_FILE);
+		deleteQuietly(HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK);
 		clearCacheAndSources();
 		
 		//copy master kodi-downloader.csv download file 
@@ -475,6 +475,12 @@ public class HTPC extends HTPCConfig {
 
 			//Kodi Movies
 			recreateDirectory(HTPC.KODI_DOWNLOAD_MOVIES_DIR);
+			
+			//remove old amc folder
+			deleteQuietly(HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
+			
+			//remove old completed folder
+			deleteQuietly(HTPC.KODI_DOWNLOAD_COMPLETED_DIR);
 		}			
 		
 		LOG.exiting(CLASS_NAME, "init");
@@ -819,14 +825,7 @@ public class HTPC extends HTPCConfig {
 	 */
 	public void findMissingTVShowEpisodes(String directory) {
 		LOG.entering(CLASS_NAME, "findMissingEpisodes", new Object[] {directory});
-		File missingEpisodeFile = new File(HTPC.DOWNLOAD_QUEUE_FILE);
-		try {
-			LOG.info("Deleting old missing episode file: " + missingEpisodeFile);
-			FileUtils.deleteQuietly(missingEpisodeFile);
-		}
-		catch (Exception e) {
-			LOG.severe("ERROR deleting file: " + missingEpisodeFile);
-		}
+		deleteQuietly(HTPC.DOWNLOAD_QUEUE_FILE);
 		
 		try {		
 			
@@ -854,15 +853,8 @@ public class HTPC extends HTPCConfig {
 	 */
 	public void findCompletedEpisodes(String directory) {
 		LOG.entering(CLASS_NAME, "findCompletedEpisodes", new Object[] {directory});
-		File seriesEndedFile = new File(HTPC.FILEBOT_SERIES_ENDED_EPISODES_FILE);
-		try {
-			LOG.info("Deleting old missing episode file: " + seriesEndedFile);
-			FileUtils.deleteQuietly(seriesEndedFile);
-		}
-		catch (Exception e) {
-			LOG.severe("ERROR deleting file: " + seriesEndedFile);
-		}
-		
+		deleteQuietly(HTPC.FILEBOT_SERIES_ENDED_EPISODES_FILE);
+
 		try {			
 			//Main.main(new String[] { "-script", PlexPVRManager.FILEBOT_FIND_SERIES_ENDED_EPISODES, directory, "--output",PlexPVRManager.FILEBOT_SERIES_ENDED_EPISODES_FILE });
 			callFileBot(new String[] { "-script", HTPC.FILEBOT_FIND_SERIES_ENDED_EPISODES, directory, "--output",HTPC.FILEBOT_SERIES_ENDED_EPISODES_FILE });
@@ -1547,6 +1539,18 @@ public class HTPC extends HTPCConfig {
 		GmailEmailClient client = GmailEmailClient.getInstance();
 		LOG.exiting(CLASS_NAME, "getGmailEmailClient",client);
 		return client;
-	}		
+	}	
+	
+	/**
+	 * @param file
+	 */
+	public void deleteQuietly(String file)
+	{
+		if(file != null)
+		{
+			File fileObj = new File(file);
+			FileUtils.deleteQuietly(fileObj);
+		}
+	}
 }
 
