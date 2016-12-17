@@ -14,7 +14,7 @@
 		<url>https://github.com/ufctester/${project.artifactId}</url>
 		<connection>scm:git:git@github.com:ufctester/${project.artifactId}.git</connection>
 		<developerConnection>scm:git:git@github.com:ufctester/${project.artifactId}.git</developerConnection>
-	</scm>
+	</scm> 
 
 	<dependencies>
 		<dependency>

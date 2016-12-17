@@ -1068,7 +1068,7 @@ public class HTPC extends HTPCOptions {
 			});
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			LOG.severe("Unable to connect to Kodi: " + e.getMessage());
 		}
 		
 		//sleap 

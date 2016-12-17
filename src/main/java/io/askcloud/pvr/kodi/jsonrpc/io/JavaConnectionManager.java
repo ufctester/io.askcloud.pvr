@@ -86,11 +86,11 @@ public class JavaConnectionManager {
     }
     catch (UnknownHostException e) {
       disconnect();
-      e.printStackTrace();
+      //e.printStackTrace();
     }
     catch (IOException e) {
       disconnect();
-      e.printStackTrace();
+      //e.printStackTrace();
     }
   }
 

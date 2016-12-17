@@ -238,11 +238,11 @@ public static void main(String[] args) {
 	 */
 	public void runTestRequest()
 	{	
-		HTPC.setEXIT_JAVA_PROGRAM(true);
-		HTPC.getInstance().LOG.entering(CLASS_NAME, "runTestRequest");
-		LOG.info("Calling: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
-		
-		HTPC.getInstance().runAutomatedMediaCenter(true);
+		HTPC.getInstance().test();
+//		HTPC.getInstance().LOG.entering(CLASS_NAME, "runTestRequest");
+//		LOG.info("Calling: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
+//		
+//		HTPC.getInstance().runAutomatedMediaCenter(true);
 //		//HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_FILE,HTPC.DOWNLOAD_QUEUE_LOCK_FILE));
 //		try {
 //			HTPC.getInstance().getGmailEmailClient().sendMessage("spriet@ca.ibm.com","Test Message from Gmail Account", "Hi Dave this is from my test gmail.");
@@ -276,7 +276,7 @@ public static void main(String[] args) {
 //				LOG.info("Download is not complete: " + kodiDownloader.toString());
 //			}
 //		}
-		LOG.exiting(CLASS_NAME, "runTestRequest");
+		//LOG.exiting(CLASS_NAME, "runTestRequest");
 		//HTPC.getInstance().exit(true);
 	}	
 	

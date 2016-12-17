@@ -135,8 +135,8 @@ public class HTPCOptions {
 	
 	private static String FILE_BOT_EXE="C:\\gitbash\\opt\\filebot\\filebot.exe";
 	
-	private static String BC_PUSH_AMC_TO_PLEX_BAT="C:\\gitbash\\opt\\beyondcompare\\scripts\\push-amc-to-plex.bat";
-	private static String BC_VALIDATE_AMC_READY_FOR_PLEX_BAT="C:\\gitbash\\opt\\beyondcompare\\scripts\\report-amc.bat";
+	private static String BC_PUSH_AMC_TO_PLEX_BAT="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\scripts\\bc\\push-amc-to-plex.bat";
+	private static String BC_VALIDATE_AMC_READY_FOR_PLEX_BAT="C:\\gitbash\\opt\\eclipse\\workspace\\io.askcloud.pvr\\scripts\\bc\\report-amc.bat";
 	
 	//This will run the entire download job and validate it at the end but not push the downloads to plex
 	private static boolean PUBLISH_TO_PLEX=false;
@@ -185,7 +185,62 @@ public class HTPCOptions {
 		return eINSTANCE;
 	}
 	
-	
+	public void test()
+	{
+		getBC_PUSH_AMC_TO_PLEX_BAT();
+		getBC_VALIDATE_AMC_READY_FOR_PLEX_BAT();
+		getBEYOND_COMPARE_AMC_MOVIE_REPORT_FILE();
+		getBEYOND_COMPARE_AMC_TV_REPORT_FILE();
+		getCLEAR_CACHE_THREAD_WAIT_TIME();
+		getDOWNLOAD_QUEUE_ACTIVE_FILE();
+		getDOWNLOAD_QUEUE_ACTIVE_FILE_LOCK();
+		getDOWNLOAD_QUEUE_FILE();
+		getDOWNLOAD_QUEUE_LOCK_FILE();
+		getDOWNLOAD_STATUS_QUEUED();
+		getDOWNLOAD_STATUS_SNATCHED();
+		getFILE_BOT_EXE();
+		getFILEBOT_AMC_EXCLUDE_LIST();
+		getFILEBOT_AMC_LOG();
+		getFILEBOT_FIND_SERIES_ENDED_EPISODES();
+		getFILEBOT_FIND_SERIES_EPISODES_HAVE();
+		getFILEBOT_FIND_SERIES_EPISODES_MISSING_EXCLUDES();
+		getFILEBOT_FIND_SERIES_MISSING_EPISODES();
+		getFILEBOT_SERIES_ENDED_EPISODES_FILE();
+		getFILEBOT_SERIES_EPISODES_HAVE_FILE();
+		getKDOI_PVR_DOWNLOAD_TRACKER();
+		getKDOI_PVR_DOWNLOAD_TRACKER_MASTER();
+		getKODI_DOWNLOAD_BASE_DIR();
+		getKODI_DOWNLOAD_COMPLETED_AMC_DIR();
+		getKODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR();
+		getKODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR();
+		getKODI_DOWNLOAD_COMPLETED_DIR();
+		getKODI_DOWNLOAD_MOVIES_DIR();
+		getKODI_DOWNLOAD_TVSHOWS_DIR();
+		getKODI_DOWNLOAD_THREADS();
+		getKODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME();
+		getKODI_UPDATING_PROGRESS_SLEEP_TIME();
+		getKODI_EXODUS_DOWNLOAD_ITERATOR_COUNTER_HUNG();
+		getKODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME();
+		getKODI_HOST();
+		getKODI_HTTP_PORT();
+		getKODI_MONITOR_DOWNLOAD_PERCENTAGE_CSV_FILE_LOADER();
+		getKODI_MOVIE_QUEUE_BATCH();
+		getKODI_PVR_DOWNLOAD_FILE();
+		getKODI_SOCKET_PORT();
+		getKODI_TVSHOW_QUEUE_BATCH();
+		getLOGS_ARCHIVES_DIRECTORY();
+		getLOGS_DIRECTORY();
+		getPLEX_MOVIES_DIR();
+		getPLEX_TVSHOWS_DIR();
+		getQUEUE_LOCK_FILE_WAIT_TIME();
+		getKodiDownloadThreads();
+		getKodiSeriesMissingEpisodesEmptySleepTime();
+		getKodiUpdatingProgressSleepTime();
+		isEXIT_JAVA_PROGRAM();
+		isPUBLISH_TO_PLEX();
+		isWAIT_FOR_NEW_REQUESTS_NO_EXIT();
+		isCLEAN_KODI_DOWNLOAD();
+	}
 	/*
 	 * load pvr-config.properties file
 	 */
@@ -210,354 +265,391 @@ public class HTPCOptions {
 		return options;
 	}
 
+	/**
+	 * @param value1
+	 * @param value2
+	 * @return
+	 */
+	private static boolean checkValues(int value1, int value2)
+	{
+		LOG.severe("value1: " + value1 + " value2: " + value2);
+		if(value1 != value2)
+		{
+			System.out.println("ERROR");
+		}
+		return true;
+	}
+	
+	/**
+	 * @param value1
+	 * @param value2
+	 * @return
+	 */
+	private static boolean checkValues(boolean value1,boolean value2)
+	{
+		LOG.severe("value1: " + value1 + " value2: " + value2);
+		if(value1 != value2)
+		{
+			System.out.println("ERROR");
+		}
+		return true;
+	}
+	
+	/**
+	 * @param value1
+	 * @param value2
+	 * @return
+	 */
+	private static boolean checkValues(String value1, String value2)
+	{
+		LOG.severe("value1: " + value1 + " value2: " + value2);
+		if((value1 != null) && (!value1.equals(value2)))
+		{
+			System.out.println("ERROR");
+		}
+		return true;
+	}
 	//FIXME DSP - Clean up from here down
 		
 	public static String getBC_PUSH_AMC_TO_PLEX_BAT() {
-		LOG.severe(getInstance().getOptions().getString("BC_PUSH_AMC_TO_PLEX_BAT"));
-		LOG.severe(BC_PUSH_AMC_TO_PLEX_BAT);
-		return getInstance().BC_PUSH_AMC_TO_PLEX_BAT;
+		String value = getInstance().getOptions().getString("BC_PUSH_AMC_TO_PLEX_BAT");
+		checkValues(BC_PUSH_AMC_TO_PLEX_BAT, value);
+
+		return BC_PUSH_AMC_TO_PLEX_BAT;
 	}
 	
 	
 	public static String getBC_VALIDATE_AMC_READY_FOR_PLEX_BAT() {
-		LOG.severe(getInstance().getOptions().getString("BC_VALIDATE_AMC_READY_FOR_PLEX_BAT"));
-		LOG.severe(BC_VALIDATE_AMC_READY_FOR_PLEX_BAT);
-		return getInstance().BC_VALIDATE_AMC_READY_FOR_PLEX_BAT;
+		String value = getInstance().getOptions().getString("BC_VALIDATE_AMC_READY_FOR_PLEX_BAT");
+		checkValues(BC_VALIDATE_AMC_READY_FOR_PLEX_BAT, value);
+		return BC_VALIDATE_AMC_READY_FOR_PLEX_BAT;
 	}
 	
 	public static String getBEYOND_COMPARE_AMC_MOVIE_REPORT_FILE() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE);		
-		return getInstance().BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE;
+		String value = getInstance().getOptions().getString("BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE");
+		checkValues(BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE, value);		
+		return BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE;
 	}
 	
 	public static String getBEYOND_COMPARE_AMC_TV_REPORT_FILE() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);			
-		return getInstance().BEYOND_COMPARE_AMC_TV_REPORT_FILE;
+		String value = getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE");
+		checkValues(BEYOND_COMPARE_AMC_TV_REPORT_FILE, value);		
+		return BEYOND_COMPARE_AMC_TV_REPORT_FILE;
 	}
 	
 	
 	//FIXME DSP - Clean up from here down
 	public static int getCLEAR_CACHE_THREAD_WAIT_TIME() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().CLEAR_CACHE_THREAD_WAIT_TIME;
+		int value = getInstance().getOptions().getInt("CLEAR_CACHE_THREAD_WAIT_TIME");
+		checkValues(CLEAR_CACHE_THREAD_WAIT_TIME, value);
+		return CLEAR_CACHE_THREAD_WAIT_TIME;
 	}
 	
 	public static String getDOWNLOAD_QUEUE_ACTIVE_FILE() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().DOWNLOAD_QUEUE_ACTIVE_FILE;
+		String value = getInstance().getOptions().getString("DOWNLOAD_QUEUE_ACTIVE_FILE");
+		checkValues(DOWNLOAD_QUEUE_ACTIVE_FILE, value);	
+		return DOWNLOAD_QUEUE_ACTIVE_FILE;
 	}
 	
 	public static String getDOWNLOAD_QUEUE_ACTIVE_FILE_LOCK() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK;
+		String value = getInstance().getOptions().getString("DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK");
+		checkValues(DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK, value);
+		return DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK;
 	}
 	
 	public static String getDOWNLOAD_QUEUE_FILE() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().DOWNLOAD_QUEUE_FILE;
+		String value = getInstance().getOptions().getString("DOWNLOAD_QUEUE_FILE");
+		checkValues(DOWNLOAD_QUEUE_FILE, value);
+		return DOWNLOAD_QUEUE_FILE;
 	}
 	
 	public static String getDOWNLOAD_QUEUE_LOCK_FILE() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().DOWNLOAD_QUEUE_LOCK_FILE;
+		String value = getInstance().getOptions().getString("DOWNLOAD_QUEUE_LOCK_FILE");
+		checkValues(DOWNLOAD_QUEUE_LOCK_FILE, value);
+		return DOWNLOAD_QUEUE_LOCK_FILE;
 	}
 	
 	public static String getDOWNLOAD_STATUS_QUEUED() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().DOWNLOAD_STATUS_QUEUED;
+		String value = getInstance().getOptions().getString("DOWNLOAD_STATUS_QUEUED");
+		checkValues(DOWNLOAD_STATUS_QUEUED, value);
+		return DOWNLOAD_STATUS_QUEUED;
 	}
 	
 	public static String getDOWNLOAD_STATUS_SNATCHED() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().DOWNLOAD_STATUS_SNATCHED;
+		String value = getInstance().getOptions().getString("DOWNLOAD_STATUS_SNATCHED");
+		checkValues(DOWNLOAD_STATUS_SNATCHED, value);
+		return DOWNLOAD_STATUS_SNATCHED;
 	}
 	
 	public static String getFILE_BOT_EXE() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().FILE_BOT_EXE;
+		String value = getInstance().getOptions().getString("FILE_BOT_EXE");
+		checkValues(FILE_BOT_EXE, value);
+		return FILE_BOT_EXE;
 	}
 	
 	public static String getFILEBOT_AMC_EXCLUDE_LIST() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().FILEBOT_AMC_EXCLUDE_LIST;
+		String value = getInstance().getOptions().getString("FILEBOT_AMC_EXCLUDE_LIST");
+		checkValues(FILEBOT_AMC_EXCLUDE_LIST, value);
+		return FILEBOT_AMC_EXCLUDE_LIST;
 	}
 	
 	public static String getFILEBOT_AMC_LOG() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().FILEBOT_AMC_LOG;
+		String value = getInstance().getOptions().getString("FILEBOT_AMC_LOG");
+		checkValues(FILEBOT_AMC_LOG, value);
+		return FILEBOT_AMC_LOG;
 	}
 	
 	public static String getFILEBOT_FIND_SERIES_ENDED_EPISODES() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().FILEBOT_FIND_SERIES_ENDED_EPISODES;
+		String value = getInstance().getOptions().getString("FILEBOT_FIND_SERIES_ENDED_EPISODES");
+		checkValues(FILEBOT_FIND_SERIES_ENDED_EPISODES, value);
+		return FILEBOT_FIND_SERIES_ENDED_EPISODES;
 	}
 	
 	public static String getFILEBOT_FIND_SERIES_EPISODES_HAVE() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().FILEBOT_FIND_SERIES_EPISODES_HAVE;
+		String value = getInstance().getOptions().getString("FILEBOT_FIND_SERIES_EPISODES_HAVE");
+		checkValues(FILEBOT_FIND_SERIES_EPISODES_HAVE, value);
+		return FILEBOT_FIND_SERIES_EPISODES_HAVE;
 	}
 	
 	public static String getFILEBOT_FIND_SERIES_EPISODES_MISSING_EXCLUDES() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().FILEBOT_FIND_SERIES_EPISODES_MISSING_EXCLUDES;
+		String value = getInstance().getOptions().getString("FILEBOT_FIND_SERIES_EPISODES_MISSING_EXCLUDES");
+		checkValues(FILEBOT_FIND_SERIES_EPISODES_MISSING_EXCLUDES, value);
+		return FILEBOT_FIND_SERIES_EPISODES_MISSING_EXCLUDES;
 	}
 	
 	public static String getFILEBOT_FIND_SERIES_MISSING_EPISODES() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().FILEBOT_FIND_SERIES_MISSING_EPISODES;
+		String value = getInstance().getOptions().getString("FILEBOT_FIND_SERIES_MISSING_EPISODES");
+		checkValues(FILEBOT_FIND_SERIES_MISSING_EPISODES, value);
+		return FILEBOT_FIND_SERIES_MISSING_EPISODES;
 	}
 	
 	public static String getFILEBOT_SERIES_ENDED_EPISODES_FILE() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().FILEBOT_SERIES_ENDED_EPISODES_FILE;
+		String value = getInstance().getOptions().getString("FILEBOT_SERIES_ENDED_EPISODES_FILE");
+		checkValues(FILEBOT_SERIES_ENDED_EPISODES_FILE, value);
+		return FILEBOT_SERIES_ENDED_EPISODES_FILE;
 	}
 	
 	public static String getFILEBOT_SERIES_EPISODES_HAVE_FILE() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().FILEBOT_SERIES_EPISODES_HAVE_FILE;
+		String value = getInstance().getOptions().getString("FILEBOT_SERIES_EPISODES_HAVE_FILE");
+		checkValues(FILEBOT_SERIES_EPISODES_HAVE_FILE, value);
+		return FILEBOT_SERIES_EPISODES_HAVE_FILE;
 	}
 	
 	public static String getKDOI_PVR_DOWNLOAD_TRACKER() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KDOI_PVR_DOWNLOAD_TRACKER;
+		String value = getInstance().getOptions().getString("KDOI_PVR_DOWNLOAD_TRACKER");
+		checkValues(KDOI_PVR_DOWNLOAD_TRACKER, value);
+		return KDOI_PVR_DOWNLOAD_TRACKER;
 	}
 	
 	public static String getKDOI_PVR_DOWNLOAD_TRACKER_MASTER() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KDOI_PVR_DOWNLOAD_TRACKER_MASTER;
+		String value = getInstance().getOptions().getString("KDOI_PVR_DOWNLOAD_TRACKER_MASTER");
+		checkValues(KDOI_PVR_DOWNLOAD_TRACKER_MASTER, value);
+		return KDOI_PVR_DOWNLOAD_TRACKER_MASTER;
 	}
 	
 	public static String getKODI_DOWNLOAD_BASE_DIR() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_DOWNLOAD_BASE_DIR;
+		String value = getInstance().getOptions().getString("KODI_DOWNLOAD_BASE_DIR");
+		checkValues(KODI_DOWNLOAD_BASE_DIR, value);	
+		return KODI_DOWNLOAD_BASE_DIR;
 	}
 	
 	public static String getKODI_DOWNLOAD_COMPLETED_AMC_DIR() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_DOWNLOAD_COMPLETED_AMC_DIR;
+		String value = getInstance().getOptions().getString("KODI_DOWNLOAD_COMPLETED_AMC_DIR");
+		checkValues(KODI_DOWNLOAD_COMPLETED_AMC_DIR, value);	
+		return KODI_DOWNLOAD_COMPLETED_AMC_DIR;
 	}
 	
 	public static String getKODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR;
+		String value = getInstance().getOptions().getString("KODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR");
+		checkValues(KODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR, value);
+		return KODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR;
 	}
 	
 	public static String getKODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR;
+		String value = getInstance().getOptions().getString("KODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR");
+		checkValues(KODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR, value);
+		return KODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR;
 	}
 	
 	public static String getKODI_DOWNLOAD_COMPLETED_DIR() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_DOWNLOAD_COMPLETED_DIR;
+		String value = getInstance().getOptions().getString("KODI_DOWNLOAD_COMPLETED_DIR");
+		checkValues(KODI_DOWNLOAD_COMPLETED_DIR, value);
+		return KODI_DOWNLOAD_COMPLETED_DIR;
 	}
 	
 	public static String getKODI_DOWNLOAD_MOVIES_DIR() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_DOWNLOAD_MOVIES_DIR;
+		String value = getInstance().getOptions().getString("KODI_DOWNLOAD_MOVIES_DIR");
+		checkValues(KODI_DOWNLOAD_MOVIES_DIR, value);
+		return KODI_DOWNLOAD_MOVIES_DIR;
 	}
 	
 	public static String getKODI_DOWNLOAD_TVSHOWS_DIR() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_DOWNLOAD_TVSHOWS_DIR;
+		String value = getInstance().getOptions().getString("KODI_DOWNLOAD_TVSHOWS_DIR");
+		checkValues(KODI_DOWNLOAD_TVSHOWS_DIR, value);
+		return KODI_DOWNLOAD_TVSHOWS_DIR;
 	}
 	
 	public static int getKODI_DOWNLOAD_THREADS() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_DOWNLOAD_THREADS;
+		int value = getInstance().getOptions().getInt("KODI_DOWNLOAD_THREADS");
+		checkValues(KODI_DOWNLOAD_THREADS, value);
+		return KODI_DOWNLOAD_THREADS;
 	}
 	
 	public static int getKODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME;
+		int value = getInstance().getOptions().getInt("KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME");
+		checkValues(KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME, value);
+		return KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME;
 	}
 	
 	public static int getKODI_UPDATING_PROGRESS_SLEEP_TIME() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_UPDATING_PROGRESS_SLEEP_TIME;
+		int value = getInstance().getOptions().getInt("KODI_UPDATING_PROGRESS_SLEEP_TIME");
+		checkValues(KODI_UPDATING_PROGRESS_SLEEP_TIME, value);
+		return KODI_UPDATING_PROGRESS_SLEEP_TIME;
 	}
 	
 	
 	public static int getKODI_EXODUS_DOWNLOAD_ITERATOR_COUNTER_HUNG() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_EXODUS_DOWNLOAD_ITERATOR_COUNTER_HUNG;
+		int value = getInstance().getOptions().getInt("KODI_EXODUS_DOWNLOAD_ITERATOR_COUNTER_HUNG");
+		checkValues(KODI_EXODUS_DOWNLOAD_ITERATOR_COUNTER_HUNG, value);
+		return KODI_EXODUS_DOWNLOAD_ITERATOR_COUNTER_HUNG;
 	}
 	
 	public static int getKODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME;
+		int value = getInstance().getOptions().getInt("KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME");
+		checkValues(KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME, value);
+		return KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME;
 	}
 	public static String getKODI_HOST() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_HOST;
+		String value = getInstance().getOptions().getString("KODI_HOST");
+		checkValues(KODI_HOST, value);
+		return KODI_HOST;
 	}
 	
 	public static int getKODI_HTTP_PORT() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_HTTP_PORT;
+		int value = getInstance().getOptions().getInt("KODI_HTTP_PORT");
+		checkValues(KODI_HTTP_PORT, value);
+		return KODI_HTTP_PORT;
 	}
 	
 	public static int getKODI_MONITOR_DOWNLOAD_PERCENTAGE_CSV_FILE_LOADER() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_MONITOR_DOWNLOAD_PERCENTAGE_CSV_FILE_LOADER;
+		int value = getInstance().getOptions().getInt("KODI_MONITOR_DOWNLOAD_PERCENTAGE_CSV_FILE_LOADER");
+		checkValues(KODI_MONITOR_DOWNLOAD_PERCENTAGE_CSV_FILE_LOADER, value);
+		return KODI_MONITOR_DOWNLOAD_PERCENTAGE_CSV_FILE_LOADER;
 	}
 	
 	public static int getKODI_MOVIE_QUEUE_BATCH() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_MOVIE_QUEUE_BATCH;
+		int value = getInstance().getOptions().getInt("KODI_MOVIE_QUEUE_BATCH");
+		checkValues(KODI_MOVIE_QUEUE_BATCH, value);
+		return KODI_MOVIE_QUEUE_BATCH;
 	}
 	
 	public static String getKODI_PVR_DOWNLOAD_FILE() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_PVR_DOWNLOAD_FILE;
+		String value = getInstance().getOptions().getString("KODI_PVR_DOWNLOAD_FILE");
+		checkValues(KODI_PVR_DOWNLOAD_FILE, value);
+		return KODI_PVR_DOWNLOAD_FILE;
 	}
 	
 	public static int getKODI_SOCKET_PORT() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_SOCKET_PORT;
+		int value = getInstance().getOptions().getInt("KODI_SOCKET_PORT");
+		checkValues(KODI_SOCKET_PORT, value);
+		return KODI_SOCKET_PORT;
 	}
 	
 	public static Level getLOG_LEVEL() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().LOG_LEVEL;
+		String value = getInstance().getOptions().getString("LOG_LEVEL");
+		checkValues(LOG_LEVEL.getName(), value);
+		return LOG_LEVEL;
 	}
 	
 	public static int getKODI_TVSHOW_QUEUE_BATCH() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_TVSHOW_QUEUE_BATCH;
+		int value = getInstance().getOptions().getInt("KODI_TVSHOW_QUEUE_BATCH");
+		checkValues(KODI_TVSHOW_QUEUE_BATCH, value);
+		return KODI_TVSHOW_QUEUE_BATCH;
 	}
 	
 	
 	public static String getLOGS_ARCHIVES_DIRECTORY() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().LOGS_ARCHIVES_DIRECTORY;
+		String value = getInstance().getOptions().getString("LOGS_ARCHIVES_DIRECTORY");
+		checkValues(LOGS_ARCHIVES_DIRECTORY, value);
+		return LOGS_ARCHIVES_DIRECTORY;
 	}
 	
 	public static String getLOGS_DIRECTORY() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().LOGS_DIRECTORY;
+		String value = getInstance().getOptions().getString("LOGS_DIRECTORY");
+		checkValues(LOGS_DIRECTORY, value);
+		return LOGS_DIRECTORY;
 	}
 	
 	
 	public static String getPLEX_MOVIES_DIR() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().PLEX_MOVIES_DIR;
+		String value = getInstance().getOptions().getString("PLEX_MOVIES_DIR");
+		checkValues(PLEX_MOVIES_DIR, value);
+		return PLEX_MOVIES_DIR;
 	}
 	
 	public static String getPLEX_TVSHOWS_DIR() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().PLEX_TVSHOWS_DIR;
+		String value = getInstance().getOptions().getString("PLEX_TVSHOWS_DIR");
+		checkValues(PLEX_TVSHOWS_DIR, value);
+		return PLEX_TVSHOWS_DIR;
 	}
 	
 	public static int getQUEUE_LOCK_FILE_WAIT_TIME() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().QUEUE_LOCK_FILE_WAIT_TIME;
-	}
-	
-	public static String getConfigFile() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().CONFIG_FILE;
+		int value = getInstance().getOptions().getInt("QUEUE_LOCK_FILE_WAIT_TIME");
+		checkValues(QUEUE_LOCK_FILE_WAIT_TIME, value);
+		return QUEUE_LOCK_FILE_WAIT_TIME;
 	}
 
 	
 	public static int getKodiDownloadThreads() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_DOWNLOAD_THREADS;
+		int value = getInstance().getOptions().getInt("KODI_DOWNLOAD_THREADS");
+		checkValues(KODI_DOWNLOAD_THREADS, value);	
+		return KODI_DOWNLOAD_THREADS;
 	}
 	
 	public static int getKodiSeriesMissingEpisodesEmptySleepTime() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME;
+		int value = getInstance().getOptions().getInt("KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME");
+		checkValues(KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME, value);
+		return KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME;
 	}
 	
 	public static int getKodiUpdatingProgressSleepTime() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().KODI_UPDATING_PROGRESS_SLEEP_TIME;
+		int value = getInstance().getOptions().getInt("KODI_UPDATING_PROGRESS_SLEEP_TIME");
+		checkValues(KODI_UPDATING_PROGRESS_SLEEP_TIME, value);
+		return KODI_UPDATING_PROGRESS_SLEEP_TIME;
 	}
 	
 	public static boolean isEXIT_JAVA_PROGRAM() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().EXIT_JAVA_PROGRAM;
+		boolean value = getInstance().getOptions().getBoolean("EXIT_JAVA_PROGRAM");
+		checkValues(EXIT_JAVA_PROGRAM, value);
+		return EXIT_JAVA_PROGRAM;
 	}
 	
 	public static boolean isPUBLISH_TO_PLEX() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		return getInstance().PUBLISH_TO_PLEX;
+		boolean value = getInstance().getOptions().getBoolean("PUBLISH_TO_PLEX");
+		checkValues(PUBLISH_TO_PLEX, value);	
+		return PUBLISH_TO_PLEX;
 	}
 	
 	
 	public static boolean isWAIT_FOR_NEW_REQUESTS_NO_EXIT() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
+		boolean value = getInstance().getOptions().getBoolean("WAIT_FOR_NEW_REQUESTS_NO_EXIT");
+		checkValues(WAIT_FOR_NEW_REQUESTS_NO_EXIT, value);
 		return getInstance().WAIT_FOR_NEW_REQUESTS_NO_EXIT;
 	}
 
-	public static void setEXIT_JAVA_PROGRAM(boolean eXIT_JAVA_PROGRAM) {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
-		getInstance().EXIT_JAVA_PROGRAM = eXIT_JAVA_PROGRAM;
+	public static void setEXIT_JAVA_PROGRAM(boolean setEXIT_JAVA_PROGRAM) {
+		LOG.info("setEXIT_JAVA_PROGRAM: + " + setEXIT_JAVA_PROGRAM);
+		getInstance().EXIT_JAVA_PROGRAM = setEXIT_JAVA_PROGRAM;
 	}
 	
 	public static void setCLEAN_KODI_DOWNLOAD(boolean cLEAN_KODI_DOWNLOAD) {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
+		LOG.info("cLEAN_KODI_DOWNLOAD: + " + cLEAN_KODI_DOWNLOAD);
 		getInstance().CLEAN_KODI_DOWNLOAD = cLEAN_KODI_DOWNLOAD;
 	}
 	
 	public static boolean isCLEAN_KODI_DOWNLOAD() {
-		LOG.severe(getInstance().getOptions().getString("BEYOND_COMPARE_AMC_TV_REPORT_FILE"));
-		LOG.severe(BEYOND_COMPARE_AMC_TV_REPORT_FILE);	
+		//boolean value = getInstance().getOptions().getBoolean("CLEAN_KODI_DOWNLOAD");
+		//checkValues(CLEAN_KODI_DOWNLOAD, value);
 		return getInstance().CLEAN_KODI_DOWNLOAD;
 	}
 	
