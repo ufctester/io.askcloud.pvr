@@ -161,7 +161,7 @@ public static void main(String[] args) {
 	@SuppressWarnings("static-access")
 	public void downloadFromDownloadQueue()
 	{
-		HTPC.CLEAN_KODI_DOWNLOAD=true;
+		HTPC.setCLEAN_KODI_DOWNLOAD(true);
 		LOG.entering(CLASS_NAME, "downloadFromDownloadQueue");
 		HTPC.getInstance().startDownloadFromDownloadQueue();
 		
@@ -181,7 +181,6 @@ public static void main(String[] args) {
 	{
 		LOG.entering(CLASS_NAME, "filebotAMCRequest");
 		//re-create the target directory
-		HTPC.getInstance().recreateDirectory(HTPC.FILEBOT_AMC_DESTINATION);
 		HTPC.getInstance().runAutomatedMediaCenter(false);
 		
 		//File bot runs on a differnt thread and the FileBotExecuteResultHandler will exit the Java Program
@@ -194,7 +193,7 @@ public static void main(String[] args) {
 	public void findCompletedTVShowEpisodesRequest()
 	{
 		LOG.entering(CLASS_NAME, "findCompletedTVShowEpisodesRequest");
-		HTPC.getInstance().findCompletedEpisodes(HTPC.PLEX_TVSHOWS_DIR);		
+		HTPC.getInstance().findCompletedEpisodes(HTPC.getPLEX_TVSHOWS_DIR());		
 		
 		//File bot runs on a differnt thread and the FileBotExecuteResultHandler will exit the Java Program
 		LOG.exiting(CLASS_NAME, "findCompletedTVShowEpisodesRequest");		
@@ -206,7 +205,7 @@ public static void main(String[] args) {
 	public void findHaveTVShowEpisodesRequest()
 	{
 		LOG.entering(CLASS_NAME, "findHaveTVShowEpisodesRequest");
-		HTPC.getInstance().findTVShowEpisodesHave(HTPC.PLEX_TVSHOWS_DIR);		
+		HTPC.getInstance().findTVShowEpisodesHave(HTPC.getPLEX_TVSHOWS_DIR());		
 		
 		//File bot runs on a differnt thread and the FileBotExecuteResultHandler will exit the Java Program
 		LOG.exiting(CLASS_NAME, "findHaveTVShowEpisodesRequest");	
@@ -218,7 +217,7 @@ public static void main(String[] args) {
 	public void findMissingTVShowEpisodesRequest()
 	{
 		LOG.entering(CLASS_NAME, "findMissingTVShowEpisodesRequest");
-		HTPC.getInstance().findMissingTVShowEpisodes(HTPC.PLEX_TVSHOWS_DIR);	
+		HTPC.getInstance().findMissingTVShowEpisodes(HTPC.getPLEX_TVSHOWS_DIR());	
 		//File bot runs on a differnt thread and the FileBotExecuteResultHandler will exit the Java Program
 		LOG.exiting(CLASS_NAME, "findMissingTVShowEpisodesRequest");	
 	}
@@ -230,7 +229,7 @@ public static void main(String[] args) {
 	public void publishDownloadsToPlex()
 	{	
 		HTPC.getInstance().LOG.entering(CLASS_NAME, "publishDownloadsToPlex");		
-		HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE,HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK));
+		HTPC.getInstance().publishDownloadsToPlex(HTPC.getInstance().loadDownloadQueue(HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE(),HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE_LOCK()));
 		LOG.exiting(CLASS_NAME, "publishDownloadsToPlex");
 	}		
 	
@@ -239,7 +238,7 @@ public static void main(String[] args) {
 	 */
 	public void runTestRequest()
 	{	
-		HTPC.EXIT_JAVA_PROGRAM=true;
+		HTPC.setEXIT_JAVA_PROGRAM(true);
 		HTPC.getInstance().LOG.entering(CLASS_NAME, "runTestRequest");
 		LOG.info("Calling: PlexPVRManager.getInstance().getKodiManager().download(PlexPVRManager.getInstance().loadTVShowEpisodesMissing())");
 		
@@ -294,7 +293,7 @@ public static void main(String[] args) {
 				Series tvshowInfo = findTVShow(name);
 				if(tvshowInfo != null)
 				{
-					KodiDownloader downloader = KodiDownloader.createKodiDownloader(tvshowInfo.getId(),null,name,"1","1",false,HTPC.DOWNLOAD_STATUS_QUEUED,"0","","0","0");
+					KodiDownloader downloader = KodiDownloader.createKodiDownloader(tvshowInfo.getId(),null,name,"1","1",false,HTPC.getDOWNLOAD_STATUS_QUEUED(),"0","","0","0");
 					downloads.add(downloader);	
 				}			
 			}
@@ -305,7 +304,7 @@ public static void main(String[] args) {
 				MovieInfo movieInfo = findMovie(name);
 				if(movieInfo != null)
 				{
-					KodiDownloader downloader = KodiDownloader.createKodiDownloader(null,movieInfo.getImdbID(),name,"","",false,HTPC.DOWNLOAD_STATUS_QUEUED,"0","","0","0");
+					KodiDownloader downloader = KodiDownloader.createKodiDownloader(null,movieInfo.getImdbID(),name,"","",false,HTPC.getDOWNLOAD_STATUS_QUEUED(),"0","","0","0");
 					downloads.add(downloader);	
 				}			
 			}

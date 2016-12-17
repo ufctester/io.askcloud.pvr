@@ -1,0 +1,65 @@
+
+###################################################################
+#LOG
+#http://www.scootersoftware.com/v3help/index.html?sample_scripts.html
+#http://www.scootersoftware.com/v4help/scripting_reference.html#log
+#log [none|normal|verbose] [[append:]<filename>]
+
+
+###################################################################
+# Turn logging on.
+log verbose append:"%3"
+
+
+###################################################################
+#OPTION
+#http://www.scootersoftware.com/v4help/scripting_reference.html#option
+#
+###################################################################
+#option stop-on-error
+#option confirm:prompt
+#option confirm:yes-to-all
+#option confirm:no-to-all
+
+###################################################################
+#Set up basic comparison features.
+#criteria timestamp:2sec
+###################################################################
+#criteria timestamp:2sec
+criteria rules-based
+
+#Filter out log files.
+#filter "-*.log"
+
+###################################################################
+#LOAD
+#http://www.scootersoftware.com/v4help/scripting_reference.html#load
+#load [create:(all|left|right)] <left path> [<right path>]
+###################################################################
+load "%1" "%2"
+
+###################################################################
+#Compare files with timestamp differences.
+#select newer.files older.files
+###################################################################
+#select newer.files older.files
+expand all
+#select all.files
+select all.files
+
+# Generate a report of the differences.
+#folder-report layout:summary options:display-mismatches output-to:"C:\tmp\MyReport.txt"
+#folder-report layout:side-by-side options:display-mismatches output-to:"C:\tmp\MyReport.txt"
+#folder-report layout:summary  options:display-mismatches output-to:"C:\tmp\MyReport.txt"
+#folder-report layout:xml options:display-all output-to:"C:\tmp\MyReport.txt" output-options:html-color
+#folder-report layout:xml options:display-mismatches output-to:"C:\gitbash\opt\beyondcompare\scripts\report-amc.xml"
+
+#folder-report layout:xml options:display-all output-to:"C:\gitbash\opt\beyondcompare\scripts\report-amc.xml"
+#folder-report layout:xml options:display-mismatches output-to:"C:\gitbash\opt\beyondcompare\scripts\report-amc-display-mismatches.xml"
+#folder-report layout:xml options:display-no-orphans output-to:"C:\gitbash\opt\beyondcompare\scripts\report-amc-display-no-orphans.xml"
+#folder-report layout:xml options:display-mismatches-no-orphans output-to:"C:\gitbash\opt\beyondcompare\scripts\report-amc-display-mismatches-no-orphans.xml"
+#folder-report layout:xml options:display-orphans output-to:"C:\gitbash\opt\beyondcompare\scripts\report-amc-display-orphans.xml"
+#folder-report layout:xml options:display-left-newer output-to:"C:\gitbash\opt\beyondcompare\scripts\report-amc-display-left-newer.xml"
+#folder-report layout:xml options:display-left-newer-orphans output-to:"C:\gitbash\opt\beyondcompare\scripts\report-amc-display-left-newer-orphans.xml"
+
+folder-report layout:xml options:display-all output-to:"%4"

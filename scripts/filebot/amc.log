@@ -1,0 +1,84 @@
+Failed to create application folder: AppData => C:\Users\apps\AppData\Roaming\FileBot
+java.nio.file.FileAlreadyExistsException: C:\Users\apps\AppData\Roaming\FileBot
+	at net.filebot.util.FileUtilities.createFolders(FileUtilities.java:183)
+	at net.filebot.ApplicationFolder.getCanonicalFile(ApplicationFolder.java:41)
+	at net.filebot.ApplicationFolder.resolve(ApplicationFolder.java:36)
+	at net.filebot.HistorySpooler.<init>(HistorySpooler.java:34)
+	at net.filebot.HistorySpooler.<clinit>(HistorySpooler.java:24)
+	at net.filebot.Main.main(Main.java:118)
+
+Run script [fn:amc] at [Wed Dec 14 18:20:32 EST 2016]
+Parameter: movieFormat = C:\gitbash\opt\kodi\amccompleted/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\completed
+Argument[1]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\en
+Argument[3]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\music
+Argument[4]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\y
+Argument[5]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\n
+Use excludes: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\filebot\amc-exclude.txt
+Input: C:\gitbash\opt\kodi\completed\tvshows\Notorious\Season 1\Notorious S01E08.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Pitch\Season 1\Pitch S01E07.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Pure Genius\Season 1\Pure Genius S01E03.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Secrets and Lies\Season 2\Secrets and Lies S02E07.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\The Blacklist\Season 4\The Blacklist S04E08.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\The Great Indoors\Season 1\The Great Indoors S01E03.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Westworld\Season 1\Westworld S01E07.mp4
+Group: [tvs:notorious] => [Notorious S01E08.mp4]
+Group: [tvs:pitch] => [Pitch S01E07.mp4]
+Group: [tvs:pure genius] => [Pure Genius S01E03.mp4]
+Group: [tvs:secrets and lies] => [Secrets and Lies S02E07.mp4]
+Group: [tvs:the blacklist] => [The Blacklist S04E08.mp4]
+Group: [tvs:the great indoors] => [The Great Indoors S01E03.mp4]
+Group: [tvs:westworld] => [Westworld S01E07.mp4]
+Rename episodes using [TheTVDB]
+Auto-detected query: [Notorious]
+Fetching episode data for [Notorious (2016)]
+Fetching episode data for [The Notorious]
+Fetching episode data for [Notorious]
+Fetching episode data for [So NoTORIous]
+Fetching episode data for [Kid Notorious]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Notorious\Season 1\Notorious S01E08.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Notorious (2016)\Season 01\Notorious (2016) - S01E08 - The Burn Book.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [pitch]
+Fetching episode data for [Pitch]
+Fetching episode data for [Mitch]
+Fetching episode data for [Pitchers]
+Fetching episode data for [Pitchmen]
+Fetching episode data for [The Pitch]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Pitch\Season 1\Pitch S01E07.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Pitch\Season 01\Pitch - S01E07 - San Francisco.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Pure Genius]
+Fetching episode data for [Pure Genius]
+Fetching episode data for [Genius]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Pure Genius\Season 1\Pure Genius S01E03.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Pure Genius\Season 01\Pure Genius - S01E03 - You Must Remember This.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Secrets and Lies]
+Fetching episode data for [Secrets and Lies (2015)]
+Fetching episode data for [Secrets & Lies]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Secrets and Lies\Season 2\Secrets and Lies S02E07.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Secrets and Lies (2015)\Season 02\Secrets and Lies (2015) - S02E07 - The Statement.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [The Blacklist]
+Fetching episode data for [The Blacklist]
+Fetching episode data for [The Blacklist: Redemption]
+Fetching episode data for [Black Box]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\The Blacklist\Season 4\The Blacklist S04E08.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\The Blacklist\Season 04\The Blacklist - S04E08 - Dr. Adrian Shaw - Conclusion.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [the great indoors]
+Fetching episode data for [The Great Indoors]
+Fetching episode data for [The Great War]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\The Great Indoors\Season 1\The Great Indoors S01E03.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\The Great Indoors\Season 01\The Great Indoors - S01E03 - Step One - Shelter.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Westworld]
+Fetching episode data for [Westworld]
+Fetching episode data for [Beyond Westworld]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Westworld\Season 1\Westworld S01E07.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Westworld\Season 01\Westworld - S01E07 - Trompe L'Oeil.mp4]
+Processed 1 files
+Done ヾ(＠⌒ー⌒＠)ノ

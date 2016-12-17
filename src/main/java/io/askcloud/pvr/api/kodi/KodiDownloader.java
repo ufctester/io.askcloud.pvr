@@ -38,7 +38,7 @@ abstract public class KodiDownloader implements Runnable {
 	private String IMDB_ID = null;
 	private String TVDB_ID = null;
 	
-	private String status=HTPC.DOWNLOAD_STATUS_QUEUED;
+	private String status=HTPC.getDOWNLOAD_STATUS_QUEUED();
 	
 	//This flag is set when the download is complete.  No other status objects will be added to the stack
 	boolean isComplete = false;
@@ -281,7 +281,7 @@ abstract public class KodiDownloader implements Runnable {
 			}
 			else {
 				//set the thread name
-				HTPC.sleep(HTPC.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME, "Error while waiting on starting the thread execution.");
+				HTPC.sleep(HTPC.getKODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME(), "Error while waiting on starting the thread execution.");
 			}
 		}
 
@@ -361,7 +361,7 @@ abstract public class KodiDownloader implements Runnable {
 			//set the thread name
 			setThreadName();
 
-			HTPC.sleep(HTPC.KODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME, "Error while monitoring the download thread.");
+			HTPC.sleep(HTPC.getKODI_EXODUS_DOWNLOAD_MONITOR_THREAD_WAIT_TIME(), "Error while monitoring the download thread.");
 
 			//The download is stuck.  It was either not picked up or it is not downloading anymore
 			if(isDownloadStuck())

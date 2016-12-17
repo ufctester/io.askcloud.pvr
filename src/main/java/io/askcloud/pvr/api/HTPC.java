@@ -69,8 +69,11 @@ import io.askcloud.pvr.tvdb.TheTVDBApi;
  * @author UFCTester
  *
  */
-public class HTPC extends HTPCConfig {
+public class HTPC extends HTPCOptions {
 	private static HTPC eINSTANCE = null;
+	
+	public static final String CLASS_NAME = HTPC.class.getName();
+	public static final Logger LOG = Logger.getLogger(CLASS_NAME);	
 
 	private String CURRENT_DATE = null;
 	
@@ -92,7 +95,6 @@ public class HTPC extends HTPCConfig {
 	
 	private static Set<String> excludeMovies = new LinkedHashSet<String>();
 	
-	//This is now in the file FILEBOT_FIND_SERIES_EPISODES_MISSING_EXCLUDES="C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/filebot/find-series-episodes-missing-excludes.txt";
     static
     {
     	excludeMissingEpisodes = new LinkedHashSet<String>();
@@ -169,8 +171,8 @@ public class HTPC extends HTPCConfig {
     		//Backup the previous report before the next one runs
     		String backupFileString = "";
     		try {
-    			backupFileString = HTPC.BEYOND_COMPARE_AMC_TV_REPORT_FILE.replace(".xml", "_" + getRunningDateId() + ".xml").replace(LOGS_DIRECTORY, LOGS_ARCHIVES_DIRECTORY);
-    			File sourceFile = new File(HTPC.BEYOND_COMPARE_AMC_TV_REPORT_FILE);
+    			backupFileString = HTPC.getBEYOND_COMPARE_AMC_TV_REPORT_FILE().replace(".xml", "_" + getRunningDateId() + ".xml").replace(getLOGS_DIRECTORY(), getLOGS_ARCHIVES_DIRECTORY());
+    			File sourceFile = new File(HTPC.getBEYOND_COMPARE_AMC_TV_REPORT_FILE());
     			if(sourceFile.exists())
     			{
         			File backupFile = new File(backupFileString);
@@ -178,12 +180,12 @@ public class HTPC extends HTPCConfig {
     			}    			
     		}
     		catch (Exception e) {
-    			LOG.warning("Unable to backup AMC Beyond Compare Reort file: " + HTPC.BEYOND_COMPARE_AMC_TV_REPORT_FILE + " backupFile: " + backupFileString);
+    			LOG.warning("Unable to backup AMC Beyond Compare Reort file: " + HTPC.getBEYOND_COMPARE_AMC_TV_REPORT_FILE() + " backupFile: " + backupFileString);
     		}
     		
     		try {
-    			backupFileString = HTPC.BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE.replace(".xml", "_" + getRunningDateId() + ".xml").replace(LOGS_DIRECTORY, LOGS_ARCHIVES_DIRECTORY);
-    			File sourceFile = new File(HTPC.BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE);
+    			backupFileString = HTPC.getBEYOND_COMPARE_AMC_MOVIE_REPORT_FILE().replace(".xml", "_" + getRunningDateId() + ".xml").replace(getLOGS_DIRECTORY(), getLOGS_ARCHIVES_DIRECTORY());
+    			File sourceFile = new File(HTPC.getBEYOND_COMPARE_AMC_MOVIE_REPORT_FILE());
     			if(sourceFile.exists())
     			{
         			File backupFile = new File(backupFileString);
@@ -191,7 +193,7 @@ public class HTPC extends HTPCConfig {
     			}
     		}
     		catch (Exception e) {
-    			LOG.warning("Unable to backup AMC Beyond Compare Reort file: " + HTPC.BEYOND_COMPARE_AMC_TV_REPORT_FILE + " backupFile: " + backupFileString);
+    			LOG.warning("Unable to backup AMC Beyond Compare Reort file: " + HTPC.getBEYOND_COMPARE_AMC_TV_REPORT_FILE() + " backupFile: " + backupFileString);
     		}
     		    		
     		LOG.exiting(CLASS_NAME, "BeyondCompareIsReadyToPublishToPlex");    		
@@ -206,7 +208,7 @@ public class HTPC extends HTPCConfig {
     		
     		//View the Beyond Compare reports
     		LOG.info("Checking for conflicts with Plex TVShows");
-    		AMCBeyondCompareReportReviewer reviewer = new AMCBeyondCompareReportReviewer(new File(HTPC.BEYOND_COMPARE_AMC_TV_REPORT_FILE));
+    		AMCBeyondCompareReportReviewer reviewer = new AMCBeyondCompareReportReviewer(new File(HTPC.getBEYOND_COMPARE_AMC_TV_REPORT_FILE()));
     		reviewer.walkDocument();
     		
     		//conflicts so stop
@@ -223,7 +225,7 @@ public class HTPC extends HTPCConfig {
     		
 
     		LOG.info("Checking for conflicts with Plex Movies");
-      		reviewer = new AMCBeyondCompareReportReviewer(new File(HTPC.BEYOND_COMPARE_AMC_MOVIE_REPORT_FILE));
+      		reviewer = new AMCBeyondCompareReportReviewer(new File(HTPC.getBEYOND_COMPARE_AMC_MOVIE_REPORT_FILE()));
        		reviewer.walkDocument();    	
     		
        		//conflicts so stop
@@ -240,7 +242,7 @@ public class HTPC extends HTPCConfig {
     		LOG.info("AMC Beyond Compare Report does not contain conflicts with Plex Movies.");
     		
     		//if we got this far we have no conflicts
-   			if(PUBLISH_TO_PLEX)
+   			if(isPUBLISH_TO_PLEX())
    			{
    				pushDownloadsToPlex();
    			}    		
@@ -394,13 +396,15 @@ public class HTPC extends HTPCConfig {
     {
     	ENABLED_LOGGERS = new LinkedHashSet<String>();
 //    	ENABLED_LOGGERS.add("io.askcloud.pvr.api");
-    	ENABLED_LOGGERS.add(HTPC.class.getName());
+    	ENABLED_LOGGERS.add(HTPC.CLASS_NAME);
+    	ENABLED_LOGGERS.add(HTPCOptions.CLASS_NAME);
 //    	ENABLED_LOGGERS.add("io.askcloud.pvr.api.main");
 //    	ENABLED_LOGGERS.add("io.askcloud.pvr.api.kodi");
     	
     	ENABLED_LOGGERS.add(HTPC.LOG_DOWNLOAD_TR);
     	ENABLED_LOGGERS.add(HTPC.LOG_LOAD_KODI_STATUS_TR);
     	ENABLED_LOGGERS.add(HTPC.LOG_DOWNLOAD_KODI_MONITOR_THREAD_TR);
+    	ENABLED_LOGGERS.add(LOG_FILE_BOT_TR);
     }
     
 	public class HTPCLogFilter implements Filter {
@@ -454,33 +458,33 @@ public class HTPC extends HTPCConfig {
 		initLogger();
 		
 		//Delete any lock files in case the previous run did not complete and left the lock file behind
-		deleteQuietly(HTPC.DOWNLOAD_QUEUE_LOCK_FILE);
-		deleteQuietly(HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK);
+		deleteQuietly(HTPC.getDOWNLOAD_QUEUE_LOCK_FILE());
+		deleteQuietly(HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE_LOCK());
 		clearCacheAndSources();
 		
 		//copy master kodi-downloader.csv download file 
-		File sourceFile = new File(HTPC.KDOI_PVR_DOWNLOAD_TRACKER_MASTER);
-		File targetFile = new File(HTPC.KDOI_PVR_DOWNLOAD_TRACKER);
+		File sourceFile = new File(HTPC.getKDOI_PVR_DOWNLOAD_TRACKER_MASTER());
+		File targetFile = new File(HTPC.getKDOI_PVR_DOWNLOAD_TRACKER());
 		try {
 			FileUtils.copyFile(sourceFile, targetFile);
 		}
 		catch (Exception e) {
-			LOG.severe("ERROR copying file: " + HTPC.KDOI_PVR_DOWNLOAD_TRACKER_MASTER + " to file: " + HTPC.KDOI_PVR_DOWNLOAD_TRACKER);
+			LOG.severe("ERROR copying file: " + HTPC.getKDOI_PVR_DOWNLOAD_TRACKER_MASTER() + " to file: " + HTPC.getKDOI_PVR_DOWNLOAD_TRACKER());
 		}
 
-		if(HTPC.CLEAN_KODI_DOWNLOAD)
+		if(HTPC.isCLEAN_KODI_DOWNLOAD())
 		{
 			//Kodi TVShows
-			recreateDirectory(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR);
+			recreateDirectory(HTPC.getKODI_DOWNLOAD_TVSHOWS_DIR());
 
 			//Kodi Movies
-			recreateDirectory(HTPC.KODI_DOWNLOAD_MOVIES_DIR);
+			recreateDirectory(HTPC.getKODI_DOWNLOAD_MOVIES_DIR());
 			
 			//remove old amc folder
-			deleteQuietly(HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
+			deleteQuietly(HTPC.getKODI_DOWNLOAD_COMPLETED_AMC_DIR());
 			
 			//remove old completed folder
-			deleteQuietly(HTPC.KODI_DOWNLOAD_COMPLETED_DIR);
+			deleteQuietly(HTPC.getKODI_DOWNLOAD_COMPLETED_DIR());
 		}			
 		
 		LOG.exiting(CLASS_NAME, "init");
@@ -556,7 +560,7 @@ public class HTPC extends HTPCConfig {
 	 */
 	public void exit(boolean passed)
 	{
-		if(EXIT_JAVA_PROGRAM)
+		if(isEXIT_JAVA_PROGRAM())
 		{
 			System.exit(0);
 		}		
@@ -594,7 +598,7 @@ public class HTPC extends HTPCConfig {
                 
         try {
         	DefaultExecuteResultHandler rh = new FileBotExecuteResultHandler(publishToPlex);
-            String line = FILE_BOT_EXE + commandArgs;
+            String line = getFILE_BOT_EXE() + commandArgs;
         	LOG.info("Calling Filebot: " + line);
             CommandLine cmdLine = CommandLine.parse(line);
             DefaultExecutor executor = new DefaultExecutor();
@@ -628,7 +632,7 @@ public class HTPC extends HTPCConfig {
                 
         try {
         	DefaultExecuteResultHandler rh = new FileBotExecuteResultHandler(false);
-            String line = FILE_BOT_EXE + commandArgs;
+            String line = getFILE_BOT_EXE() + commandArgs;
         	LOG.info("Calling Filebot: " + line);
             CommandLine cmdLine = CommandLine.parse(line);
             DefaultExecutor executor = new DefaultExecutor();
@@ -648,7 +652,7 @@ public class HTPC extends HTPCConfig {
 	{
 		LOG.entering(CLASS_NAME, "publishDownloadsToPlex");
 		
-		LOG.info("Copying Files to the Completed folder: " + HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
+		LOG.info("Copying Files to the Completed folder: " + HTPC.getKODI_DOWNLOAD_COMPLETED_AMC_DIR());
 		for (KodiDownloader downloadItem : downloader.values()) {
 			
 			//Copy all of the completed downloads to the completed folder for AMC to pick up
@@ -660,7 +664,7 @@ public class HTPC extends HTPCConfig {
 					//copy the file to the target destination
 					//C:\gitbash\opt\kodi\downloads\tvshows\Tosh.0\Season 8\Tosh.0 S08E01.mp4
 					String sourceFile = downloadItem.getLatestKodiDownloadDetails().getFile();
-					String targetFile = sourceFile.replace(HTPC.KODI_DOWNLOAD_BASE_DIR, HTPC.KODI_DOWNLOAD_COMPLETED_DIR);
+					String targetFile = sourceFile.replace(HTPC.getKODI_DOWNLOAD_BASE_DIR(), HTPC.getKODI_DOWNLOAD_COMPLETED_DIR());
 					FileUtils.copyFile(new File(sourceFile), new File(targetFile));
 				}
 				catch (Exception e) {
@@ -683,7 +687,7 @@ public class HTPC extends HTPCConfig {
 		LOG.entering(CLASS_NAME, "pushDownloadsToPlex");
         try {
         	DefaultExecuteResultHandler rh = new BeyondComparePublishTOPlex();
-            String line = BC_PUSH_AMC_TO_PLEX_BAT;
+            String line = getBC_PUSH_AMC_TO_PLEX_BAT();
         	LOG.info("Calling Beyond Compare to Push AMC Updates to Plex");
             CommandLine cmdLine = CommandLine.parse(line);
             DefaultExecutor executor = new DefaultExecutor();
@@ -714,11 +718,11 @@ public class HTPC extends HTPCConfig {
 		 */
 		
 		//amc folder should exist
-		File amcDirectory = new File(HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
+		File amcDirectory = new File(HTPC.getKODI_DOWNLOAD_COMPLETED_AMC_DIR());
 		
-		File amcMoviesDirectory = new File(HTPC.KODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR);
-		File amcTVShowsDirectory = new File(HTPC.KODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR);
-		File tvShowsIncorrectDirectory=new File(KODI_DOWNLOAD_COMPLETED_AMC_DIR + File.separator + "TV Shows");
+		File amcMoviesDirectory = new File(HTPC.getKODI_DOWNLOAD_COMPLETED_AMC_MOVIES_DIR());
+		File amcTVShowsDirectory = new File(HTPC.getKODI_DOWNLOAD_COMPLETED_AMC_TVSHOW_DIR());
+		File tvShowsIncorrectDirectory=new File(getKODI_DOWNLOAD_COMPLETED_AMC_DIR() + File.separator + "TV Shows");
 		
 		if(!amcDirectory.exists())
 		{
@@ -762,7 +766,7 @@ public class HTPC extends HTPCConfig {
 		//Run the Beyond Compare report generator
         try {
         	DefaultExecuteResultHandler rh = new BeyondCompareIsReadyToPublishToPlex();
-            String line = BC_VALIDATE_AMC_READY_FOR_PLEX_BAT;
+            String line = getBC_VALIDATE_AMC_READY_FOR_PLEX_BAT();
         	LOG.info("Calling Beyond Compare ensure what we downloaded does not conflict with anything already on plex");
             CommandLine cmdLine = CommandLine.parse(line);
             DefaultExecutor executor = new DefaultExecutor();
@@ -795,7 +799,7 @@ public class HTPC extends HTPCConfig {
 	 */
 	public void findTVShowEpisodesHave(String directory) {
 		LOG.entering(CLASS_NAME, "findTVShowEpisodesHave", new Object[] {directory});
-		File missingEpisodeFile = new File(HTPC.FILEBOT_SERIES_EPISODES_HAVE_FILE);
+		File missingEpisodeFile = new File(HTPC.getFILEBOT_SERIES_EPISODES_HAVE_FILE());
 		try {
 			LOG.info("Deleting old missing episode file: " + missingEpisodeFile);
 			FileUtils.deleteQuietly(missingEpisodeFile);
@@ -806,7 +810,7 @@ public class HTPC extends HTPCConfig {
 		
 		try {		
 			directory="\"" + directory + "\"";
-			callFileBot(new String[] { "-script", HTPC.FILEBOT_FIND_SERIES_EPISODES_HAVE, directory,"--output",HTPC.FILEBOT_SERIES_EPISODES_HAVE_FILE , "--log", "info"});
+			callFileBot(new String[] { "-script", HTPC.getFILEBOT_FIND_SERIES_EPISODES_HAVE(), directory,"--output",getFILEBOT_SERIES_EPISODES_HAVE_FILE() , "--log", "info"});
 		}
 		catch(SecurityException e)
 		{
@@ -825,7 +829,7 @@ public class HTPC extends HTPCConfig {
 	 */
 	public void findMissingTVShowEpisodes(String directory) {
 		LOG.entering(CLASS_NAME, "findMissingEpisodes", new Object[] {directory});
-		deleteQuietly(HTPC.DOWNLOAD_QUEUE_FILE);
+		deleteQuietly(HTPC.getDOWNLOAD_QUEUE_FILE());
 		
 		try {		
 			
@@ -833,7 +837,7 @@ public class HTPC extends HTPCConfig {
 			//callFileBot(new String[] { "-script", PlexPVRManager.FILE_BOT_FIND_MISSING_EPISODES, directory,"--output",PlexPVRManager.FILEBOT_SERIES_EPISODES_MISSING_FILE , "--def", "excludeList=" + FILE_BOT_FIND_MISSING_EPISODES_EXCLUDES,"--log", "info"});
 			//Main.main(new String[] { "-list", "--db", "thetvdb", "--q", "Dexter", "--format", "{plex}" });
 			directory="\"" + directory + "\"";
-			callFileBot(new String[] { "-script", HTPC.FILEBOT_FIND_SERIES_MISSING_EPISODES, directory,"--output",HTPC.DOWNLOAD_QUEUE_FILE , "--def", "excludeList=" + FILEBOT_FIND_SERIES_EPISODES_MISSING_EXCLUDES,"--log", "info"});
+			callFileBot(new String[] { "-script", HTPC.getFILEBOT_FIND_SERIES_MISSING_EPISODES(), directory,"--output",HTPC.getDOWNLOAD_QUEUE_FILE() , "--def", "excludeList=" + getFILEBOT_FIND_SERIES_EPISODES_MISSING_EXCLUDES(),"--log", "info"});
 		}
 		catch(SecurityException e)
 		{
@@ -853,11 +857,11 @@ public class HTPC extends HTPCConfig {
 	 */
 	public void findCompletedEpisodes(String directory) {
 		LOG.entering(CLASS_NAME, "findCompletedEpisodes", new Object[] {directory});
-		deleteQuietly(HTPC.FILEBOT_SERIES_ENDED_EPISODES_FILE);
+		deleteQuietly(HTPC.getFILEBOT_SERIES_ENDED_EPISODES_FILE());
 
 		try {			
 			//Main.main(new String[] { "-script", PlexPVRManager.FILEBOT_FIND_SERIES_ENDED_EPISODES, directory, "--output",PlexPVRManager.FILEBOT_SERIES_ENDED_EPISODES_FILE });
-			callFileBot(new String[] { "-script", HTPC.FILEBOT_FIND_SERIES_ENDED_EPISODES, directory, "--output",HTPC.FILEBOT_SERIES_ENDED_EPISODES_FILE });
+			callFileBot(new String[] { "-script", HTPC.getFILEBOT_FIND_SERIES_ENDED_EPISODES(), directory, "--output",HTPC.getFILEBOT_SERIES_ENDED_EPISODES_FILE() });
 		}
 		catch(SecurityException e)
 		{
@@ -877,7 +881,7 @@ public class HTPC extends HTPCConfig {
 	public void runAutomatedMediaCenter(boolean publishToPlex) {
 		LOG.entering(CLASS_NAME, "automatedMediaCenter");
 		 
-		File targetDirectoryFile = new File(HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
+		File targetDirectoryFile = new File(HTPC.getKODI_DOWNLOAD_COMPLETED_AMC_DIR());
 		if(!targetDirectoryFile.exists())
 		{
 			try {
@@ -885,18 +889,18 @@ public class HTPC extends HTPCConfig {
 				FileUtils.forceMkdir(targetDirectoryFile);
 			}
 			catch (Exception e) {
-				LOG.severe("Error trying to create directory: " + HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR);
+				LOG.severe("Error trying to create directory: " + HTPC.getKODI_DOWNLOAD_COMPLETED_AMC_DIR());
 			}
 		}
 				
-		String fileBotDestForwardSlashes=HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR.replace("\\\\", "/");
+		String fileBotDestForwardSlashes=HTPC.getKODI_DOWNLOAD_COMPLETED_AMC_DIR().replace("\\\\", "/");
 		try {
 			//Main.main(new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "copy", "-non-strict", sourceDirectory, "--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
 			//		"subtitles", "en", "music", "y", "artwork", "n", "--log-file", "amc.log", "--def", "ecludeList", "amc-exclude.txt", "--def", "--log", "all" });
 			
-			String[] args = new String[] { "-script", "fn:amc", "--output", HTPC.KODI_DOWNLOAD_COMPLETED_AMC_DIR, "--action", "copy", "-non-strict", HTPC.KODI_DOWNLOAD_COMPLETED_DIR, 
+			String[] args = new String[] { "-script", "fn:amc", "--output", HTPC.getKODI_DOWNLOAD_COMPLETED_AMC_DIR(), "--action", "copy", "-non-strict", HTPC.getKODI_DOWNLOAD_COMPLETED_DIR(), 
 					"--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
-					"subtitles", "en", "music", "y", "artwork", "n", "--log-file", FILEBOT_AMC_LOG, "--def", "excludeList=" + FILEBOT_AMC_EXCLUDE_LIST, "--log", "all" };					
+					"subtitles", "en", "music", "y", "artwork", "n", "--log-file", getFILEBOT_AMC_LOG(), "--def", "excludeList=" + getFILEBOT_AMC_EXCLUDE_LIST(), "--log", "all" };					
 					
 			callFileBotAMC(args,publishToPlex);
 		}
@@ -926,7 +930,7 @@ public class HTPC extends HTPCConfig {
 			
 			String[] args = new String[] { "-script", "fn:amc", "--output", targetDirectory, "--action", "test", "-non-strict", sourceDirectory, 
 					"--conflict", "override", "--def","movieFormat=\"" + fileBotDestForwardSlashes + "/Movies/{fn}\"",
-					"subtitles", "en", "music", "y", "artwork", "n", "--log-file", FILEBOT_AMC_LOG, "--def", "excludeList=" + FILEBOT_AMC_EXCLUDE_LIST, "--log", "all" };					
+					"subtitles", "en", "music", "y", "artwork", "n", "--log-file", getFILEBOT_AMC_LOG(), "--def", "excludeList=" + getFILEBOT_AMC_EXCLUDE_LIST(), "--log", "all" };					
 					
 			callFileBot(args);
 		}
@@ -1011,7 +1015,7 @@ public class HTPC extends HTPCConfig {
 
 	public JavaConnectionManager getConMgr() {
 		if (conMgr == null) {
-			HostConfig config = new HostConfig(HTPC.KODI_HOST, HTPC.KODI_HTTP_PORT, HTPC.KODI_SOCKET_PORT);
+			HostConfig config = new HostConfig(HTPC.getKODI_HOST(), HTPC.getKODI_HTTP_PORT(), HTPC.getKODI_SOCKET_PORT());
 			conMgr = new JavaConnectionManager();
 			conMgr.registerConnectionListener(new ConnectionListener() {
 
@@ -1068,7 +1072,7 @@ public class HTPC extends HTPCConfig {
 		}
 		
 		//sleap 
-		HTPC.sleep(HTPC.CLEAR_CACHE_THREAD_WAIT_TIME, "Error while waiting on for kodi cache to be cleard");
+		HTPC.sleep(HTPC.getCLEAR_CACHE_THREAD_WAIT_TIME(), "Error while waiting on for kodi cache to be cleard");
 		LOG.exiting(CLASS_NAME, "clearCacheAndSources");
 	}
 	
@@ -1083,7 +1087,7 @@ public class HTPC extends HTPCConfig {
         CSVParser parser = null;
         
         try {
-        	inputStream = new FileInputStream(HTPC.KDOI_PVR_DOWNLOAD_TRACKER);
+        	inputStream = new FileInputStream(getKDOI_PVR_DOWNLOAD_TRACKER());
             reader = new InputStreamReader(inputStream, "UTF-8");
             CSVFormat format = CSVFormat.EXCEL.withHeader().withQuoteMode(QuoteMode.MINIMAL);
             parser = new CSVParser(reader, format);
@@ -1138,7 +1142,7 @@ public class HTPC extends HTPCConfig {
 //				}
             }
         }catch (Exception e) {
-			LOG.warning("Unable to read " + HTPC.KODI_PVR_DOWNLOAD_FILE + ". This might be because it is missing the header: " + e.getMessage());
+			LOG.warning("Unable to read " + getKODI_PVR_DOWNLOAD_FILE() + ". This might be because it is missing the header: " + e.getMessage());
 			e.printStackTrace();
 		}
         finally {
@@ -1146,19 +1150,19 @@ public class HTPC extends HTPCConfig {
             	parser.close();	
 			}
 			catch (Exception e) {
-				LOG.warning("Unable to close " + HTPC.KODI_PVR_DOWNLOAD_FILE + " Parser: " + e.getMessage());
+				LOG.warning("Unable to close " + HTPC.getKODI_PVR_DOWNLOAD_FILE() + " Parser: " + e.getMessage());
 			}
             try {
             	reader.close();
 			}
 			catch (Exception e) {
-				LOG.warning("Unable to close " + HTPC.KODI_PVR_DOWNLOAD_FILE + " Reader: " + e.getMessage());
+				LOG.warning("Unable to close " + HTPC.getKODI_PVR_DOWNLOAD_FILE() + " Reader: " + e.getMessage());
 			}
             try {
             	inputStream.close();
 			}
 			catch (Exception e) {
-				LOG.warning("Unable to close " + HTPC.KODI_PVR_DOWNLOAD_FILE + " InputStream: " + e.getMessage());
+				LOG.warning("Unable to close " + HTPC.getKODI_PVR_DOWNLOAD_FILE() + " InputStream: " + e.getMessage());
 			}            
         }
         
@@ -1177,7 +1181,7 @@ public class HTPC extends HTPCConfig {
 			LOG.info("Calling: PlexPVRManager.getInstance().downloadFromDownloadQueue()");
 			
 			//set the download items
-			kodiDownloaders = loadDownloadQueue(HTPC.DOWNLOAD_QUEUE_FILE,HTPC.DOWNLOAD_QUEUE_LOCK_FILE);
+			kodiDownloaders = loadDownloadQueue(HTPC.getDOWNLOAD_QUEUE_FILE(),HTPC.getDOWNLOAD_QUEUE_LOCK_FILE());
 			if(!kodiDownloaders.isEmpty())
 			{
 				download();
@@ -1190,9 +1194,9 @@ public class HTPC extends HTPCConfig {
 			}
 			else
 			{
-				if(HTPC.WAIT_FOR_NEW_REQUESTS_NO_EXIT)
+				if(HTPC.isWAIT_FOR_NEW_REQUESTS_NO_EXIT())
 				{
-					HTPC.sleep(HTPC.KODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME, "Error while waiting on new requests to come to the QUEUE..");
+					HTPC.sleep(HTPC.getKODI_SERIES_MISSING_EPISODES_EMPTY_SLEEP_TIME(), "Error while waiting on new requests to come to the QUEUE..");
 				}
 				else
 				{
@@ -1210,7 +1214,7 @@ public class HTPC extends HTPCConfig {
 	 */
 	private void download()
 	{
-		ExecutorService executor = Executors.newFixedThreadPool(HTPC.KODI_DOWNLOAD_THREADS);
+		ExecutorService executor = Executors.newFixedThreadPool(HTPC.getKODI_DOWNLOAD_THREADS());
 		
 		//here we need to set the first download item ready to run
 		if(kodiDownloaders.size()>0)
@@ -1224,7 +1228,7 @@ public class HTPC extends HTPCConfig {
 		
 		executor.shutdown();
         while (!executor.isTerminated()) {
-			HTPC.sleep(HTPC.KODI_UPDATING_PROGRESS_SLEEP_TIME, "Error while waiting on new requests to come to the QUEUE.");
+			HTPC.sleep(HTPC.getKODI_UPDATING_PROGRESS_SLEEP_TIME(), "Error while waiting on new requests to come to the QUEUE.");
 						
 			//Update the KodiDownloader's
 			updateDownloadQueue(kodiDownloaders);
@@ -1368,9 +1372,9 @@ public class HTPC extends HTPCConfig {
         
         try {
         	//delete the new HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE and then copy the master queue file
-        	FileUtils.deleteQuietly(new File(HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE));
-        	FileUtils.copyFile(new File(HTPC.DOWNLOAD_QUEUE_FILE), new File(HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE));
-        	downloadQueueFileLock = waitForLockFile(HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE,HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK);
+        	FileUtils.deleteQuietly(new File(HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE()));
+        	FileUtils.copyFile(new File(HTPC.getDOWNLOAD_QUEUE_FILE()), new File(HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE()));
+        	downloadQueueFileLock = waitForLockFile(HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE(),HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE_LOCK());
         	inputStream = new FileInputStream(downloadQueueFileLock);
             reader = new InputStreamReader(inputStream, "UTF-8");
             
@@ -1395,7 +1399,7 @@ public class HTPC extends HTPCConfig {
 
             	boolean seriesEnded=(StringUtils.isNotBlank(ended)) && ("true".equals(ended))?true: false;
             	
-            	String[] originalRecord = {tvdbid,imdbid,name,season,episode,ended,HTPC.DOWNLOAD_STATUS_SNATCHED,downloadPercent,file,totalDownloadedSize,totalSize};
+            	String[] originalRecord = {tvdbid,imdbid,name,season,episode,ended,HTPC.getDOWNLOAD_STATUS_SNATCHED(),downloadPercent,file,totalDownloadedSize,totalSize};
             	
             	for (KodiDownloader downloader : activeDownloaders.values()) {
             		
@@ -1422,7 +1426,7 @@ public class HTPC extends HTPCConfig {
             if(!updatedRecords.isEmpty())
             {
                 //if we got this far then we must have the new list of pruned download videos
-                File csvOutputFile=new File(HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE);
+                File csvOutputFile=new File(HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE());
                 CSVFormat csvFileFormat = CSVFormat.EXCEL.withHeader(HTPC.CSV_HEADER);
                 csvFileWriter = new FileWriter(csvOutputFile);
                 cvsPrinter = new CSVPrinter(csvFileWriter, csvFileFormat);
@@ -1434,47 +1438,47 @@ public class HTPC extends HTPCConfig {
 		}
 		catch (Exception e) {
 			// FIXME: handle exception
-			LOG.severe("Error loading download requests: " + HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK);
+			LOG.severe("Error loading download requests: " + HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE_LOCK());
 		}
         finally {
             try {  
             	parser.close();	
 			}
 			catch (Exception e) {
-				LOG.severe("Unable to close " + HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK + " Parser: " + e.getMessage());
+				LOG.severe("Unable to close " + HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE_LOCK() + " Parser: " + e.getMessage());
 			}
             try {
             	reader.close();
 			}
 			catch (Exception e) {
-				LOG.severe("Unable to close " + HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK + " Reader: " + e.getMessage());
+				LOG.severe("Unable to close " + HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE_LOCK() + " Reader: " + e.getMessage());
 			}
             try {
             	inputStream.close();
 			}
 			catch (Exception e) {
-				LOG.severe("Unable to close " + HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE_LOCK + " InputStream: " + e.getMessage());
+				LOG.severe("Unable to close " + HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE_LOCK() + " InputStream: " + e.getMessage());
 			}   
             
             try {
             	csvFileWriter.flush();
 			}
 			catch (Exception e) {
-				LOG.severe("Unable to flush " + HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE + " csvFileWriter: " + e.getMessage());
+				LOG.severe("Unable to flush " + HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE() + " csvFileWriter: " + e.getMessage());
 			}   
             
             try {
             	csvFileWriter.close();
 			}
 			catch (Exception e) {
-				LOG.severe("Unable to close " + HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE + " csvFileWriter: " + e.getMessage());
+				LOG.severe("Unable to close " + HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE() + " csvFileWriter: " + e.getMessage());
 			}   
             
             try {
             	cvsPrinter.close();
 			}
 			catch (Exception e) {
-				LOG.severe("Unable to close " + HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE + " cvsPrinter: " + e.getMessage());
+				LOG.severe("Unable to close " + HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE() + " cvsPrinter: " + e.getMessage());
 			}
             
             //delete the lock file
@@ -1485,7 +1489,7 @@ public class HTPC extends HTPCConfig {
             	}
 			}
 			catch (Exception e) {
-				LOG.severe("ERROR: Unable to close " + HTPC.DOWNLOAD_QUEUE_ACTIVE_FILE + " InputStream: " + e.getMessage());
+				LOG.severe("ERROR: Unable to close " + HTPC.getDOWNLOAD_QUEUE_ACTIVE_FILE() + " InputStream: " + e.getMessage());
 			}
         }
         
@@ -1511,7 +1515,7 @@ public class HTPC extends HTPCConfig {
             if(masterFileLock.exists())
             {
             	LOG.info("Wating for file lock to be removed.");
-            	HTPC.sleep(HTPC.QUEUE_LOCK_FILE_WAIT_TIME, "waiting while sleeping while polling for lock file.");
+            	HTPC.sleep(HTPC.getQUEUE_LOCK_FILE_WAIT_TIME(), "waiting while sleeping while polling for lock file.");
             }
             else
             {

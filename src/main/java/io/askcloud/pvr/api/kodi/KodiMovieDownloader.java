@@ -179,7 +179,7 @@ public class KodiMovieDownloader extends KodiDownloader {
 	@Override
 	public String[] toCSV() {
     	KodiDownloaderDetails latestStatus = getLatestKodiDownloadDetails();
-    	return new String[] {getTVDBID(),getImdbID(),getName(),"","","false",HTPC.DOWNLOAD_STATUS_SNATCHED,String.valueOf(latestStatus.getPercent()),latestStatus.getFile(),String.valueOf(latestStatus.getTotalDownloadedMB()),String.valueOf(latestStatus.getTotalMB())};
+    	return new String[] {getTVDBID(),getImdbID(),getName(),"","","false",HTPC.getDOWNLOAD_STATUS_SNATCHED(),String.valueOf(latestStatus.getPercent()),latestStatus.getFile(),String.valueOf(latestStatus.getTotalDownloadedMB()),String.valueOf(latestStatus.getTotalMB())};
 	}
 	
 	@Override

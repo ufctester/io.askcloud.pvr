@@ -341,25 +341,25 @@ public class KodiTVShowDownloader extends KodiDownloader {
 		LOG.fine("Checking if episode exists.  tvShowName: " + tvShowName + " season: " + season + " episode: " + episode);
 
 		//mp4
-		File file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".mp4");
+		File file = new File(HTPC.getKODI_DOWNLOAD_TVSHOWS_DIR() + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".mp4");
 		if (file.exists() && !file.isDirectory()) {
 			LOG.fine("Episode alerady exists: " + file.toString());
 			return true;
 		}
 
-		file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".mkv");
+		file = new File(HTPC.getKODI_DOWNLOAD_TVSHOWS_DIR() + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".mkv");
 		if (file.exists() && !file.isDirectory()) {
 			LOG.fine("Episode alerady exists: " + file.toString());
 			return true;
 		}
 
-		file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".avi");
+		file = new File(HTPC.getKODI_DOWNLOAD_TVSHOWS_DIR() + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".avi");
 		if (file.exists() && !file.isDirectory()) {
 			LOG.fine("Episode alerady exists: " + file.toString());
 			return true;
 		}
 
-		file = new File(HTPC.KODI_DOWNLOAD_TVSHOWS_DIR + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".flv");
+		file = new File(HTPC.getKODI_DOWNLOAD_TVSHOWS_DIR() + "\\" + tvShowName + "\\Season " + season + "\\" + showFileName + ".flv");
 		if (file.exists() && !file.isDirectory()) {
 			LOG.fine("Episode alerady exists: " + file.toString());
 			return true;
@@ -437,7 +437,7 @@ public class KodiTVShowDownloader extends KodiDownloader {
 	@Override
 	public String[] toCSV() {
     	KodiDownloaderDetails latestStatus = getLatestKodiDownloadDetails();
-    	return new String[] {getTVDBID(),getImdbID(),getName(),String.valueOf(getSeason()),String.valueOf(getEpisode()),Boolean.valueOf(seriesEnded).toString(),HTPC.DOWNLOAD_STATUS_SNATCHED,String.valueOf(latestStatus.getPercent()),latestStatus.getFile(),String.valueOf(latestStatus.getTotalDownloadedMB()),String.valueOf(latestStatus.getTotalMB())};
+    	return new String[] {getTVDBID(),getImdbID(),getName(),String.valueOf(getSeason()),String.valueOf(getEpisode()),Boolean.valueOf(seriesEnded).toString(),HTPC.getDOWNLOAD_STATUS_SNATCHED(),String.valueOf(latestStatus.getPercent()),latestStatus.getFile(),String.valueOf(latestStatus.getTotalDownloadedMB()),String.valueOf(latestStatus.getTotalMB())};
 	}
 	
 	@Override
