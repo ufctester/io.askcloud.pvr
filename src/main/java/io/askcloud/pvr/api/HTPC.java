@@ -397,7 +397,8 @@ public class HTPC extends HTPCOptions {
     	ENABLED_LOGGERS = new LinkedHashSet<String>();
 //    	ENABLED_LOGGERS.add("io.askcloud.pvr.api");
     	ENABLED_LOGGERS.add(HTPC.CLASS_NAME);
-    	ENABLED_LOGGERS.add(HTPCOptions.CLASS_NAME);
+    	//ENABLED_LOGGERS.add(HTPC.LOG_OPTIONS_TR);
+    	//ENABLED_LOGGERS.add(HTPCOptions.CLASS_NAME);
 //    	ENABLED_LOGGERS.add("io.askcloud.pvr.api.main");
 //    	ENABLED_LOGGERS.add("io.askcloud.pvr.api.kodi");
     	

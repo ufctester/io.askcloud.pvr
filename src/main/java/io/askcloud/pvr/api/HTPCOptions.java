@@ -30,7 +30,8 @@ public class HTPCOptions {
 	public static final Level LOG_LEVEL = Level.INFO;
 	
 	public static final String CLASS_NAME = HTPCOptions.class.getName();
-	public static final Logger LOG = Logger.getLogger(CLASS_NAME);
+	public static final String LOG_OPTIONS_TR = "io.askcloud.pvr.api.options";
+	public static final Logger LOG = Logger.getLogger(LOG_OPTIONS_TR);
 	
 	public static final String LOG_DOWNLOAD_TR = "io.askcloud.pvr.api.kodi.status";
 	public static final Logger LOG_DOWNLOAD = Logger.getLogger(LOG_DOWNLOAD_TR);

@@ -82,3 +82,83 @@ Fetching episode data for [Beyond Westworld]
 [COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Westworld\Season 1\Westworld S01E07.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Westworld\Season 01\Westworld - S01E07 - Trompe L'Oeil.mp4]
 Processed 1 files
 Done ヾ(＠⌒ー⌒＠)ノ
+Failed to create application folder: AppData => C:\Users\apps\AppData\Roaming\FileBot
+java.nio.file.FileAlreadyExistsException: C:\Users\apps\AppData\Roaming\FileBot
+	at net.filebot.util.FileUtilities.createFolders(FileUtilities.java:183)
+	at net.filebot.ApplicationFolder.getCanonicalFile(ApplicationFolder.java:41)
+	at net.filebot.ApplicationFolder.resolve(ApplicationFolder.java:36)
+	at net.filebot.HistorySpooler.<init>(HistorySpooler.java:34)
+	at net.filebot.HistorySpooler.<clinit>(HistorySpooler.java:24)
+	at net.filebot.Main.main(Main.java:118)
+
+Run script [fn:amc] at [Sat Dec 17 13:45:25 EST 2016]
+Parameter: movieFormat = C:\gitbash\opt\kodi\amccompleted/Movies/{fn}
+Parameter: excludeList = C:/gitbash/opt/eclipse/workspace/io.askcloud.pvr/scripts/filebot/amc-exclude.txt
+Argument[0]: C:\gitbash\opt\kodi\completed
+Argument[1]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\subtitles
+Argument[2]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\en
+Argument[3]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\music
+Argument[4]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\y
+Argument[5]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\artwork
+Argument[6]: File does not exist: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\n
+Use excludes: C:\gitbash\opt\eclipse\workspace\io.askcloud.pvr\scripts\filebot\amc-exclude.txt (7)
+Input: C:\gitbash\opt\kodi\completed\tvshows\American Dad!\Season 14\American Dad! S14E02.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Chicago P.D\Season 4\Chicago P.D. S04E08.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Designated Survivor\Season 1\Designated Survivor S01E07.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Frequency\Season 1\Frequency S01E07.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Kim's Convenience\Season 1\Kim's Convenience S01E01.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Lethal Weapon\Season 1\Lethal Weapon S01E07.mp4
+Input: C:\gitbash\opt\kodi\completed\tvshows\Speechless\Season 1\Speechless S01E07.mp4
+Group: [tvs:american dad] => [American Dad! S14E02.mp4]
+Group: [tvs:chicago p d] => [Chicago P.D. S04E08.mp4]
+Group: [tvs:designated survivor] => [Designated Survivor S01E07.mp4]
+Group: [tvs:frequency] => [Frequency S01E07.mp4]
+Group: [tvs:kims convenience] => [Kim's Convenience S01E01.mp4]
+Group: [tvs:lethal weapon] => [Lethal Weapon S01E07.mp4]
+Group: [tvs:speechless] => [Speechless S01E07.mp4]
+Rename episodes using [TheTVDB]
+Auto-detected query: [American Dad]
+Fetching episode data for [American Dad!]
+Fetching episode data for [Americana]
+Fetching episode data for [The Americans (2013)]
+Fetching episode data for [American Dreams]
+Fetching episode data for [American Ride]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\American Dad!\Season 14\American Dad! S14E02.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\American Dad\Season 14\American Dad! - S14E02 - Fight and Flight.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Chicago P D]
+Fetching episode data for [Chicago P.D.]
+Fetching episode data for [Chicago Med]
+Fetching episode data for [The Chicago Code]
+Fetching episode data for [Chicago Hope]
+Fetching episode data for [Chicago Fire]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Chicago P.D\Season 4\Chicago P.D. S04E08.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Chicago P.D\Season 04\Chicago P.D. - S04E08 - A Shot Heard Around the World.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Designated Survivor]
+Fetching episode data for [Designated Survivor]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Designated Survivor\Season 1\Designated Survivor S01E07.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Designated Survivor\Season 01\Designated Survivor - S01E07 - The Traitor.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Frequency]
+Fetching episode data for [Frequency]
+Fetching episode data for [Global Frequency]
+Fetching episode data for [Strange Frequency]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Frequency\Season 1\Frequency S01E07.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Frequency\Season 01\Frequency - S01E07 - Break, Break, Break.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [kims convenience]
+Fetching episode data for [Kim's Convenience]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Kim's Convenience\Season 1\Kim's Convenience S01E01.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Kim's Convenience\Season 01\Kim's Convenience - S01E01 - Gay Discount.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Lethal Weapon]
+Fetching episode data for [Lethal Weapon]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Lethal Weapon\Season 1\Lethal Weapon S01E07.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Lethal Weapon\Season 01\Lethal Weapon - S01E07 - Fashion Police.mp4]
+Processed 1 files
+Rename episodes using [TheTVDB]
+Auto-detected query: [Speechless]
+Fetching episode data for [Speechless]
+[COPY] Rename [C:\gitbash\opt\kodi\completed\tvshows\Speechless\Season 1\Speechless S01E07.mp4] to [C:\gitbash\opt\kodi\amccompleted\TV Shows\Speechless\Season 01\Speechless - S01E07 - T-H-A-- THANKSGIVING.mp4]
+Processed 1 files
+Done ヾ(＠⌒ー⌒＠)ノ

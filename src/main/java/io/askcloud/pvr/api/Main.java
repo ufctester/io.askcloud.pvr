@@ -3,7 +3,6 @@
  */
 package io.askcloud.pvr.api;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -11,18 +10,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.collections4.map.LinkedMap;
 
 import io.askcloud.pvr.api.kodi.KodiDownloader;
 import io.askcloud.pvr.api.kodi.KodiMovieDownloader;
 import io.askcloud.pvr.api.kodi.KodiTVShowDownloader;
-import io.askcloud.pvr.api.utils.AMCBeyondCompareReportReviewer;
 import io.askcloud.pvr.themoviedb.TheMovieDbApi;
 import io.askcloud.pvr.themoviedb.enumeration.MovieMethod;
 import io.askcloud.pvr.themoviedb.enumeration.SearchType;
@@ -30,6 +26,9 @@ import io.askcloud.pvr.themoviedb.interfaces.AppendToResponseMethod;
 import io.askcloud.pvr.themoviedb.model.movie.MovieInfo;
 import io.askcloud.pvr.themoviedb.results.ResultList;
 import io.askcloud.pvr.tvdb.TheTVDBApi;
+import io.askcloud.pvr.tvdb.model.Banner;
+import io.askcloud.pvr.tvdb.model.Banners;
+import io.askcloud.pvr.tvdb.model.Episode;
 import io.askcloud.pvr.tvdb.model.Series;
 
 /**
@@ -337,18 +336,18 @@ public static void main(String[] args) {
 			for (Iterator iterator = seriesList.iterator(); iterator.hasNext();) {
 				Series series = (Series) iterator.next();
 				
-//				Banners banners = api.getBanners(series.getId());
-//				for (Iterator<Banner> bannersIter = banners.getPosterList().iterator(); bannersIter.hasNext();) {
-//					Banner banner = bannersIter.next();
-//					System.out.println("banner: " + banner.getUrl());
-//					
-//				}
-//				System.out.println("seriesName: " + series.getSeriesName() + " id: " + series.getId());
-//				List<Episode> episodes = api.getAllEpisodes(series.getId(), null);
-//				for (Iterator iter2 = episodes.iterator(); iter2.hasNext();) {
-//					Episode episode = (Episode) iter2.next();
-//					//System.out.println("    " + episode.toString());
-//				}
+				Banners banners = api.getBanners(series.getId());
+				for (Iterator<Banner> bannersIter = banners.getPosterList().iterator(); bannersIter.hasNext();) {
+					Banner banner = bannersIter.next();
+					System.out.println("banner: " + banner.getUrl());
+					
+				}
+				System.out.println("seriesName: " + series.getSeriesName() + " id: " + series.getId());
+				List<Episode> episodes = api.getAllEpisodes(series.getId(), null);
+				for (Iterator iter2 = episodes.iterator(); iter2.hasNext();) {
+					Episode episode = (Episode) iter2.next();
+					//System.out.println("    " + episode.toString());
+				}
 				if(series.getSeriesName().toLowerCase().startsWith(name.toLowerCase()))
 				{
 					return series;
